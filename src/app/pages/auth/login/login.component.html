@@ -1,0 +1,125 @@
+<div class="login-container">
+  <div class="login-content">
+    <!-- Logo e título -->
+    <div class="login-header">
+      <div class="logo">
+        <img src="/assets/logo.png" alt="Sede Campestre" class="logo-img">
+        <h1>Sede Campestre</h1>
+      </div>
+      <p class="login-subtitle">Sistema de Reservas da Chácara</p>
+    </div>
+
+    <!-- Card de login -->
+    <div class="login-card">
+      <div class="login-tabs">
+        <button class="tab-button active" (click)="setActiveTab('login')">Login com Senha</button>
+        <button class="tab-button" (click)="setActiveTab('codigo')">Login com Código</button>
+      </div>
+
+      <!-- Tab Login Tradicional -->
+      <div *ngIf="activeTab === 'login'" class="tab-content">
+        <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+          <div class="form-group">
+            <label>Email ou CPF</label>
+            <input 
+              type="text" 
+              formControlName="identificador"
+              placeholder="Digite seu email ou CPF"
+              class="form-input">
+          </div>
+
+          <div class="form-group">
+            <label>Senha</label>
+            <input 
+              type="password" 
+              formControlName="password"
+              placeholder="Digite sua senha"
+              class="form-input">
+          </div>
+
+          <button 
+            type="submit"
+            class="btn btn-primary btn-full"
+            [disabled]="loginForm.invalid || isLoading">
+            <span *ngIf="isLoading">Entrando...</span>
+            <span *ngIf="!isLoading">Entrar</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Tab Login com Código -->
+      <div *ngIf="activeTab === 'codigo'" class="tab-content">
+        <form [formGroup]="codigoForm" (ngSubmit)="onLoginCodigo()">
+          <div class="form-group">
+            <label>Email ou CPF</label>
+            <input 
+              type="text" 
+              formControlName="identificador"
+              placeholder="Digite seu email ou CPF"
+              class="form-input"
+              [disabled]="codigoEnviado">
+          </div>
+
+          <div *ngIf="!codigoEnviado" class="form-group">
+            <button 
+              type="button"
+              class="btn btn-secondary btn-full"
+              (click)="solicitarCodigo()"
+              [disabled]="codigoForm.get('identificador')?.invalid || isLoading">
+              <span *ngIf="isLoading">Enviando...</span>
+              <span *ngIf="!isLoading">Enviar Código</span>
+            </button>
+          </div>
+
+          <div *ngIf="codigoEnviado" class="form-group">
+            <label>Código de Acesso</label>
+            <input 
+              type="text" 
+              formControlName="codigo"
+              placeholder="Digite o código de 6 dígitos"
+              class="form-input"
+              maxlength="6">
+          </div>
+
+          <div *ngIf="codigoEnviado" class="form-actions">
+            <button 
+              type="submit"
+              class="btn btn-primary btn-full"
+              [disabled]="codigoForm.invalid || isLoading">
+              <span *ngIf="isLoading">Confirmando...</span>
+              <span *ngIf="!isLoading">Confirmar Código</span>
+            </button>
+            <button 
+              type="button"
+              class="btn btn-link"
+              (click)="voltarSolicitacao()">
+              Solicitar Novo Código
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Links adicionais -->
+      <div class="login-footer">
+        <p>
+          Não tem uma conta? 
+          <a href="/cadastro">Cadastre-se aqui</a>
+        </p>
+        <p>
+          <a href="/home">← Voltar ao início</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Informações de contato -->
+    <div class="contact-info">
+      <h3>Precisa de ajuda?</h3>
+      <div class="contact-item">
+        📞 (11) 99999-9999
+      </div>
+      <div class="contact-item">
+        📧 contato&#64;sedecampestre.com
+      </div>
+    </div>
+  </div>
+</div>

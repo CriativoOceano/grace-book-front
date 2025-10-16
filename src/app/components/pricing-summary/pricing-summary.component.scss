@@ -1,0 +1,215 @@
+// Pricing Summary Component - Design System Oceano da Graça
+.pricing-summary-container { 
+  position: sticky;
+  top: 2rem;
+  z-index: 10;
+  margin: 0;
+  padding: 0;
+}
+
+.pricing-card {
+  background: #FAFAFA !important;
+  border-radius: 20px !important;
+  box-shadow: 0 8px 32px rgba(10, 38, 71, 0.1) !important;
+  overflow: hidden !important;
+  border: 1px solid #D9D9D9 !important;
+  margin: 0 !important;
+}
+
+.pricing-card .p-card {
+  border-radius: 20px !important;
+}
+
+.pricing-card .p-card-body {
+  border-radius: 0 0 20px 20px !important;
+}
+
+.card-header {
+  background: #0A2647;
+  padding: 1.5rem;
+  color: #FAFAFA;
+  border-radius: 20px 20px 0 0 !important;
+}
+
+.card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #FAFAFA !important;
+}
+
+.pricing-content {
+  padding: 1.5rem;
+}
+
+.loading-content {
+  // Removido space-y que não é uma propriedade CSS válida
+}
+
+.loading-item {
+  margin-bottom: 1rem;
+}
+
+.loading-total {
+  margin-top: 1rem;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #D9D9D9;
+}
+
+.summary-item:last-child {
+  border-bottom: none;
+}
+
+.item-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: #0A2647;
+}
+
+.item-label i {
+  color: #0A2647;
+  font-size: 1rem;
+}
+
+.item-value {
+  font-weight: 600;
+  color: #0A2647;
+}
+
+.period-text {
+  font-size: 0.9rem;
+}
+
+.quantity-text {
+  font-size: 1rem;
+  background: #CBA135;
+  color: #FAFAFA;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.pricing-breakdown {
+  margin: 1rem 0;
+}
+
+.breakdown-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+
+.breakdown-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.breakdown-text {
+  font-weight: 500;
+  color: #0A2647;
+  font-size: 0.9rem;
+}
+
+.breakdown-days {
+  font-size: 0.8rem;
+  color: #0A2647;
+}
+
+.breakdown-value {
+  font-weight: 600;
+  color: #CBA135;
+  font-size: 0.9rem;
+}
+
+.total-section {
+  background: #0A2647;
+  margin: 1rem -1.5rem -1.5rem -1.5rem;
+  padding: 1.5rem;
+  color: #FAFAFA;
+  border-radius: 0 0 20px 20px !important;
+}
+
+.total-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.total-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.total-label i {
+  font-size: 1.2rem;
+  color: #CBA135;
+}
+
+.total-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-family: 'Playfair Display', serif;
+  color: #CBA135;
+}
+
+.additional-info {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #FAFAFA;
+  border-radius: 8px;
+  border-left: 4px solid #CBA135;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #0A2647;
+}
+
+.info-item i {
+  color: #0A2647;
+}
+
+@media (max-width: 768px) {
+  .pricing-summary-container {
+    position: relative;
+    top: 0;
+    margin-bottom: 2rem;
+  }
+
+  .card-title {
+    font-size: 1.1rem;
+  }
+
+  .pricing-content {
+    padding: 1rem;
+  }
+
+  .total-section {
+    margin: 1rem -1rem -1rem -1rem;
+    padding: 1rem;
+  }
+
+  .total-value {
+    font-size: 1.25rem;
+  }
+}

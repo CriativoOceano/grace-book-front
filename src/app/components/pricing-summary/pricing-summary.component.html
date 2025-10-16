@@ -1,0 +1,139 @@
+<div class="pricing-summary-container">
+  <p-card>
+    <ng-template pTemplate="header">
+      <div class="card-header">
+        <h3 class="card-title">
+          <i class="pi pi-calculator"></i>
+          Resumo da Reserva
+        </h3>
+      </div>
+    </ng-template>
+
+    <div class="pricing-content">
+      <!-- Loading State -->
+      <div *ngIf="pricing.isLoading" class="loading-content">
+        <div class="loading-item">
+          <p-skeleton height="1.5rem" width="60%"></p-skeleton>
+          <p-skeleton height="1rem" width="40%" class="mt-2"></p-skeleton>
+        </div>
+        <div class="loading-item">
+          <p-skeleton height="1.5rem" width="70%"></p-skeleton>
+          <p-skeleton height="1rem" width="50%" class="mt-2"></p-skeleton>
+        </div>
+        <div class="loading-item">
+          <p-skeleton height="1.5rem" width="80%"></p-skeleton>
+          <p-skeleton height="1rem" width="60%" class="mt-2"></p-skeleton>
+        </div>
+        <p-divider></p-divider>
+        <div class="loading-total">
+          <p-skeleton height="2rem" width="100%"></p-skeleton>
+        </div>
+      </div>
+
+      <!-- Content State -->
+      <div *ngIf="!pricing.isLoading" class="content">
+        <!-- Tipo de Reserva -->
+        <div class="summary-item">
+          <div class="item-label">
+            <i class="pi pi-home"></i>
+            Tipo de Reserva
+          </div>
+          <div class="item-value">
+          <span class="quantity-text">{{ getTipoLabel(pricing.tipoReserva) }}</span>
+          </div>
+        </div>
+
+        <!-- Período -->
+        <div *ngIf="pricing.quantidadeDias > 0" class="summary-item">
+          <div class="item-label">
+            <i class="pi pi-calendar"></i>
+            Período
+          </div>
+          <div class="item-value">
+            <span class="period-text">{{ getPeriodoText() }}</span>
+          </div>
+        </div>
+
+        <!-- Pessoas (apenas para Diária) -->
+        <div *ngIf="pricing.tipoReserva === 'DIARIA'" class="summary-item">
+          <div class="item-label">
+            <i class="pi pi-users"></i>
+            Quantidade de Pessoas
+          </div>
+          <div class="item-value">
+            <span class="quantity-text">{{ pricing.quantidadePessoas }}</span>
+          </div>
+        </div>
+
+        <!-- Chalés -->
+        <div *ngIf="pricing.quantidadeChales > 0" class="summary-item">
+          <div class="item-label">
+            <i class="pi pi-building"></i>
+            Chalés Adicionais
+          </div>
+          <div class="item-value">
+            <span class="quantity-text">{{ pricing.quantidadeChales > 1 ? pricing.quantidadeChales + ' chalés' : pricing.quantidadeChales + ' chalé' }}</span>
+          </div>
+        </div>
+
+        <!-- Breakdown de Preços -->
+        <div class="pricing-breakdown">
+          <!-- Valor da Diária -->
+          <div *ngIf="pricing.tipoReserva === 'DIARIA'" class="breakdown-item">
+            <div class="breakdown-label">
+              <span class="breakdown-text">Diária ({{ getFaixaPessoas() }})</span>
+              <span *ngIf="pricing.quantidadeDias > 0" class="breakdown-days">× {{ pricing.quantidadeDias }} dia(s)</span>
+            </div>
+            <div class="breakdown-value">
+              R$ {{ pricing.valorDiaria | number:'1.2-2' }}
+            </div>
+          </div>
+
+          <!-- Valor dos Chalés -->
+          <div *ngIf="pricing.quantidadeChales > 0" class="breakdown-item">
+            <div class="breakdown-label">
+              <span class="breakdown-text">Chalés</span>
+              <span *ngIf="pricing.quantidadeDias > 0" class="breakdown-days">× {{ pricing.quantidadeDias > 1 ? pricing.quantidadeDias + ' dias' : pricing.quantidadeDias + ' dia' }}</span>
+            </div>
+            <div class="breakdown-value">
+              R$ {{ pricing.valorChales | number:'1.2-2' }}
+            </div>
+          </div>
+
+          <!-- Valor do Batismo -->
+          <div *ngIf="pricing.tipoReserva === 'BATISMO'" class="breakdown-item">
+            <div class="breakdown-label">
+              <span class="breakdown-text">Serviço de Batismo</span>
+            </div>
+            <div class="breakdown-value">
+              R$ {{ pricing.valorTotal | number:'1.2-2' }}
+            </div>
+          </div>
+
+          <!-- Valor dos Chalés (modalidade) -->
+          <div *ngIf="pricing.tipoReserva === 'CHALE'" class="breakdown-item">
+            <div class="breakdown-label">
+              <span class="breakdown-text">Chalés (R$ 150,00 cada)</span>
+              <span *ngIf="pricing.quantidadeDias > 0" class="breakdown-days">× {{ pricing.quantidadeChales }} × {{ pricing.quantidadeDias }} dia(s)</span>
+            </div>
+            <div class="breakdown-value">
+              R$ {{ pricing.valorTotal | number:'1.2-2' }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Total -->
+    <div class="total-section">
+          <div class="total-item">
+            <div class="total-label">
+              <i class="pi pi-money-bill"></i>
+              Valor Total
+            </div>
+            <div class="total-value">
+              R$ {{ pricing.valorTotal | number:'1.2-2' }}
+            </div>
+          </div>
+        </div>
+  </p-card>
+</div>

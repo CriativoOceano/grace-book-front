@@ -1,0 +1,769 @@
+// Usar @use em vez de @import para evitar warnings
+@use "tailwindcss/base";
+@use "tailwindcss/components";
+@use "tailwindcss/utilities";
+
+// Estilos específicos para o header da página de reserva
+.booking-container .text-center {
+  background: transparent;
+}
+
+.booking-container h1 {
+  color: #0A2647 !important;
+  background: transparent;
+}
+
+.booking-container p {
+  color: #0A2647 !important;
+  background: transparent;
+}
+
+// Fundo com paleta oficial Oceano da Graça
+.booking-container {
+  background: #FAFAFA;
+  min-height: 100vh;
+}
+
+// Centralizar apenas a seção de quantidades
+.quantities-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+// Animações e micro-interações premium
+.form-group {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+// Cards de tipo de reserva - ocupam toda a largura
+.reservation-type-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  max-width: 100%;
+  margin: 0;
+  align-items: center;
+}
+
+.reservation-card {
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  cursor: pointer;
+  padding: 2rem;
+  border-radius: 16px;
+  background: #FAFAFA;
+  color: #0A2647;
+  text-align: center;
+  border: 2px solid #D9D9D9;
+  box-shadow: 0 2px 8px rgba(10, 38, 71, 0.1);
+  
+  &:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(10, 38, 71, 0.15);
+    border-color: #CBA135;
+  }
+  
+  &.selected {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 15px 30px rgba(10, 38, 71, 0.2);
+    border-color: #CBA135;
+    background: #FAFAFA;
+  }
+  
+  .card-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: #0A2647;
+  }
+  
+  .card-description {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+    color: #0A2647;
+  }
+  
+  .card-price {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #CBA135;
+    background: rgba(203, 161, 53, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    border: 1px solid rgba(203, 161, 53, 0.3);
+  }
+}
+
+// Seção de quantidade dentro do card
+.card-quantity-section {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(10, 38, 71, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+  .quantity-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #0A2647;
+    margin-bottom: 0.5rem;
+  }
+  
+  .quantity-input-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .quantity-btn {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    border: 1px solid #D9D9D9;
+    background: #FAFAFA;
+    color: #0A2647;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    &:hover:not(:disabled) {
+      background: #CBA135;
+      border-color: #CBA135;
+      color: #FAFAFA;
+      transform: scale(1.1);
+    }
+    
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+  
+  .quantity-input {
+    width: 4rem;
+    height: 2rem;
+    text-align: center;
+    border: 1px solid #D9D9D9;
+    background: #FAFAFA;
+    color: #0A2647;
+    border-radius: 4px;
+    font-weight: 600;
+    
+    &:focus {
+      outline: none;
+      border-color: #CBA135;
+      background: rgba(203, 161, 53, 0.05);
+    }
+  }
+  
+  .error-message {
+    font-size: 0.75rem;
+    color: #dc3545;
+    text-align: center;
+    margin-top: 0.25rem;
+  }
+}
+
+// Efeito de hover nos botões de quantidade
+.quantity-btn {
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+  
+  &:hover:not(:disabled) {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(105, 86, 67, 0.2);
+  }
+  
+  &:active:not(:disabled) {
+    transform: scale(0.95);
+  }
+}
+
+// Efeito de focus nos inputs
+.quantity-input,
+textarea,
+.p-inputtext {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  
+  &:focus {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 25px rgba(105, 86, 67, 0.15);
+  }
+}
+
+// Animação suave para o sticky summary
+.sticky-summary {
+  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+// Efeito de pulsação para elementos importantes
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(105, 86, 67, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(105, 86, 67, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(105, 86, 67, 0);
+  }
+}
+
+.pulse-glow {
+  animation: pulse-glow 2s infinite;
+}
+
+// Efeito de shimmer para loading states
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+// Estilos para steps no header - versão compacta com cor primária
+.custom-steps-header {
+  background: #0A2647;
+  padding: 1rem;
+  border: none;
+  box-shadow: none;
+  margin: 0;
+  border-radius: 8px 8px 0 0;
+  
+  .p-steps-item {
+    padding: 0.25rem;
+  }
+  
+  .p-steps-number {
+    background-color: rgba(250, 250, 250, 0.3);
+    color: #FAFAFA;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.875rem;
+    border: 2px solid rgba(250, 250, 250, 0.5);
+  }
+  
+  .p-steps-item.p-highlight .p-steps-number {
+    background-color: #CBA135;
+    color: #0A2647;
+    border-color: #CBA135;
+  }
+  
+  .p-steps-title {
+    color: rgba(250, 250, 250, 0.9);
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+    font-weight: 500;
+  }
+  
+  .p-steps-item.p-highlight .p-steps-title {
+    color: #FAFAFA;
+    font-weight: 600;
+  }
+}
+
+// Resumo sticky (sticker)
+.sticky-summary {
+  position: sticky;
+  top: 2rem;
+  z-index: 10;
+}
+
+// Layout responsivo para o grid principal
+.grid-responsive {
+  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+// Garantir que o formulário ocupe toda a largura quando não há resumo
+.form-full-width {
+  max-width: 100%;
+  width: 100%;
+}
+
+
+// Estilos para botões
+.continue-btn {
+  background: #0A2647 !important;
+  border: none !important;
+  color: #FAFAFA !important;
+  
+  &:hover {
+    background: #2E8A99 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(10, 38, 71, 0.3);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// Layout responsivo para mobile
+@media (max-width: 1024px) {
+  .sticky-summary {
+    position: static;
+    margin-top: 2rem;
+  }
+}
+
+// Responsividade para os cards de reserva
+@media (max-width: 768px) {
+  .reservation-type-cards {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    align-items: center;
+  }
+  
+  .reservation-card {
+    padding: 1.5rem;
+    
+    .card-title {
+      font-size: 1.1rem;
+    }
+    
+    .card-description {
+      font-size: 0.85rem;
+    }
+    
+    .card-price {
+      font-size: 1rem;
+    }
+  }
+}
+
+.booking-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  background-color: #FAFAFA;
+}
+
+// Removido .booking-card para evitar sobreposição com p-card
+
+// Media queries removidas para .booking-card
+
+.form-section {
+  flex: 1;
+  padding: 3rem;
+}
+
+@media (min-width: 1024px) {
+  .form-section {
+    padding: 4rem;
+  }
+}
+
+.summary-section {
+  width: 100%;
+  background-color: #FAFAFA;
+  padding: 2rem;
+  flex-shrink: 0;
+}
+
+@media (min-width: 1024px) {
+  .summary-section {
+    width: 24rem;
+    padding: 2.5rem;
+  }
+}
+
+.step-content {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 1rem;
+}
+
+.step-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.form-group {
+  margin-bottom: 2rem;
+  padding: 0;
+}
+
+.p-field {
+  margin-bottom: 1.5rem;
+}
+
+.p-inputtext, .p-dropdown, .p-datepicker {
+  width: 100%;
+}
+
+.p-button {
+  font-weight: 600;
+}
+
+.p-message {
+  margin-top: 1rem;
+}
+
+.p-steps {
+  margin-bottom: 2rem;
+}
+
+// Estilos específicos para corrigir problemas visuais
+.form-label {
+  display: block;
+  font-weight: 600;
+  color: #0A2647;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.form-label.required::after {
+  content: " *";
+  color: #dc3545;
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #ef4444;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+// Corrigir sobreposição de elementos
+// Estilos para controles de quantidade
+.quantity-input-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  max-width: 200px;
+}
+
+.quantity-btn {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #D9D9D9;
+  background: #FAFAFA;
+  color: #0A2647;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.quantity-btn:hover:not(:disabled) {
+  background: #CBA135;
+  color: #FAFAFA;
+  border-color: #CBA135;
+  transform: scale(1.1);
+}
+
+.quantity-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.quantity-input {
+  width: 60px;
+  height: 40px;
+  text-align: center;
+  border: 2px solid #D9D9D9;
+  border-radius: 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0A2647;
+  background: #FAFAFA;
+}
+
+.quantity-input:focus {
+  outline: none;
+  border-color: #CBA135;
+  box-shadow: 0 0 0 3px rgba(203, 161, 53, 0.1);
+}
+
+.range-info {
+  color: #0A2647;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+
+// Estilos para cards de tipo de reserva
+.reservation-type-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 2rem;
+  background: #FAFAFA;
+  align-items: center;
+  border-radius: 12px;
+  border: 1px solid #D9D9D9;
+}
+
+@media (min-width: 768px) {
+  .reservation-type-cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    align-items: center;
+  }
+}
+
+.reservation-card {
+  border: 2px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.reservation-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: #CBA135;
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.reservation-card:hover {
+  border-color: #CBA135;
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(203, 161, 53, 0.2);
+}
+
+.reservation-card:hover::before {
+  transform: scaleX(1);
+}
+
+.reservation-card.selected {
+  border-color: #CBA135;
+  background: #FAFAFA;
+  color: #0A2647;
+  transform: translateY(-2px);
+  box-shadow: 0 15px 30px -5px rgba(203, 161, 53, 0.3);
+}
+
+.reservation-card.selected::before {
+  transform: scaleX(1);
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0A2647;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  font-family: 'Playfair Display', serif;
+}
+
+.card-description {
+  color: #0A2647;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+  flex-grow: 1;
+}
+
+.card-price {
+  background: #CBA135;
+  color: #FAFAFA;
+  padding: 0.6rem 0.4rem;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  text-align: center;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.reservation-card.selected .card-title,
+.reservation-card.selected .card-description {
+  color: #0A2647;
+}
+
+.reservation-card.selected .card-price {
+  background: #CBA135;
+  color: #FAFAFA;
+  backdrop-filter: blur(10px);
+}
+
+// Animações
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.6s ease-out;
+}
+
+// Garantir que as animações funcionem corretamente
+.animate-slide-up.ng-star-inserted {
+  animation: slideUp 0.6s ease-out !important;
+}
+
+// Corrigir problemas específicos do PrimeNG
+.p-datepicker {
+  position: relative;
+  z-index: 1000;
+}
+
+.p-datepicker .p-datepicker-calendar {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.p-datepicker .p-datepicker-calendar th,
+.p-datepicker .p-datepicker-calendar td {
+  padding: 0.5rem;
+  text-align: center;
+}
+
+.p-datepicker .p-datepicker-calendar .p-datepicker-today {
+  background-color: #CBA135 !important;
+  color: #FAFAFA !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+// Hover nos dias do calendário
+.p-datepicker .p-datepicker-calendar td:hover {
+  background-color: #CBA135 !important;
+  color: #FAFAFA !important;
+  border-radius: 50% !important;
+  transition: all 0.2s ease !important;
+}
+
+// Hover mais específico para garantir que funcione
+.p-datepicker .p-datepicker-calendar td:not(.p-datepicker-selected):not(.p-datepicker-day-selected-range):not(.p-datepicker-day-selected-range-end):hover {
+  background-color: #CBA135 !important;
+  color: #FAFAFA !important;
+  border-radius: 50% !important;
+  transition: all 0.2s ease !important;
+}
+
+// Hover em células específicas do PrimeNG
+.p-datepicker .p-datepicker-calendar .p-datepicker-day:hover {
+  background-color: #CBA135 !important;
+  color: #FAFAFA !important;
+  border-radius: 50% !important;
+  transition: all 0.2s ease !important;
+}
+
+// Hover adicional para garantir que funcione
+.p-datepicker .p-datepicker-calendar td.p-datepicker-day:hover {
+  background-color: #CBA135 !important;
+  color: #FAFAFA !important;
+  border-radius: 50% !important;
+  transition: all 0.2s ease !important;
+}
+
+// Hover em spans dentro das células
+.p-datepicker .p-datepicker-calendar td:hover span {
+  background-color: #CBA135 !important;
+  color: #FAFAFA !important;
+  border-radius: 50% !important;
+  transition: all 0.2s ease !important;
+}
+
+// Dias do range selecionado
+.p-datepicker .p-datepicker-calendar .p-datepicker-day-selected-range {
+  background-color: #CBA135 !important;
+  color: #FAFAFA !important;
+}
+
+// Dia selecionado (início e fim)
+.p-datepicker .p-datepicker-calendar .p-datepicker-selected {
+  background-color: #CBA135 !important;
+  color: #FAFAFA !important;
+  border-radius: 50% !important;
+}
+
+// Dia fim do range
+.p-datepicker .p-datepicker-calendar .p-datepicker-day-selected-range-end {
+  background-color: #CBA135 !important;
+  color: #FAFAFA !important;
+  border-radius: 50% !important;
+}
+
+.card-header {
+  background: #0A2647 !important;
+  color: #FAFAFA !important;
+  border-radius: 20px 20px 0 0 !important;
+}

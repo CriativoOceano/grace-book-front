@@ -1,0 +1,356 @@
+<div class="payment-success-container min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 py-8">
+  <div class="container mx-auto px-4 max-w-4xl">
+    
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="flex justify-center items-center min-h-96">
+      <div class="text-center">
+        <p-progressSpinner 
+          styleClass="w-16 h-16" 
+          strokeWidth="4" 
+          fill="transparent" 
+          animationDuration="1s">
+        </p-progressSpinner>
+        <h2 class="text-2xl font-bold text-gray-800 mt-6 mb-2">Verificando pagamento...</h2>
+        <p class="text-gray-600">Aguarde enquanto confirmamos seu pagamento</p>
+      </div>
+    </div>
+
+    <!-- Success State -->
+    <div *ngIf="!isLoading && !errorMessage && paymentData && paymentStatus === 'sucesso'" class="animate-fade-in">
+      <div class="text-center mb-8">
+        <div class="success-icon-container">
+          <i class="pi pi-check-circle text-8xl text-green-500"></i>
+        </div>
+        <h1 class="text-4xl font-bold text-gray-800 mt-6 mb-4 font-serif">
+          {{ getStatusMessage() }}
+        </h1>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+          {{ getStatusDescription() }}
+        </p>
+      </div>
+
+      <p-card class="success-card">
+        <ng-template pTemplate="header">
+          <div class="card-header bg-gradient-to-r from-green-600 to-green-700">
+            <h2 class="text-2xl font-bold text-white font-serif">
+              <i class="pi pi-credit-card mr-2"></i>
+              Detalhes do Pagamento
+            </h2>
+          </div>
+        </ng-template>
+
+        <div class="space-y-4">
+          <div class="detail-row">
+            <div class="detail-label">
+              <i class="pi pi-hashtag"></i>
+              ID do Pagamento
+            </div>
+            <div class="detail-value">{{ paymentData.id }}</div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">
+              <i class="pi pi-money-bill"></i>
+              Valor Pago
+            </div>
+            <div class="detail-value text-green-600 font-bold text-xl">
+              {{ formatCurrency(paymentData.value) }}
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <div class="detail-label">
+              <i class="pi pi-info-circle"></i>
+              Status
+            </div>
+            <div class="detail-value">
+              <p-badge 
+                [value]="paymentData.status" 
+                severity="success">
+              </p-badge>
+            </div>
+          </div>
+
+          <div class="detail-row" *ngIf="paymentData.paymentDate">
+            <div class="detail-label">
+              <i class="pi pi-calendar"></i>
+              Data do Pagamento
+            </div>
+            <div class="detail-value">{{ formatDate(paymentData.paymentDate) }}</div>
+          </div>
+
+          <div class="detail-row" *ngIf="paymentData.method">
+            <div class="detail-label">
+              <i class="pi pi-qrcode"></i>
+              Método de Pagamento
+            </div>
+            <div class="detail-value">{{ paymentData.method }}</div>
+          </div>
+        </div>
+
+        <ng-template pTemplate="footer">
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <p-button 
+              label="Ver Minhas Reservas" 
+              icon="pi pi-calendar"
+              iconPos="left"
+              size="large"
+              (onClick)="goToBookings()"
+              styleClass="action-btn success-btn">
+            </p-button>
+            
+            <p-button 
+              label="Voltar ao Início" 
+              icon="pi pi-home"
+              iconPos="left"
+              severity="secondary"
+              size="large"
+              (onClick)="goToHome()"
+              styleClass="action-btn">
+            </p-button>
+          </div>
+        </ng-template>
+      </p-card>
+    </div>
+
+    <!-- Cancelled State -->
+    <div *ngIf="!isLoading && paymentStatus === 'cancelado'" class="animate-fade-in">
+      <div class="text-center mb-8">
+        <div class="error-icon-container">
+          <i class="pi pi-times-circle text-8xl text-red-500"></i>
+        </div>
+        <h1 class="text-4xl font-bold text-gray-800 mt-6 mb-4 font-serif">
+          {{ getStatusMessage() }}
+        </h1>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+          {{ getStatusDescription() }}
+        </p>
+      </div>
+
+      <p-card class="error-card">
+        <ng-template pTemplate="header">
+          <div class="card-header bg-gradient-to-r from-red-600 to-red-700">
+            <h2 class="text-2xl font-bold text-white font-serif">
+              <i class="pi pi-exclamation-triangle mr-2"></i>
+              Pagamento Cancelado
+            </h2>
+          </div>
+        </ng-template>
+
+        <div class="space-y-4">
+          <p-message 
+            severity="warn" 
+            text="Você cancelou o pagamento durante o processo. Sua reserva não foi confirmada.">
+          </p-message>
+
+          <div class="info-box">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">O que aconteceu?</h3>
+            <ul class="list-disc list-inside text-gray-600 space-y-1">
+              <li>Você cancelou o pagamento no checkout</li>
+              <li>Sua reserva não foi confirmada</li>
+              <li>Nenhum valor foi cobrado</li>
+              <li>Você pode tentar novamente a qualquer momento</li>
+            </ul>
+          </div>
+        </div>
+
+        <ng-template pTemplate="footer">
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <p-button 
+              label="Tentar Novamente" 
+              icon="pi pi-refresh"
+              iconPos="left"
+              size="large"
+              (onClick)="retryPayment()"
+              styleClass="action-btn retry-btn">
+            </p-button>
+            
+            <p-button 
+              label="Voltar ao Início" 
+              icon="pi pi-home"
+              iconPos="left"
+              severity="secondary"
+              size="large"
+              (onClick)="goToHome()"
+              styleClass="action-btn">
+            </p-button>
+          </div>
+        </ng-template>
+      </p-card>
+    </div>
+
+    <!-- Expired State -->
+    <div *ngIf="!isLoading && paymentStatus === 'expirado'" class="animate-fade-in">
+      <div class="text-center mb-8">
+        <div class="warning-icon-container">
+          <i class="pi pi-exclamation-triangle text-8xl text-yellow-500"></i>
+        </div>
+        <h1 class="text-4xl font-bold text-gray-800 mt-6 mb-4 font-serif">
+          {{ getStatusMessage() }}
+        </h1>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+          {{ getStatusDescription() }}
+        </p>
+      </div>
+
+      <p-card class="warning-card">
+        <ng-template pTemplate="header">
+          <div class="card-header bg-gradient-to-r from-yellow-600 to-yellow-700">
+            <h2 class="text-2xl font-bold text-white font-serif">
+              <i class="pi pi-clock mr-2"></i>
+              Pagamento Expirado
+            </h2>
+          </div>
+        </ng-template>
+
+        <div class="space-y-4">
+          <p-message 
+            severity="warn" 
+            text="O prazo para pagamento expirou. Você pode fazer uma nova reserva.">
+          </p-message>
+
+          <div class="info-box">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">O que aconteceu?</h3>
+            <ul class="list-disc list-inside text-gray-600 space-y-1">
+              <li>O prazo para pagamento expirou</li>
+              <li>Sua reserva foi cancelada automaticamente</li>
+              <li>Nenhum valor foi cobrado</li>
+              <li>Você pode fazer uma nova reserva</li>
+            </ul>
+          </div>
+        </div>
+
+        <ng-template pTemplate="footer">
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <p-button 
+              label="Fazer Nova Reserva" 
+              icon="pi pi-plus"
+              iconPos="left"
+              size="large"
+              (onClick)="retryPayment()"
+              styleClass="action-btn retry-btn">
+            </p-button>
+            
+            <p-button 
+              label="Voltar ao Início" 
+              icon="pi pi-home"
+              iconPos="left"
+              severity="secondary"
+              size="large"
+              (onClick)="goToHome()"
+              styleClass="action-btn">
+            </p-button>
+          </div>
+        </ng-template>
+      </p-card>
+    </div>
+
+    <!-- Pending State -->
+    <div *ngIf="!isLoading && paymentStatus === 'pendente'" class="animate-fade-in">
+      <div class="text-center mb-8">
+        <div class="pending-icon-container">
+          <i class="pi pi-clock text-8xl text-blue-500"></i>
+        </div>
+        <h1 class="text-4xl font-bold text-gray-800 mt-6 mb-4 font-serif">
+          {{ getStatusMessage() }}
+        </h1>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+          {{ getStatusDescription() }}
+        </p>
+      </div>
+
+      <p-card class="pending-card">
+        <ng-template pTemplate="header">
+          <div class="card-header bg-gradient-to-r from-blue-600 to-blue-700">
+            <h2 class="text-2xl font-bold text-white font-serif">
+              <i class="pi pi-hourglass mr-2"></i>
+              Pagamento em Processamento
+            </h2>
+          </div>
+        </ng-template>
+
+        <div class="space-y-4">
+          <p-message 
+            severity="info" 
+            text="Seu pagamento está sendo processado. Aguarde a confirmação.">
+          </p-message>
+
+          <div class="space-y-4" *ngIf="paymentData">
+            <div class="detail-row">
+              <div class="detail-label">
+                <i class="pi pi-hashtag"></i>
+                ID do Pagamento
+              </div>
+              <div class="detail-value">{{ paymentData.id }}</div>
+            </div>
+
+            <div class="detail-row">
+              <div class="detail-label">
+                <i class="pi pi-money-bill"></i>
+                Valor
+              </div>
+              <div class="detail-value text-blue-600 font-bold text-xl">
+                {{ formatCurrency(paymentData.value) }}
+              </div>
+            </div>
+
+            <div class="detail-row">
+              <div class="detail-label">
+                <i class="pi pi-info-circle"></i>
+                Status
+              </div>
+              <div class="detail-value">
+                <p-badge 
+                  [value]="paymentData.status" 
+                  severity="info">
+                </p-badge>
+              </div>
+            </div>
+
+            <div class="detail-row" *ngIf="paymentData.dueDate">
+              <div class="detail-label">
+                <i class="pi pi-calendar"></i>
+                Vencimento
+              </div>
+              <div class="detail-value">{{ formatDate(paymentData.dueDate) }}</div>
+            </div>
+          </div>
+
+          <div class="info-box">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">Próximos passos:</h3>
+            <ul class="list-disc list-inside text-gray-600 space-y-1">
+              <li>Aguarde a confirmação do pagamento</li>
+              <li>Você receberá um email quando confirmado</li>
+              <li>Pode verificar o status a qualquer momento</li>
+              <li>Em caso de dúvidas, entre em contato conosco</li>
+            </ul>
+          </div>
+        </div>
+
+        <ng-template pTemplate="footer">
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <p-button 
+              label="Verificar Status" 
+              icon="pi pi-refresh"
+              iconPos="left"
+              size="large"
+              (onClick)="checkPaymentStatus()"
+              styleClass="action-btn check-btn">
+            </p-button>
+            
+            <p-button 
+              label="Voltar ao Início" 
+              icon="pi pi-home"
+              iconPos="left"
+              severity="secondary"
+              size="large"
+              (onClick)="goToHome()"
+              styleClass="action-btn">
+            </p-button>
+          </div>
+        </ng-template>
+      </p-card>
+    </div>
+
+  </div>
+</div>

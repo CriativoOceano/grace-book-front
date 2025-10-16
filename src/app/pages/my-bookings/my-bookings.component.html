@@ -1,0 +1,95 @@
+<div class="my-bookings-container">
+  <div class="my-bookings-content">
+    <!-- Header -->
+    <div class="page-header">
+      <h1>Minhas Reservas</h1>
+      <p>Acompanhe suas reservas na chácara</p>
+    </div>
+
+    <!-- Card principal -->
+    <nz-card class="bookings-card">
+      <div *ngIf="isLoading" class="loading-container">
+        <nz-spin nzSize="large"></nz-spin>
+      </div>
+
+      <div *ngIf="!isLoading && reservas.length === 0" class="empty-state">
+        <nz-empty 
+          nzNotFoundImage="assets/images/empty-reservas.svg"
+          nzNotFoundContent="Nenhuma reserva encontrada">
+          <button nz-button nzType="primary" routerLink="/reservar">
+            <i nz-icon nzType="plus"></i>
+            Fazer Nova Reserva
+          </button>
+        </nz-empty>
+      </div>
+
+      <div *ngIf="!isLoading && reservas.length > 0">
+        <!-- Lista de reservas -->
+        <div class="reservas-list">
+          <div *ngFor="let reserva of reservas" class="reserva-item">
+            <nz-card [nzHoverable]="true" class="reserva-card">
+              <div class="reserva-header">
+                <div class="reserva-info">
+                  <h3>{{ reserva.codigo }}</h3>
+                  <p class="reserva-tipo">{{ reserva.tipo | titlecase }}</p>
+                </div>
+                <nz-tag [nzColor]="getStatusColor(reserva.statusReserva)">
+                  {{ getStatusText(reserva.statusReserva) }}
+                </nz-tag>
+              </div>
+
+              <div class="reserva-details">
+                <div class="detail-item">
+                  <i nz-icon nzType="calendar"></i>
+                  <span>{{ reserva.dataInicio | date:'dd/MM/yyyy' }}</span>
+                </div>
+                <div class="detail-item" *ngIf="reserva.dataFim">
+                  <i nz-icon nzType="calendar"></i>
+                  <span>até {{ reserva.dataFim | date:'dd/MM/yyyy' }}</span>
+                </div>
+                <div class="detail-item">
+                  <i nz-icon nzType="team"></i>
+                  <span>{{ reserva.quantidadePessoas }} pessoa(s)</span>
+                </div>
+                <div class="detail-item" *ngIf="reserva.quantidadeChales">
+                  <i nz-icon nzType="home"></i>
+                  <span>{{ reserva.quantidadeChales }} chalé(s)</span>
+                </div>
+              </div>
+
+              <div class="reserva-footer">
+                <div class="reserva-valor">
+                  <span class="valor-label">Valor Total:</span>
+                  <span class="valor-amount">R$ {{ reserva.valorTotal | number:'1.2-2' }}</span>
+                </div>
+                <div class="reserva-actions">
+                  <button nz-button nzType="link" nzSize="small">
+                    <i nz-icon nzType="eye"></i>
+                    Ver Detalhes
+                  </button>
+                  <button 
+                    nz-button 
+                    nzType="link" 
+                    nzSize="small"
+                    nzDanger
+                    *ngIf="reserva.statusReserva === 'PENDENTE_PAGAMENTO'">
+                    <i nz-icon nzType="close"></i>
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+            </nz-card>
+          </div>
+        </div>
+
+        <!-- Ações -->
+        <div class="page-actions">
+          <button nz-button nzType="primary" routerLink="/reservar">
+            <i nz-icon nzType="plus"></i>
+            Nova Reserva
+          </button>
+        </div>
+      </div>
+    </nz-card>
+  </div>
+</div>

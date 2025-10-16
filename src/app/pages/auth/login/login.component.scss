@@ -1,0 +1,294 @@
+// Estilos para página de login elegante e moderna
+.login-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.login-content {
+  width: 100%;
+  max-width: 450px;
+}
+
+// Header do login
+.login-header {
+  text-align: center;
+  margin-bottom: 32px;
+  color: white;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  
+  .logo-img {
+    width: 60px;
+    height: 60px;
+    margin-right: 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0;
+    font-family: 'Playfair Display', serif;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  }
+}
+
+.login-subtitle {
+  font-size: 1.125rem;
+  opacity: 0.9;
+  margin: 0;
+  font-weight: 300;
+}
+
+// Card de login
+.login-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  border: none;
+  overflow: hidden;
+  padding: 40px;
+}
+
+// Tabs personalizadas
+.login-tabs {
+  display: flex;
+  margin-bottom: 32px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.tab-button {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  background: transparent;
+  font-weight: 500;
+  font-size: 1rem;
+  color: #666;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    color: #667eea;
+  }
+  
+  &.active {
+    color: #667eea;
+    font-weight: 600;
+    border-bottom-color: #667eea;
+  }
+}
+
+// Conteúdo das tabs
+.tab-content {
+  margin-bottom: 32px;
+}
+
+// Formulários
+.form-group {
+  margin-bottom: 24px;
+  
+  label {
+    display: block;
+    font-weight: 500;
+    color: #2c3e50;
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+  }
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+  
+  &:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+  }
+  
+  &:disabled {
+    background: #f8f9fa;
+    color: #666;
+  }
+}
+
+// Botões
+.btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.3s ease;
+  text-align: center;
+  
+  &.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    
+    &:hover:not(:disabled) {
+      background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+    
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+  }
+  
+  &.btn-secondary {
+    background: #f8f9fa;
+    color: #666;
+    border: 2px solid #e9ecef;
+    
+    &:hover:not(:disabled) {
+      border-color: #667eea;
+      color: #667eea;
+    }
+    
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+  
+  &.btn-link {
+    background: transparent;
+    color: #667eea;
+    padding: 8px 0;
+    
+    &:hover {
+      color: #5a6fd8;
+      text-decoration: underline;
+    }
+  }
+  
+  &.btn-full {
+    width: 100%;
+  }
+}
+
+// Ações do formulário
+.form-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+// Footer do login
+.login-footer {
+  text-align: center;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #e9ecef;
+  
+  p {
+    margin-bottom: 8px;
+    color: #666;
+    
+    a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 500;
+      
+      &:hover {
+        color: #5a6fd8;
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+// Informações de contato
+.contact-info {
+  text-align: center;
+  margin-top: 32px;
+  color: white;
+  
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    opacity: 0.9;
+  }
+}
+
+.contact-item {
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+// Responsividade
+@media (max-width: 768px) {
+  .login-container {
+    padding: 16px;
+  }
+  
+  .login-card {
+    padding: 24px;
+  }
+  
+  .logo h1 {
+    font-size: 2rem;
+  }
+  
+  .logo .logo-img {
+    width: 50px;
+    height: 50px;
+    margin-right: 12px;
+  }
+}
+
+// Animações
+.login-card {
+  animation: slideInUp 0.6s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Melhorias visuais
+.form-input::placeholder {
+  color: #999;
+}
+
+// Estados de validação
+.form-input.ng-invalid.ng-touched {
+  border-color: #ff4d4f;
+}
+
+.form-input.ng-valid.ng-touched {
+  border-color: #52c41a;
+}

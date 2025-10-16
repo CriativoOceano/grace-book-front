@@ -1,0 +1,281 @@
+// Estilos premium para a página de payment-success
+.payment-success-container {
+  font-family: 'Inter', sans-serif;
+}
+
+// Ícones de status
+.success-icon-container,
+.error-icon-container,
+.warning-icon-container,
+.pending-icon-container {
+  @apply flex justify-center items-center;
+  
+  i {
+    @apply animate-pulse-slow;
+  }
+}
+
+// Cards principais
+.success-card,
+.error-card,
+.warning-card,
+.pending-card {
+  @apply shadow-2xl border-0 rounded-2xl overflow-hidden;
+  
+  .card-header {
+    @apply p-6 text-white;
+  }
+}
+
+// Detalhes do pagamento
+.detail-row {
+  @apply flex flex-col sm:flex-row sm:justify-between sm:items-center py-4 border-b border-gray-100 last:border-b-0;
+  
+  .detail-label {
+    @apply flex items-center gap-2 text-gray-600 font-medium mb-2 sm:mb-0;
+    
+    i {
+      @apply text-primary-600;
+    }
+  }
+  
+  .detail-value {
+    @apply text-gray-800 font-semibold;
+  }
+}
+
+// Botões de ação
+.action-btn {
+  @apply px-8 py-3 rounded-lg font-semibold text-lg transition-all duration-200;
+  
+  &.success-btn {
+    @apply bg-gradient-to-r from-green-600 to-green-700 text-white border-none;
+    
+    &:hover:not(:disabled) {
+      @apply from-green-700 to-green-800 shadow-lg -translate-y-1;
+    }
+  }
+  
+  &.retry-btn {
+    @apply bg-gradient-to-r from-primary-600 to-primary-700 text-white border-none;
+    
+    &:hover:not(:disabled) {
+      @apply from-primary-700 to-primary-800 shadow-lg -translate-y-1;
+    }
+  }
+  
+  &.check-btn {
+    @apply bg-gradient-to-r from-blue-600 to-blue-700 text-white border-none;
+    
+    &:hover:not(:disabled) {
+      @apply from-blue-700 to-blue-800 shadow-lg -translate-y-1;
+    }
+  }
+  
+  &:disabled {
+    @apply bg-gray-300 cursor-not-allowed;
+  }
+}
+
+// Caixas de informação
+.info-box {
+  @apply bg-gray-50 p-6 rounded-xl border border-gray-200;
+  
+  h3 {
+    @apply text-lg font-semibold text-gray-800 mb-2;
+  }
+  
+  ul {
+    @apply text-gray-600 space-y-1;
+  }
+}
+
+// Animações
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseSlow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.animate-pulse-slow {
+  animation: pulseSlow 2s ease-in-out infinite;
+}
+
+// Customizações PrimeNG
+:host ::ng-deep {
+  // Progress Spinner
+  .p-progress-spinner {
+    .p-progress-spinner-circle {
+      @apply stroke-primary-600;
+    }
+  }
+  
+  // Cards
+  .p-card {
+    @apply shadow-xl border-0 rounded-2xl overflow-hidden;
+    
+    .p-card-header {
+      @apply p-0;
+    }
+    
+    .p-card-body {
+      @apply p-6;
+    }
+    
+    .p-card-footer {
+      @apply p-6 pt-0;
+    }
+  }
+  
+  // Messages
+  .p-message {
+    @apply rounded-lg border-0;
+    
+    &.p-message-success {
+      @apply bg-green-50 text-green-700 border-l-4 border-green-500;
+    }
+    
+    &.p-message-error {
+      @apply bg-red-50 text-red-700 border-l-4 border-red-500;
+    }
+    
+    &.p-message-warn {
+      @apply bg-yellow-50 text-yellow-700 border-l-4 border-yellow-500;
+    }
+    
+    &.p-message-info {
+      @apply bg-blue-50 text-blue-700 border-l-4 border-blue-500;
+    }
+  }
+  
+  // Badges
+  .p-badge {
+    @apply px-3 py-1 rounded-full text-sm font-semibold;
+    
+    &.p-badge-success {
+      @apply bg-green-100 text-green-700;
+    }
+    
+    &.p-badge-danger {
+      @apply bg-red-100 text-red-700;
+    }
+    
+    &.p-badge-warning {
+      @apply bg-yellow-100 text-yellow-700;
+    }
+    
+    &.p-badge-info {
+      @apply bg-blue-100 text-blue-700;
+    }
+    
+    &.p-badge-secondary {
+      @apply bg-gray-100 text-gray-700;
+    }
+  }
+  
+  // Buttons
+  .p-button {
+    @apply border-none rounded-lg font-semibold transition-all duration-200;
+    
+    &:hover:not(:disabled) {
+      @apply shadow-lg -translate-y-1;
+    }
+    
+    &:disabled {
+      @apply bg-gray-300 cursor-not-allowed;
+    }
+  }
+  
+  // Dividers
+  .p-divider {
+    @apply border-gray-200;
+    
+    .p-divider-content {
+      @apply bg-white px-4;
+    }
+  }
+}
+
+// Responsividade
+@media (max-width: 768px) {
+  .success-icon-container,
+  .error-icon-container,
+  .warning-icon-container,
+  .pending-icon-container {
+    i {
+      @apply text-6xl;
+    }
+  }
+  
+  .detail-row {
+    @apply flex-col;
+    
+    .detail-label {
+      @apply mb-2;
+    }
+  }
+  
+  .action-btn {
+    @apply px-6 py-2 text-base;
+  }
+  
+  .info-box {
+    @apply p-4;
+  }
+}
+
+// Estados especiais
+.loading-shimmer {
+  @apply animate-pulse bg-gray-200 rounded;
+}
+
+.hover-lift {
+  @apply transition-all duration-300;
+  
+  &:hover {
+    @apply -translate-y-1 shadow-lg;
+  }
+}
+
+// Gradientes de fundo por status
+.success-card {
+  .card-header {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  }
+}
+
+.error-card {
+  .card-header {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  }
+}
+
+.warning-card {
+  .card-header {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  }
+}
+
+.pending-card {
+  .card-header {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  }
+}

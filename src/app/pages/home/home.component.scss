@@ -1,0 +1,419 @@
+// Hero Section
+.hero-section {
+  position: relative;
+  height: 70vh;
+  overflow: hidden;
+}
+
+.hero-carousel {
+  height: 100%;
+}
+
+.hero-slide {
+  position: relative;
+  height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: white;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 3rem;
+  border-radius: 1rem;
+  backdrop-filter: blur(10px);
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.hero-button {
+  font-size: 1.125rem;
+  padding: 1rem 2rem;
+}
+
+// Seções
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary-green);
+  margin-bottom: 1rem;
+}
+
+.section-subtitle {
+  font-size: 1.125rem;
+  color: var(--text-dark);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+// Features
+.feature-card {
+  height: 100%;
+}
+
+.feature-card-content {
+  height: 100%;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.feature-card-content:hover {
+  transform: translateY(-5px);
+}
+
+.feature-icon {
+  background: var(--primary-green);
+  color: white;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  font-size: 2rem;
+}
+
+.feature-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--primary-green);
+  margin-bottom: 0.5rem;
+}
+
+.feature-description {
+  color: var(--text-dark);
+  line-height: 1.6;
+}
+
+// Reservation Types
+.reservation-type-card {
+  height: 100%;
+}
+
+.reservation-card {
+  height: 100%;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.reservation-card:hover {
+  transform: translateY(-5px);
+}
+
+.reservation-icon {
+  background: var(--light-cream);
+  color: var(--primary-green);
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  font-size: 2rem;
+}
+
+.reservation-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--primary-green);
+  margin-bottom: 1rem;
+}
+
+.reservation-description {
+  color: var(--text-dark);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.reservation-price {
+  margin-bottom: 1.5rem;
+}
+
+.price-chip {
+  background: var(--primary-green);
+  color: white;
+  font-weight: 600;
+}
+
+.reservation-button {
+  width: 100%;
+}
+
+// Testimonials
+.testimonial-card {
+  height: 100%;
+}
+
+.testimonial-card-content {
+  height: 100%;
+}
+
+.testimonial-content {
+  text-align: center;
+  padding: 1rem;
+}
+
+.testimonial-stars {
+  color: #fbbf24;
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.testimonial-text {
+  font-style: italic;
+  color: var(--text-dark);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.testimonial-author {
+  color: var(--primary-green);
+  font-weight: 600;
+}
+
+// CTA Section
+.cta-section {
+  background: var(--primary-green);
+  color: white;
+}
+
+.cta-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.cta-subtitle {
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.cta-primary-button {
+  background: white;
+  color: var(--primary-green);
+  border-color: white;
+  font-size: 1.125rem;
+  padding: 1rem 2rem;
+}
+
+.cta-primary-button:hover {
+  background: var(--light-cream);
+  color: var(--primary-green);
+}
+
+.cta-secondary-button {
+  color: white;
+  border-color: white;
+  font-size: 1.125rem;
+  padding: 1rem 2rem;
+}
+
+.cta-secondary-button:hover {
+  background: white;
+  color: var(--primary-green);
+}
+
+// Seção dos Chalés
+.chales-section {
+  background: linear-gradient(135deg, #F6EBD9 0%, #FAFAFA 100%);
+}
+
+.chale-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(10, 38, 71, 0.15);
+  }
+}
+
+.chale-card-content {
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  border: 1px solid #D9D9D9 !important;
+  box-shadow: 0 8px 32px rgba(10, 38, 71, 0.1) !important;
+}
+
+.chale-carousel {
+  position: relative;
+  height: 250px;
+  overflow: hidden;
+}
+
+.chale-image-carousel {
+  height: 100%;
+  
+  .p-carousel-content {
+    height: 100%;
+  }
+  
+  .p-carousel-item {
+    height: 100%;
+  }
+}
+
+.chale-image-container {
+  height: 250px;
+  overflow: hidden;
+  position: relative;
+}
+
+.chale-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+.chale-content {
+  padding: 1.5rem;
+}
+
+.chale-title {
+  color: #0A2647;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  font-family: 'Playfair Display', serif;
+}
+
+.chale-price {
+  margin-bottom: 1.5rem;
+  
+  .price-chip {
+    background: #CBA135 !important;
+    color: #FAFAFA !important;
+    font-weight: 600 !important;
+  }
+}
+
+.amenities-section {
+  margin-bottom: 1.5rem;
+}
+
+.amenities-title {
+  color: #0A2647;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.amenities-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.amenity-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #2E8A99;
+  font-size: 0.9rem;
+  
+  i {
+    color: #CBA135;
+    font-size: 1rem;
+  }
+}
+
+.chale-actions {
+  text-align: center;
+}
+
+.chale-button {
+  background: #0A2647 !important;
+  color: #FAFAFA !important;
+  border-color: #0A2647 !important;
+  
+  &:hover:not(:disabled) {
+    background: #2E8A99 !important;
+    border-color: #2E8A99 !important;
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+  }
+  
+  .cta-title {
+    font-size: 2rem;
+  }
+  
+  .cta-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .cta-primary-button,
+  .cta-secondary-button {
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  // Chalés responsivos
+  .chale-carousel {
+    height: 200px;
+  }
+  
+  .chale-image-container {
+    height: 200px;
+  }
+  
+  .amenities-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .chale-title {
+    font-size: 1.25rem;
+  }
+}

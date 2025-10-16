@@ -1,0 +1,197 @@
+<!-- Hero Section com Carrossel -->
+<section class="hero-section">
+  <p-carousel 
+    [value]="carouselImages" 
+    [numVisible]="1" 
+    [numScroll]="1"
+    [circular]="true"
+    [autoplayInterval]="5000"
+    styleClass="hero-carousel">
+    
+    <ng-template pTemplate="item" let-item>
+      <div class="hero-slide">
+        <img [src]="item.src" [alt]="item.alt" class="hero-image">
+        <div class="hero-content">
+          <div class="hero-text">
+            <h1 class="hero-title">{{ item.title }}</h1>
+            <p class="hero-subtitle">{{ item.subtitle }}</p>
+            <p-button 
+              label="Fazer Reserva" 
+              icon="pi pi-calendar-plus"
+              [routerLink]="['/reservar']"
+              styleClass="hero-button">
+            </p-button>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-carousel>
+</section>
+
+<!-- Seção de Características -->
+<section class="features-section py-16 bg-gray-50">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-12">
+      <h2 class="section-title">Por que escolher nossa chácara?</h2>
+      <p class="section-subtitle">Descubra o que torna nosso espaço especial</p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div *ngFor="let feature of features" class="feature-card">
+        <p-card styleClass="feature-card-content">
+          <ng-template pTemplate="header">
+            <div class="feature-icon">
+              <i [class]="feature.icon"></i>
+            </div>
+          </ng-template>
+          <h3 class="feature-title">{{ feature.title }}</h3>
+          <p class="feature-description">{{ feature.description }}</p>
+        </p-card>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Seção de Tipos de Reserva -->
+<section class="reservation-types-section py-16">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-12">
+      <h2 class="section-title">Nossos Serviços</h2>
+      <p class="section-subtitle">Escolha o tipo de experiência que melhor se adapta às suas necessidades</p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div *ngFor="let tipo of tiposReserva" class="reservation-type-card">
+        <p-card styleClass="reservation-card">
+          <ng-template pTemplate="header">
+            <div class="reservation-icon">
+              <i [class]="tipo.icon"></i>
+            </div>
+          </ng-template>
+          <h3 class="reservation-title">{{ tipo.titulo }}</h3>
+          <p class="reservation-description">{{ tipo.descricao }}</p>
+          <div class="reservation-price">
+            <p-chip [label]="tipo.preco" styleClass="price-chip"></p-chip>
+          </div>
+          <p-button 
+            [label]="'Saiba Mais'" 
+            icon="pi pi-arrow-right"
+            [routerLink]="['/reservar']"
+            styleClass="p-button-outlined reservation-button">
+          </p-button>
+        </p-card>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Seção dos Chalés -->
+<section class="chales-section py-16">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-12">
+      <h2 class="section-title">Nossos Chalés</h2>
+      <p class="section-subtitle">Conforto e tranquilidade para sua estadia</p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div *ngFor="let chale of chales" class="chale-card">
+        <p-card styleClass="chale-card-content">
+          <!-- Carrossel de Imagens do Chalé -->
+          <ng-template pTemplate="header">
+            <div class="chale-carousel">
+              <p-carousel 
+                [value]="chale.imagens" 
+                [numVisible]="1" 
+                [numScroll]="1"
+                [circular]="true"
+                [autoplayInterval]="4000"
+                styleClass="chale-image-carousel">
+                <ng-template pTemplate="item" let-image>
+                  <div class="chale-image-container">
+                    <img [src]="image" [alt]="chale.nome" class="chale-image">
+                  </div>
+                </ng-template>
+              </p-carousel>
+            </div>
+          </ng-template>
+          
+          <!-- Conteúdo do Chalé -->
+          <div class="chale-content">
+            <h3 class="chale-title">{{ chale.nome }}</h3>
+            <div class="chale-price">
+              <p-chip [label]="chale.preco" styleClass="price-chip"></p-chip>
+            </div>
+            
+            <!-- Amenidades -->
+            <div class="amenities-section">
+              <h4 class="amenities-title">Amenidades</h4>
+              <div class="amenities-grid">
+                <div *ngFor="let amenidade of chale.amenidades" class="amenity-item">
+                  <i [class]="amenidade.icon"></i>
+                  <span>{{ amenidade.nome }}</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Botão de Reserva -->
+            <div class="chale-actions">
+              <p-button 
+                label="Reservar Chalé" 
+                icon="pi pi-calendar-plus"
+                [routerLink]="['/reservar']"
+                styleClass="chale-button">
+              </p-button>
+            </div>
+          </div>
+        </p-card>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Seção de Depoimentos -->
+<section class="testimonials-section py-16 bg-gray-50">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-12">
+      <h2 class="section-title">O que nossos visitantes dizem</h2>
+      <p class="section-subtitle">Depoimentos de quem já viveu momentos especiais conosco</p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div *ngFor="let depoimento of depoimentos" class="testimonial-card">
+        <p-card styleClass="testimonial-card-content">
+          <div class="testimonial-content">
+            <div class="testimonial-stars">
+              <i *ngFor="let star of [].constructor(depoimento.avaliacao)" class="pi pi-star-fill"></i>
+            </div>
+            <p class="testimonial-text">"{{ depoimento.texto }}"</p>
+            <div class="testimonial-author">
+              <strong>{{ depoimento.nome }}</strong>
+            </div>
+          </div>
+        </p-card>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Call to Action -->
+<section class="cta-section py-16 bg-primary-green">
+  <div class="container mx-auto px-4 text-center">
+    <h2 class="cta-title">Pronto para viver momentos inesquecíveis?</h2>
+    <p class="cta-subtitle">Faça sua reserva agora e garante sua experiência especial</p>
+    <div class="cta-buttons">
+      <p-button 
+        label="Fazer Reserva" 
+        icon="pi pi-calendar-plus"
+        [routerLink]="['/reservar']"
+        styleClass="cta-primary-button">
+      </p-button>
+      <p-button 
+        label="Ver Galeria" 
+        icon="pi pi-images"
+        styleClass="p-button-outlined cta-secondary-button">
+      </p-button>
+    </div>
+  </div>
+</section>

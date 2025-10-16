@@ -1,0 +1,265 @@
+// Estilos para painel administrativo
+.admin-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 40px 0;
+}
+
+.admin-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+// Header da página
+.page-header {
+  text-align: center;
+  margin-bottom: 40px;
+  color: #2c3e50;
+  
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    font-family: 'Playfair Display', serif;
+  }
+  
+  p {
+    font-size: 1.125rem;
+    color: #666;
+    margin: 0;
+  }
+}
+
+// Estatísticas
+.stats-row {
+  margin-bottom: 40px;
+}
+
+.stat-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border: none;
+  transition: transform 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-4px);
+  }
+  
+  .ant-card-body {
+    padding: 24px;
+  }
+}
+
+// Card de reservas
+.reservas-card {
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  border: none;
+  
+  .ant-card-body {
+    padding: 40px;
+  }
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+  }
+  
+  button {
+    border-radius: 8px;
+    font-weight: 500;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    
+    &:hover {
+      background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+  }
+}
+
+// Estado de loading
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+// Tabela
+.ant-table {
+  .ant-table-thead > tr > th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #2c3e50;
+    border-bottom: 2px solid #e9ecef;
+  }
+  
+  .ant-table-tbody > tr > td {
+    border-bottom: 1px solid #e9ecef;
+    padding: 16px;
+  }
+  
+  .ant-table-tbody > tr:hover > td {
+    background: #f8f9fa;
+  }
+}
+
+// Informações do cliente
+.cliente-info {
+  .cliente-nome {
+    font-weight: 500;
+    color: #2c3e50;
+    margin-bottom: 4px;
+  }
+  
+  .cliente-email {
+    font-size: 0.875rem;
+    color: #666;
+  }
+}
+
+// Informações de data
+.data-info {
+  .data-fim {
+    font-size: 0.875rem;
+    color: #666;
+    margin-top: 4px;
+  }
+}
+
+// Ações da tabela
+.table-actions {
+  display: flex;
+  gap: 8px;
+  
+  button {
+    border-radius: 6px;
+    font-size: 0.875rem;
+    
+    &.ant-btn-link {
+      color: #667eea;
+      
+      &:hover {
+        color: #5a6fd8;
+      }
+    }
+    
+    &.ant-btn-dangerous {
+      color: #ff4d4f;
+      
+      &:hover {
+        color: #ff7875;
+      }
+    }
+  }
+}
+
+// Tags
+.ant-tag {
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.75rem;
+  padding: 4px 12px;
+}
+
+// Estatísticas personalizadas
+.ant-statistic {
+  .ant-statistic-title {
+    color: #666;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+  
+  .ant-statistic-content {
+    color: #2c3e50;
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+}
+
+// Responsividade
+@media (max-width: 768px) {
+  .admin-container {
+    padding: 20px 0;
+  }
+  
+  .admin-content {
+    padding: 0 16px;
+  }
+  
+  .page-header h1 {
+    font-size: 2rem;
+  }
+  
+  .reservas-card .ant-card-body {
+    padding: 24px;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+  
+  .stats-row {
+    .ant-col {
+      margin-bottom: 16px;
+    }
+  }
+  
+  .table-actions {
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+// Animações
+.stat-card {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Melhorias visuais
+.ant-table-pagination {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.ant-pagination {
+  .ant-pagination-item {
+    border-radius: 6px;
+    
+    &.ant-pagination-item-active {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-color: #667eea;
+    }
+  }
+  
+  .ant-pagination-prev,
+  .ant-pagination-next {
+    border-radius: 6px;
+  }
+}

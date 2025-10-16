@@ -1,59 +1,95 @@
-# GraceBookFront
+# Grace Book - Sistema de Reservas da Chácara
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.6.
+Sistema completo de reservas para a chácara da igreja, desenvolvido com Angular 19 e NestJS.
 
-## Development server
+## 🚀 Funcionalidades Implementadas
 
-To start a local development server, run:
+### Frontend (Angular 19)
+- ✅ **Página Inicial Elegante** - Design inspirado nos melhores sites de hospedagem
+- ✅ **Sistema de Autenticação** - Login com senha e código de acesso
+- ✅ **Sistema de Reservas** - Processo completo em 3 passos
+- ✅ **Dashboard Administrativo** - Gestão de todas as reservas
+- ✅ **Minhas Reservas** - Acompanhamento das reservas do usuário
+- ✅ **Design Responsivo** - Funciona perfeitamente em mobile e desktop
 
+### Backend (NestJS)
+- ✅ **API REST Completa** - Endpoints para todas as funcionalidades
+- ✅ **Autenticação JWT** - Sistema seguro de login
+- ✅ **Integração com ASAAS** - Pagamentos via PIX, cartão e boleto
+- ✅ **Banco MongoDB** - Persistência de dados robusta
+- ✅ **Sistema de Emails** - Notificações automáticas
+- ✅ **Validações** - DTOs e validações completas
+
+## 🎨 Design Inspirado
+
+O design foi criado extraindo o melhor de três sites de referência:
+- **Villa do Comendador** - Elegância e sofisticação
+- **Pyreneus** - Layout limpo e moderno  
+- **Fasano** - Minimalismo e luxo
+
+## 🛠️ Tecnologias Utilizadas
+
+### Frontend
+- Angular 19
+- Ng-Zorro Ant Design
+- TypeScript
+- SCSS
+- RxJS
+
+### Backend
+- NestJS
+- MongoDB com Mongoose
+- JWT Authentication
+- ASAAS Payment Gateway
+- Nodemailer
+- Passport.js
+
+## 📱 Páginas Implementadas
+
+1. **Home** (`/home`) - Página inicial com carrossel e informações
+2. **Login** (`/login`) - Autenticação com senha ou código
+3. **Reservar** (`/reservar`) - Processo de reserva em 3 passos
+4. **Minhas Reservas** (`/minhas-reservas`) - Lista de reservas do usuário
+5. **Admin** (`/admin`) - Dashboard administrativo
+
+## 🔧 Como Executar
+
+### Backend
 ```bash
-ng serve
+cd grace-book-back
+npm install
+npm run start:dev
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
+### Frontend
 ```bash
-ng generate component component-name
+cd grace-book-front
+npm install
+npm start
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## 📋 Próximos Passos
 
-```bash
-ng generate --help
-```
+- [ ] Implementar página de galeria de fotos
+- [ ] Adicionar sistema de notificações push
+- [ ] Implementar relatórios avançados
+- [ ] Adicionar testes automatizados
+- [ ] Implementar cache Redis
+- [ ] Adicionar sistema de backup automático
 
-## Building
+## 🎯 Características do Design
 
-To build the project run:
+- **Gradientes Elegantes** - Cores suaves e profissionais
+- **Animações Suaves** - Transições e efeitos visuais
+- **Tipografia Sofisticada** - Playfair Display para títulos
+- **Cards Modernos** - Sombras e bordas arredondadas
+- **Responsividade Total** - Mobile-first approach
+- **Acessibilidade** - Contraste e navegação por teclado
 
-```bash
-ng build
-```
+## 📞 Contato
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Para dúvidas ou sugestões sobre o sistema, entre em contato através do sistema de reservas.
 
-## Running unit tests
+---
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+**Grace Book** - Um refúgio de paz e tranquilidade para suas celebrações especiais.

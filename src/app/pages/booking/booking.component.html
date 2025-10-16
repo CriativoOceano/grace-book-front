@@ -1,0 +1,510 @@
+<div class="booking-container min-h-screen py-8">
+  <div class="container mx-auto px-4 max-w-7xl">
+    
+    <!-- Header -->
+    <div class="text-center mb-8 animate-fade-in">
+      <h1 class="text-4xl font-bold text-gray-800 mb-4 font-serif">
+        Fazer Reserva
+      </h1>
+      <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+        Preencha as informações abaixo para fazer sua reserva e viver uma experiência única
+      </p>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="!formInitialized" class="flex justify-center items-center min-h-96">
+      <div class="text-center">
+        <p-progressSpinner 
+          styleClass="w-12 h-12" 
+          strokeWidth="4" 
+          fill="transparent" 
+          animationDuration="1s">
+        </p-progressSpinner>
+        <p class="mt-4 text-gray-600">Carregando formulário...</p>
+      </div>
+    </div>
+    
+    <div *ngIf="formInitialized">
+      
+      <!-- Main Content - Form and Summary Side by Side -->
+      <div [class]="hasFormData() ? 'grid grid-cols-1 lg:grid-cols-3 gap-8' : 'grid grid-cols-1 gap-8'">
+        
+        <!-- Form Content -->
+        <div [class]="hasFormData() ? 'lg:col-span-2' : 'lg:col-span-1'">
+
+        <!-- Form -->
+        <form [formGroup]="bookingForm" class="space-y-6">
+          
+
+          <!-- Step 1: Informações Básicas -->
+          <div *ngIf="currentStep === 0" class="animate-slide-up">
+            <p-card>
+              <ng-template pTemplate="header">
+                <div class="card-header">
+                  <p-steps 
+                    [model]="steps" 
+                    [activeIndex]="currentStep"
+                    [readonly]="false"
+                    styleClass="custom-steps-header">
+                  </p-steps>
+                </div>
+              </ng-template>
+
+              <div class="space-y-6">
+                <!-- Tipo de Reserva -->
+                <div class="form-group">
+                  <label class="form-label required">Escolha o tipo de reserva que melhor se adapta às suas necessidades</label>
+                  <div class="reservation-type-cards">
+                    <div 
+                      *ngFor="let tipo of tiposReserva" 
+                      class="reservation-card"
+                      [class.selected]="bookingForm.get('tipo')?.value === tipo.value"
+                      (click)="bookingForm.get('tipo')?.setValue(tipo.value)">
+                      <div class="card-title">
+                        <i [class]="getTypeIcon(tipo.value)" class="mr-2"></i>
+                        {{ tipo.label }}
+                      </div>
+                      <div class="card-description">{{ tipo.description }}</div>
+                      <div class="card-price">{{ getTypePrice(tipo.value) }}</div>
+                      
+                      <!-- Quantidade de Pessoas dentro do card (apenas para Diária) -->
+                      <div *ngIf="tipo.value === 'diaria' && bookingForm.get('tipo')?.value === 'diaria'" 
+                           class="card-quantity-section"
+                           [@slideInUp]="showQuantitiesSection">
+                        <div class="quantity-label">Quantidade de Pessoas</div>
+                        <div class="quantity-input-container">
+                          <button 
+                            type="button" 
+                            class="quantity-btn minus"
+                            (click)="decreaseQuantity('quantidadePessoas')"
+                            [disabled]="bookingForm.get('quantidadePessoas')?.value <= 1">
+                            <i class="pi pi-minus"></i>
+                          </button>
+                          <input 
+                            type="number" 
+                            formControlName="quantidadePessoas"
+                            class="quantity-input"
+                            min="1" 
+                            max="200"
+                            maxlength="3"
+                            (input)="validatePessoasInput($event)"
+                            (keydown)="preventInvalidInput($event)">
+                          <button 
+                            type="button" 
+                            class="quantity-btn plus"
+                            (click)="increaseQuantity('quantidadePessoas')"
+                            [disabled]="bookingForm.get('quantidadePessoas')?.value >= 200">
+                            <i class="pi pi-plus"></i>
+                          </button>
+                        </div>
+                        <div *ngIf="bookingForm.get('quantidadePessoas')?.invalid && bookingForm.get('quantidadePessoas')?.touched" 
+                             class="error-message">
+                          <i class="pi pi-exclamation-triangle"></i>
+                          Quantidade deve ser entre 1 e 200 pessoas
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngIf="bookingForm.get('tipo')?.invalid && bookingForm.get('tipo')?.touched" 
+                       class="error-message">
+                    <i class="pi pi-exclamation-triangle"></i>
+                    Selecione o tipo de reserva
+                  </div>
+                </div>
+
+                <!-- Período da Reserva -->
+                <div class="form-group" 
+                     *ngIf="showPeriodSection"
+                     [@slideInUp]="showPeriodSection">
+                  <label class="form-label required">Período da Reserva</label>
+                  <p-datepicker 
+                    formControlName="periodoReserva"
+                    selectionMode="range"
+                    [readonlyInput]="true"
+                    placeholder="Selecione o período"
+                    dateFormat="dd/mm/yy"
+                    [showIcon]="true"
+                    inputId="periodoReserva"
+                    styleClass="w-full"
+                    [minDate]="minDate"
+                    [maxDate]="maxDate">
+                  </p-datepicker>
+                  <div *ngIf="bookingForm.get('periodoReserva')?.invalid && bookingForm.get('periodoReserva')?.touched" 
+                       class="error-message">
+                    <i class="pi pi-exclamation-triangle"></i>
+                    Selecione o período da reserva
+                  </div>
+                </div>
+
+
+                <!-- Actions -->
+                <div class="flex justify-end">
+                  <p-button 
+                    label="Continuar" 
+                    icon="pi pi-arrow-right"
+                    iconPos="right"
+                    size="large"
+                    (onClick)="nextStep()"
+                    [disabled]="!validateStep(0)"
+                    styleClass="continue-btn">
+                  </p-button>
+                </div>
+              </div>
+            </p-card>
+          </div>
+
+          <!-- Step 2: Adicionais -->
+          <div *ngIf="currentStep === 1" class="animate-slide-up">
+            <p-card>
+              <ng-template pTemplate="header">
+                <div class="card-header">
+                  <p-steps 
+                    [model]="steps" 
+                    [activeIndex]="currentStep"
+                    [readonly]="false"
+                    styleClass="custom-steps-header">
+                  </p-steps>
+                </div>
+              </ng-template>
+
+              <div class="space-y-6">
+                
+                <!-- Quantidade de Chalés -->
+                <div class="form-group">
+                  <label class="form-label">Quantidade de Chalés Adicionais</label>
+                  <div class="quantity-input-container">
+                    <button 
+                      type="button" 
+                      class="quantity-btn minus"
+                      (click)="decreaseQuantity('quantidadeChales')"
+                      [disabled]="bookingForm.get('quantidadeChales')?.value <= 0">
+                      <i class="pi pi-minus"></i>
+                    </button>
+                    <input 
+                      type="number" 
+                      formControlName="quantidadeChales"
+                      class="quantity-input"
+                      min="0" 
+                      max="4"
+                      readonly>
+                    <button 
+                      type="button" 
+                      class="quantity-btn plus"
+                      (click)="increaseQuantity('quantidadeChales')"
+                      [disabled]="bookingForm.get('quantidadeChales')?.value >= 4">
+                      <i class="pi pi-plus"></i>
+                    </button>
+                  </div>
+                  <div class="quantity-info">
+                    <span class="text-sm text-gray-600">
+                      R$ 150,00 por chalé (máx. 4) - Disponível para qualquer tipo de reserva
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Galeria de Chalés -->
+                <div class="form-group" *ngIf="bookingForm.get('quantidadeChales')?.value > 0">
+                  <app-chalet-gallery></app-chalet-gallery>
+                </div>
+
+                <!-- Observações -->
+                <div class="form-group">
+                  <label class="form-label">Observações</label>
+                  <textarea 
+                    formControlName="observacoes"
+                    placeholder="Observações especiais (opcional)"
+                    rows="3"
+                    class="w-full p-4 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-green focus:border-transparent resize-none">
+                  </textarea>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex justify-between">
+                  <p-button 
+                    label="Voltar" 
+                    icon="pi pi-arrow-left"
+                    iconPos="left"
+                    severity="secondary"
+                    size="large"
+                    (onClick)="prevStep()">
+                  </p-button>
+                  
+                  <p-button 
+                    label="Continuar" 
+                    icon="pi pi-arrow-right"
+                    iconPos="right"
+                    size="large"
+                    (onClick)="nextStep()"
+                    styleClass="continue-btn">
+                  </p-button>
+                </div>
+              </div>
+            </p-card>
+          </div>
+
+          <!-- Step 3: Informações do Hóspede -->
+          <div *ngIf="currentStep === 2" class="animate-slide-up">
+            <p-card>
+              <ng-template pTemplate="header">
+                <div class="card-header">
+                  <p-steps 
+                    [model]="steps" 
+                    [activeIndex]="currentStep"
+                    [readonly]="false"
+                    styleClass="custom-steps-header">
+                  </p-steps>
+                </div>
+              </ng-template>
+
+              <div class="space-y-6">
+                
+                <!-- Nome e Sobrenome -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div class="form-group">
+                    <label class="form-label required">Nome</label>
+                    <p-inputText 
+                      formControlName="nomeHospede"
+                      placeholder="Digite seu nome"
+                      styleClass="w-full"
+                      inputStyleClass="w-full p-4 text-lg">
+                    </p-inputText>
+                    <div *ngIf="bookingForm.get('nomeHospede')?.invalid && bookingForm.get('nomeHospede')?.touched" 
+                         class="error-message">
+                      <i class="pi pi-exclamation-triangle"></i>
+                      Nome é obrigatório
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label required">Sobrenome</label>
+                    <p-inputText 
+                      formControlName="sobrenomeHospede"
+                      placeholder="Digite seu sobrenome"
+                      styleClass="w-full"
+                      inputStyleClass="w-full p-4 text-lg">
+                    </p-inputText>
+                    <div *ngIf="bookingForm.get('sobrenomeHospede')?.invalid && bookingForm.get('sobrenomeHospede')?.touched" 
+                         class="error-message">
+                      <i class="pi pi-exclamation-triangle"></i>
+                      Sobrenome é obrigatório
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Email e CPF -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div class="form-group">
+                    <label class="form-label required">Email</label>
+                    <p-inputText 
+                      formControlName="emailHospede"
+                      placeholder="Digite seu email"
+                      type="email"
+                      styleClass="w-full"
+                      inputStyleClass="w-full p-4 text-lg">
+                    </p-inputText>
+                    <div *ngIf="bookingForm.get('emailHospede')?.invalid && bookingForm.get('emailHospede')?.touched" 
+                         class="error-message">
+                      <i class="pi pi-exclamation-triangle"></i>
+                      Email é obrigatório
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label required">CPF</label>
+                    <p-inputText 
+                      formControlName="cpfHospede"
+                      placeholder="000.000.000-00"
+                      maxlength="14"
+                      (onInput)="formatCPF($event)"
+                      styleClass="w-full"
+                      inputStyleClass="w-full p-4 text-lg">
+                    </p-inputText>
+                    <div *ngIf="bookingForm.get('cpfHospede')?.invalid && bookingForm.get('cpfHospede')?.touched" 
+                         class="error-message">
+                      <i class="pi pi-exclamation-triangle"></i>
+                      CPF é obrigatório
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Telefone -->
+                <div class="form-group">
+                  <label class="form-label required">Telefone</label>
+                  <p-inputText 
+                    formControlName="telefoneHospede"
+                    placeholder="(11) 99999-9999"
+                    maxlength="15"
+                    (onInput)="formatPhone($event)"
+                    styleClass="w-full"
+                    inputStyleClass="w-full p-4 text-lg">
+                  </p-inputText>
+                  <div *ngIf="bookingForm.get('telefoneHospede')?.invalid && bookingForm.get('telefoneHospede')?.touched" 
+                       class="error-message">
+                    <i class="pi pi-exclamation-triangle"></i>
+                    Telefone é obrigatório
+                  </div>
+                </div>
+
+                <!-- Observações Especiais -->
+                <div class="form-group">
+                  <label class="form-label">Observações Especiais</label>
+                  <textarea 
+                    formControlName="observacoesHospede"
+                    placeholder="Alguma observação especial sobre sua estadia? (opcional)"
+                    rows="3"
+                    class="w-full p-4 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-green focus:border-transparent resize-none">
+                  </textarea>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex justify-between">
+                  <p-button 
+                    label="Voltar" 
+                    icon="pi pi-arrow-left"
+                    iconPos="left"
+                    severity="secondary"
+                    size="large"
+                    (onClick)="prevStep()">
+                  </p-button>
+                  
+                  <p-button 
+                    label="Verificar Disponibilidade" 
+                    icon="pi pi-search"
+                    iconPos="right"
+                    size="large"
+                    (onClick)="verificarDisponibilidade()"
+                    [loading]="isLoading"
+                    [disabled]="!validateStep(1)"
+                    styleClass="verify-btn">
+                  </p-button>
+                </div>
+              </div>
+            </p-card>
+          </div>
+
+          <!-- Step 4: Pagamento -->
+          <div *ngIf="currentStep === 3" class="animate-slide-up">
+            <p-card>
+              <ng-template pTemplate="header">
+                <div class="card-header">
+                  <p-steps 
+                    [model]="steps" 
+                    [activeIndex]="currentStep"
+                    [readonly]="false"
+                    styleClass="custom-steps-header">
+                  </p-steps>
+                </div>
+              </ng-template>
+
+              <div class="space-y-6">
+                
+                <!-- Modo de Pagamento -->
+                <div class="form-group">
+                  <label class="form-label required">Modo de Pagamento</label>
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div 
+                      *ngFor="let modo of modosPagamento" 
+                      class="payment-method-card"
+                      [class.selected]="bookingForm.get('modoPagamento')?.value === modo.value"
+                      (click)="bookingForm.get('modoPagamento')?.setValue(modo.value)">
+                      <div class="payment-icon">
+                        <i [class]="getPaymentIcon(modo.value)"></i>
+                      </div>
+                      <h3 class="payment-title">{{ modo.label }}</h3>
+                      <p class="payment-description">{{ modo.description }}</p>
+                    </div>
+                  </div>
+                  <div *ngIf="bookingForm.get('modoPagamento')?.invalid && bookingForm.get('modoPagamento')?.touched" 
+                       class="error-message">
+                    <i class="pi pi-exclamation-triangle"></i>
+                    Selecione a forma de pagamento
+                  </div>
+                </div>
+
+                <!-- Parcelamento (apenas para cartão) -->
+                <div class="form-group" *ngIf="bookingForm.get('modoPagamento')?.value === 'CARTAO'">
+                  <label class="form-label">Parcelamento</label>
+                  <p-dropdown 
+                    formControlName="parcelas"
+                    [options]="getParcelasOptions()"
+                    placeholder="Selecione o número de parcelas"
+                    styleClass="w-full"
+                    panelStyleClass="w-full">
+                  </p-dropdown>
+                </div>
+
+                <!-- Resumo da Reserva -->
+                <div class="resumo-reserva">
+                  <p-divider>
+                    <div class="flex items-center gap-2">
+                      <i class="pi pi-list"></i>
+                      <span class="font-semibold">Resumo da Reserva</span>
+                    </div>
+                  </p-divider>
+                  
+                  <div class="space-y-3 mt-4">
+                    <div class="flex justify-between items-center">
+                      <span class="text-gray-600">Tipo:</span>
+                      <span class="font-semibold">{{ getTipoLabel(bookingForm.get('tipo')?.value) }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                      <span class="text-gray-600">Período:</span>
+                      <span class="font-semibold">{{ getPeriodoFormatado() }}</span>
+                    </div>
+                    <div class="flex justify-between items-center" *ngIf="bookingForm.get('tipo')?.value === 'diaria'">
+                      <span class="text-gray-600">Pessoas:</span>
+                      <span class="font-semibold">{{ bookingForm.get('quantidadePessoas')?.value }}</span>
+                    </div>
+                    <div class="flex justify-between items-center" *ngIf="bookingForm.get('quantidadeChales')?.value > 0">
+                      <span class="text-gray-600">Chalés:</span>
+                      <span class="font-semibold">{{ bookingForm.get('quantidadeChales')?.value }}</span>
+                    </div>
+                    
+                    <p-divider></p-divider>
+                    
+                    <div class="flex justify-between items-center text-xl font-bold text-primary-600">
+                      <span>Valor Total:</span>
+                      <span>R$ {{ valorCalculado | number:'1.2-2' }}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex justify-between">
+                  <p-button 
+                    label="Voltar" 
+                    icon="pi pi-arrow-left"
+                    iconPos="left"
+                    severity="secondary"
+                    size="large"
+                    (onClick)="prevStep()">
+                  </p-button>
+                  
+                  <p-button 
+                    label="Finalizar Reserva" 
+                    icon="pi pi-credit-card"
+                    iconPos="right"
+                    size="large"
+                    [loading]="isProcessingPayment"
+                    (onClick)="finalizarReserva()"
+                    [disabled]="!validateStep(2)"
+                    styleClass="finalize-btn">
+                  </p-button>
+                </div>
+              </div>
+            </p-card>
+          </div>
+
+        </form>
+        </div>
+        
+        <!-- Summary Sidebar - Sticky -->
+        <div class="lg:col-span-1" *ngIf="hasFormData()">
+          <div class="sticky-summary" [@fadeInSlide]="hasFormData()">
+            <app-pricing-summary [pricing]="pricingData"></app-pricing-summary>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

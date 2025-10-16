@@ -1,0 +1,138 @@
+<div class="admin-container">
+  <div class="admin-content">
+    <!-- Header -->
+    <div class="page-header">
+      <h1>Painel Administrativo</h1>
+      <p>Gerencie as reservas da chácara</p>
+    </div>
+
+    <!-- Estatísticas -->
+    <nz-row nzGutter="24" class="stats-row">
+      <nz-col nzXs="24" nzSm="6">
+        <nz-card class="stat-card">
+          <nz-statistic 
+            nzTitle="Total de Reservas" 
+            [nzValue]="estatisticas.totalReservas"
+            nzPrefix="📅">
+          </nz-statistic>
+        </nz-card>
+      </nz-col>
+      <nz-col nzXs="24" nzSm="6">
+        <nz-card class="stat-card">
+          <nz-statistic 
+            nzTitle="Confirmadas" 
+            [nzValue]="estatisticas.reservasConfirmadas"
+            nzPrefix="✅">
+          </nz-statistic>
+        </nz-card>
+      </nz-col>
+      <nz-col nzXs="24" nzSm="6">
+        <nz-card class="stat-card">
+          <nz-statistic 
+            nzTitle="Pendentes" 
+            [nzValue]="estatisticas.reservasPendentes"
+            nzPrefix="⏳">
+          </nz-statistic>
+        </nz-card>
+      </nz-col>
+      <nz-col nzXs="24" nzSm="6">
+        <nz-card class="stat-card">
+          <nz-statistic 
+            nzTitle="Valor Total" 
+            [nzValue]="estatisticas.valorTotal"
+            nzPrefix="R$"
+            nzSuffix=""
+            [nzValueStyle]="{ color: '#28a745' }">
+          </nz-statistic>
+        </nz-card>
+      </nz-col>
+    </nz-row>
+
+    <!-- Tabela de reservas -->
+    <nz-card class="reservas-card">
+      <div class="card-header">
+        <h2>Todas as Reservas</h2>
+        <button nz-button nzType="primary" routerLink="/reservar">
+          <i nz-icon nzType="plus"></i>
+          Nova Reserva
+        </button>
+      </div>
+
+      <div *ngIf="isLoading" class="loading-container">
+        <nz-spin nzSize="large"></nz-spin>
+      </div>
+
+      <nz-table 
+        *ngIf="!isLoading"
+        [nzData]="reservas" 
+        [nzPageSize]="10"
+        [nzShowPagination]="true"
+        nzBordered>
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Cliente</th>
+            <th>Tipo</th>
+            <th>Data</th>
+            <th>Status</th>
+            <th>Valor</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let reserva of reservas">
+            <td>
+              <strong>{{ reserva.codigo }}</strong>
+            </td>
+            <td>
+              <div class="cliente-info">
+                <div class="cliente-nome">{{ reserva.usuarioNome }}</div>
+                <div class="cliente-email">{{ reserva.usuarioEmail }}</div>
+              </div>
+            </td>
+            <td>
+              <nz-tag>{{ reserva.tipo | titlecase }}</nz-tag>
+            </td>
+            <td>
+              <div class="data-info">
+                <div>{{ reserva.dataInicio | date:'dd/MM/yyyy' }}</div>
+                <div *ngIf="reserva.dataFim" class="data-fim">
+                  até {{ reserva.dataFim | date:'dd/MM/yyyy' }}
+                </div>
+              </div>
+            </td>
+            <td>
+              <nz-tag [nzColor]="getStatusColor(reserva.statusReserva)">
+                {{ getStatusText(reserva.statusReserva) }}
+              </nz-tag>
+            </td>
+            <td>
+              <strong>R$ {{ reserva.valorTotal | number:'1.2-2' }}</strong>
+            </td>
+            <td>
+              <div class="table-actions">
+                <button nz-button nzType="link" nzSize="small">
+                  <i nz-icon nzType="eye"></i>
+                  Ver
+                </button>
+                <button nz-button nzType="link" nzSize="small">
+                  <i nz-icon nzType="edit"></i>
+                  Editar
+                </button>
+                <button 
+                  nz-button 
+                  nzType="link" 
+                  nzSize="small"
+                  nzDanger
+                  *ngIf="reserva.statusReserva === 'PENDENTE_PAGAMENTO'">
+                  <i nz-icon nzType="close"></i>
+                  Cancelar
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </nz-card>
+  </div>
+</div>

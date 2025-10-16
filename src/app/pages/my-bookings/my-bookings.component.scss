@@ -1,0 +1,257 @@
+// Estilos para página de minhas reservas
+.my-bookings-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 40px 0;
+}
+
+.my-bookings-content {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+// Header da página
+.page-header {
+  text-align: center;
+  margin-bottom: 40px;
+  color: #2c3e50;
+  
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    font-family: 'Playfair Display', serif;
+  }
+  
+  p {
+    font-size: 1.125rem;
+    color: #666;
+    margin: 0;
+  }
+}
+
+// Card principal
+.bookings-card {
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  border: none;
+  
+  .ant-card-body {
+    padding: 40px;
+  }
+}
+
+// Estado de loading
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+// Estado vazio
+.empty-state {
+  text-align: center;
+  padding: 60px 0;
+}
+
+// Lista de reservas
+.reservas-list {
+  display: grid;
+  gap: 24px;
+}
+
+.reserva-item {
+  .reserva-card {
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      border-color: #667eea;
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+      transform: translateY(-2px);
+    }
+  }
+}
+
+// Header da reserva
+.reserva-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  
+  .reserva-info {
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 4px;
+    }
+    
+    .reserva-tipo {
+      color: #666;
+      font-size: 0.875rem;
+      margin: 0;
+    }
+  }
+}
+
+// Detalhes da reserva
+.reserva-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  color: #666;
+  font-size: 0.9rem;
+  
+  i {
+    margin-right: 8px;
+    color: #667eea;
+  }
+}
+
+// Footer da reserva
+.reserva-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16px;
+  border-top: 1px solid #e9ecef;
+}
+
+.reserva-valor {
+  .valor-label {
+    color: #666;
+    font-size: 0.875rem;
+    margin-right: 8px;
+  }
+  
+  .valor-amount {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #28a745;
+  }
+}
+
+.reserva-actions {
+  display: flex;
+  gap: 8px;
+  
+  button {
+    border-radius: 6px;
+    font-size: 0.875rem;
+    
+    &.ant-btn-link {
+      color: #667eea;
+      
+      &:hover {
+        color: #5a6fd8;
+      }
+    }
+    
+    &.ant-btn-dangerous {
+      color: #ff4d4f;
+      
+      &:hover {
+        color: #ff7875;
+      }
+    }
+  }
+}
+
+// Ações da página
+.page-actions {
+  text-align: center;
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid #e9ecef;
+  
+  button {
+    border-radius: 8px;
+    font-weight: 500;
+    height: 48px;
+    padding: 0 32px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    
+    &:hover {
+      background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+  }
+}
+
+// Responsividade
+@media (max-width: 768px) {
+  .my-bookings-container {
+    padding: 20px 0;
+  }
+  
+  .my-bookings-content {
+    padding: 0 16px;
+  }
+  
+  .page-header h1 {
+    font-size: 2rem;
+  }
+  
+  .bookings-card .ant-card-body {
+    padding: 24px;
+  }
+  
+  .reserva-details {
+    grid-template-columns: 1fr;
+  }
+  
+  .reserva-footer {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+  
+  .reserva-actions {
+    justify-content: center;
+  }
+}
+
+// Animações
+.reserva-item {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Tags de status
+.ant-tag {
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.75rem;
+  padding: 4px 12px;
+}
+
+// Melhorias visuais
+.ant-empty {
+  .ant-empty-description {
+    color: #666;
+    font-size: 1rem;
+  }
+}
