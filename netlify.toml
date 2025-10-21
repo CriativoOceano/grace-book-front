@@ -10,6 +10,30 @@
   NODE_VERSION = "20"
   # Configuração para resolver conflitos de dependências
   NPM_FLAGS = "--legacy-peer-deps"
+  
+  # Variáveis de ambiente para produção
+  # Firebase Configuration
+  NG_APP_FIREBASE_API_KEY = "AIzaSyCnL84TMKFVcl1Pwc36_sDM8qPfcjDl3Y4"
+  NG_APP_FIREBASE_AUTH_DOMAIN = "sede-campestre-oceano.firebaseapp.com"
+  NG_APP_FIREBASE_PROJECT_ID = "sede-campestre-oceano"
+  NG_APP_FIREBASE_STORAGE_BUCKET = "sede-campestre-oceano.firebasestorage.app"
+  NG_APP_FIREBASE_MESSAGING_SENDER_ID = "587888881295"
+  NG_APP_FIREBASE_APP_ID = "1:587888881295:web:1c29e8f89c65226a2a4afa"
+  NG_APP_FIREBASE_MEASUREMENT_ID = "G-PQ3VY53780"
+  
+  # API Configuration
+  NG_APP_API_URL = "https://your-production-api.com/api"
+  
+  # ASAAS Configuration
+  NG_APP_ASAAS_API_KEY = "your_asaas_api_key"
+  NG_APP_ASAAS_ENVIRONMENT = "production"
+  NG_APP_ASAAS_BASE_URL = "https://api.asaas.com/"
+  NG_APP_ASAAS_WEBHOOK_URL = "https://your-domain.com/webhook/asaas"
+  
+  # Payment Configuration
+  NG_APP_PAYMENT_SUCCESS_URL = "https://your-domain.com/payment-success"
+  NG_APP_PAYMENT_CANCEL_URL = "https://your-domain.com/booking"
+  NG_APP_PAYMENT_WEBHOOK_SECRET = "your_webhook_secret"
 
 # Configurações de redirecionamento para SPA
 [[redirects]]

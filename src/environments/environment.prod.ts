@@ -1,10 +1,8 @@
-import { firebaseConfigProd } from './firebase.config';
-
 export const environment = {
   production: true,
   
   // Configurações da API Backend
-  apiUrl: process.env['NG_APP_API_URL'] || 'https://your-production-api.com/api',
+  apiUrl: process.env['NG_APP_API_URL'],
   
   // Configurações do Firebase
   firebase: {
@@ -20,15 +18,15 @@ export const environment = {
   // Configurações do ASAAS
   asaas: {
     apiKey: process.env['NG_APP_ASAAS_API_KEY'],
-    environment: process.env['NG_APP_ASAAS_ENVIRONMENT'] || 'production',
-    baseUrl: process.env['NG_APP_ASAAS_BASE_URL'] || 'https://api.asaas.com/',
+    environment: process.env['NG_APP_ASAAS_ENVIRONMENT'],
+    baseUrl: process.env['NG_APP_ASAAS_BASE_URL'],
     webhookUrl: process.env['NG_APP_ASAAS_WEBHOOK_URL']
   },
   
   // Configurações de pagamento
   payment: {
-    successUrl: process.env['NG_APP_PAYMENT_SUCCESS_URL'] || 'https://your-production-domain.com/payment-success',
-    cancelUrl: process.env['NG_APP_PAYMENT_CANCEL_URL'] || 'https://your-production-domain.com/booking',
-    webhookSecret: process.env['NG_APP_PAYMENT_WEBHOOK_SECRET'] || 'your_production_webhook_secret'
+    successUrl: process.env['NG_APP_PAYMENT_SUCCESS_URL'],
+    cancelUrl: process.env['NG_APP_PAYMENT_CANCEL_URL'],
+    webhookSecret: process.env['NG_APP_PAYMENT_WEBHOOK_SECRET']
   }
 };
