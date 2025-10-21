@@ -5,13 +5,17 @@
       <h1>Painel Administrativo</h1>
       <p>Gerencie reservas e conteúdo do site</p>
     </div>
-
-    <!-- Tabs -->
-    <p-tabView scrollable="true">
-      <!-- Tab Todas as Reservas -->
-      <p-tabPanel header="Todas as Reservas">
-        <!-- Tabela de reservas -->
-        <p-card>
+    <p-tabs value="0">
+      <p-tablist>
+        <p-tab value="0">Todas as Reservas</p-tab>
+        <p-tab value="1">Conteúdo do Site</p-tab>
+        <p-tab value="2">Configurações</p-tab>
+      </p-tablist>
+      
+      <p-tabpanels>
+        <p-tabpanel value="0">
+          <!-- Tabela de reservas -->
+          <p-card>
           <p-table 
             [value]="reservas" 
             [loading]="isLoading"
@@ -19,113 +23,104 @@
             [rows]="10"
             [showCurrentPageReport]="true"
             currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} reservas"
-            styleClass="p-datatable-gridlines">
+            [tableStyle]="{ 'min-width': '60rem' }">
             
-            <ng-template pTemplate="header">
+            <ng-template #caption>
+              <div class="flex items-center justify-between">
+                <span class="text-xl font-bold">Reservas</span>
+                <!-- <p-button icon="pi pi-refresh" rounded raised /> -->
+              </div>
+            </ng-template>
+            
+            <ng-template #header>
               <tr>
                 <th>Código</th>
                 <th>Cliente</th>
                 <th>Tipo</th>
-                <th>Data</th>
+                <th>Data Início</th>
+                <th>Data Fim</th>
+                <th>Pessoas</th>
+                <th>Chalés</th>
+                <th>Valor Total</th>
                 <th>Status</th>
-                <th>Valor</th>
                 <!-- <th>Ações</th> -->
               </tr>
             </ng-template>
             
-            <ng-template pTemplate="body" let-reserva>
+                        <ng-template #body let-reserva>
+                          <tr>
+                            <td>{{ reserva.codigo || reserva.id }}</td>
+                            <td>{{ reserva.usuarioNome }}</td>
+                            <td>
+                              <p-tag [value]="getTipoText(reserva.tipo)" [severity]="getTipoSeverity(reserva.tipo)"></p-tag>
+                            </td>
+                            <td>{{ reserva.dataInicio | date:'dd/MM/yyyy' }}</td>
+                            <td>{{ reserva.dataFim | date:'dd/MM/yyyy' }}</td>
+                            <td>{{ reserva.quantidadePessoas }}</td>
+                            <td>{{ reserva.quantidadeChales }}</td>
+                            <td>{{ reserva.valorTotal | currency:'BRL':'symbol':'1.2-2':'pt' }}</td>
+                            <td>
+                              <p-tag [value]="getStatusText(reserva.statusReserva)" [severity]="getStatusSeverity(reserva.statusReserva)"></p-tag>
+                            </td>
+                            <!-- <td>
+                              <div class="flex gap-2">
+                                <p-button icon="pi pi-eye" styleClass="p-button-sm p-button-info" (click)="viewDetails(reserva)"></p-button>
+                                <p-button icon="pi pi-check" styleClass="p-button-sm p-button-success" (click)="confirmBooking(reserva)"></p-button>
+                                <p-button icon="pi pi-times" styleClass="p-button-sm p-button-danger" (click)="cancelBooking(reserva)"></p-button>
+                              </div>
+                            </td> -->
+                          </tr>
+                        </ng-template>
+            
+            <ng-template #footer>
               <tr>
-                <td><strong>{{ reserva.codigo }}</strong></td>
-                <td>
-                  <div class="cliente-info">
-                    <div class="cliente-nome">{{ reserva.usuarioNome }}</div>
-                    <div class="cliente-email">{{ reserva.usuarioEmail }}</div>
-                  </div>
-                </td>
-                <td>
-                  <p-tag [value]="reserva.tipo | titlecase" severity="info"></p-tag>
-                </td>
-                <td>
-                  <div class="data-info">
-                    <div>{{ reserva.dataInicio | date:'dd/MM/yyyy' }}</div>
-                    <div *ngIf="reserva.dataFim" class="data-fim">
-                      até {{ reserva.dataFim | date:'dd/MM/yyyy' }}
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <p-tag 
-                    [value]="getStatusText(reserva.statusReserva)" 
-                    [severity]="getStatusSeverity(reserva.statusReserva)">
-                  </p-tag>
-                </td>
-                <td><strong>{{ reserva.valorTotal | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</strong></td>
-                <!-- <td>
-                  <div class="table-actions">
-                    <p-button 
-                      icon="pi pi-eye" 
-                      [text]="true" 
-                      severity="secondary"
-                      size="small">
-                    </p-button>
-                    <p-button 
-                      icon="pi pi-pencil" 
-                      [text]="true" 
-                      severity="secondary"
-                      size="small">
-                    </p-button>
-                    <p-button 
-                      *ngIf="reserva.statusReserva === 'PENDENTE_PAGAMENTO'"
-                      icon="pi pi-times" 
-                      [text]="true" 
-                      severity="danger"
-                      size="small">
-                    </p-button>
-                  </div>
-                </td> -->
+                <td colspan="10">Total de {{ reservas ? reservas.length : 0 }} reservas encontradas.</td>
               </tr>
             </ng-template>
-
-            <ng-template pTemplate="emptymessage">
+            
+            <ng-template #emptymessage>
               <tr>
-                <td colspan="7" class="empty-state">
-                  <div class="empty-message">
-                    <i class="pi pi-calendar-times" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
-                    <h3>Nenhuma reserva encontrada</h3>
-                    <p>Ainda não existem reservas cadastradas no sistema.</p>
-                    <p>As reservas aparecerão aqui quando os clientes fizerem suas solicitações.</p>
-                  </div>
+                <td colspan="10" class="text-center">
+                  <p>As reservas aparecerão aqui quando os clientes fizerem suas solicitações.</p>
                 </td>
               </tr>
             </ng-template>
           </p-table>
         </p-card>
-      </p-tabPanel>
+        </p-tabpanel>
 
-      <!-- Tab Conteúdo do Site -->
-      <p-tabPanel header="Conteúdo do Site">
-        <app-content-manager></app-content-manager>
-      </p-tabPanel>
+        <p-tabpanel value="1">
+          <app-content-manager></app-content-manager>
+        </p-tabpanel>
 
-      <!-- Tab Configurações -->
-      <p-tabPanel header="Configurações">
-        <p-accordion>
+        <p-tabpanel value="2">
+        <p-accordion value="0">
           <!-- Configuração de Preços -->
-          <p-accordionTab header="Preços e Valores">
-            <app-config-precos></app-config-precos>
-          </p-accordionTab>
+          <p-accordion-panel value="0">
+            <p-accordion-header>Preços e Valores</p-accordion-header>
+            <p-accordion-content>
+              <app-config-precos></app-config-precos>
+            </p-accordion-content>
+          </p-accordion-panel>
 
           <!-- Configuração de Disponibilidade -->
-          <p-accordionTab header="Disponibilidade de Datas">
-            <app-config-disponibilidade></app-config-disponibilidade>
-          </p-accordionTab>
+          <p-accordion-panel value="1">
+            <p-accordion-header>Disponibilidade de Datas</p-accordion-header>
+            <p-accordion-content>
+              <app-config-disponibilidade></app-config-disponibilidade>
+            </p-accordion-content>
+          </p-accordion-panel>
 
           <!-- Configuração de Capacidade -->
-          <p-accordionTab header="Capacidade e Limites">
-            <app-config-capacidade></app-config-capacidade>
-          </p-accordionTab>
+          <p-accordion-panel value="2">
+            <p-accordion-header>Capacidade e Limites</p-accordion-header>
+            <p-accordion-content>
+              <app-config-capacidade></app-config-capacidade>
+            </p-accordion-content>
+          </p-accordion-panel>
         </p-accordion>
-      </p-tabPanel>
-    </p-tabView>
+        </p-tabpanel>
+      </p-tabpanels>
+    </p-tabs>
   </div>
 </div>

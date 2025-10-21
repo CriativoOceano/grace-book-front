@@ -41,7 +41,7 @@ import { ConteudoService, ChaletImage } from '../../core/services/conteudo.servi
             [autoplayInterval]="0"
             class="main-carousel">
             
-            <ng-template let-chalet pTemplate="item">
+            <ng-template let-chalet #item>
               <div class="chalet-card">
                 <div class="chalet-image-container">
                   <p-image 

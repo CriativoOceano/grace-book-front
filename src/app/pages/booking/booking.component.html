@@ -240,7 +240,7 @@
                       [showIndicators]="true"
                       [showNavigators]="false"
                       styleClass="chale-image-carousel">
-                      <ng-template pTemplate="item" let-chalet>
+                      <ng-template let-chalet #item>
                         <div class="chale-image-container" (click)="expandirImagem()">
                           <img [src]="chalet.src" [alt]="chalet.alt" class="chale-image">
                           <div class="image-overlay">
@@ -638,13 +638,13 @@
                 <!-- Parcelamento (apenas para cartão) -->
                 <div class="form-group" *ngIf="bookingForm.get('modoPagamento')?.value === 'CARTAO'">
                   <label class="form-label">Parcelamento</label>
-                  <p-dropdown 
+                  <p-select 
                     formControlName="parcelas"
                     [options]="getParcelasOptions()"
                     placeholder="Selecione o número de parcelas"
                     styleClass="w-full"
                     panelStyleClass="w-full">
-                  </p-dropdown>
+                  </p-select>
                 </div>
 
                 <!-- Actions -->
@@ -703,7 +703,7 @@
         [showIndicators]="true"
         [showNavigators]="true"
         styleClass="modal-image-carousel">
-        <ng-template pTemplate="item" let-chalet>
+        <ng-template let-chalet #item>
           <div class="modal-image-container">
             <img [src]="chalet.src" [alt]="chalet.alt" class="modal-image">
             <div class="modal-chalet-info">

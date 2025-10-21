@@ -47,7 +47,13 @@ export class ContentManagerComponent implements OnInit {
   async testarFirebaseConnection(): Promise<void> {
     try {
       const isConnected = await this.firebaseStorage.testConnection();
-       if(!isConnected) {
+      if (isConnected) {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Firebase',
+          detail: 'Conexão com Firebase Storage estabelecida com sucesso!'
+        });
+      } else {
         this.messageService.add({
           severity: 'warn',
           summary: 'Firebase',
@@ -55,10 +61,11 @@ export class ContentManagerComponent implements OnInit {
         });
       }
     } catch (error) {
+      console.error('Erro ao testar conexão Firebase:', error);
       this.messageService.add({
         severity: 'error',
         summary: 'Firebase',
-        detail: 'Erro ao conectar com Firebase Storage: ' + error
+        detail: 'Erro ao conectar com Firebase Storage. Verifique sua configuração.'
       });
     }
   }

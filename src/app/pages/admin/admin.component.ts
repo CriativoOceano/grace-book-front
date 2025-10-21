@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser, CurrencyPipe } from '@angular/common';
-import { TabViewModule } from 'primeng/tabview';
+import { TabsModule, Tab, TabList, TabPanel, TabPanels } from 'primeng/tabs';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
@@ -17,7 +17,11 @@ import { ReservaService, Reserva } from '../../core/services/reserva.service';
   standalone: true,
   imports: [
     CommonModule,
-    TabViewModule,
+    TabsModule,
+    Tab,
+    TabList,
+    TabPanel,
+    TabPanels,
     CardModule,
     TableModule,
     TagModule,
@@ -104,12 +108,12 @@ export class AdminComponent implements OnInit {
     }
   }
 
-  getStatusSeverity(status: string): string {
+  getStatusSeverity(status: string): 'secondary' | 'success' | 'info' | 'warn' | 'danger' | 'contrast' | null | undefined {
     switch (status) {
       case 'CONFIRMADA':
         return 'success';
       case 'PENDENTE_PAGAMENTO':
-        return 'warning';
+        return 'warn';
       case 'CANCELADA':
         return 'danger';
       case 'FINALIZADA':
@@ -119,5 +123,50 @@ export class AdminComponent implements OnInit {
       default:
         return 'secondary';
     }
+  }
+
+  getTipoText(tipo: string): string {
+    switch (tipo) {
+      case 'diaria':
+        return 'Diária';
+      case 'chale':
+        return 'Chalé';
+      case 'batismo':
+        return 'Batismo';
+      case 'completo':
+        return 'Completo';
+      default:
+        return tipo;
+    }
+  }
+
+  getTipoSeverity(tipo: string): 'secondary' | 'success' | 'info' | 'warn' | 'danger' | 'contrast' | null | undefined {
+    switch (tipo) {
+      case 'diaria':
+        return 'info';
+      case 'chale':
+        return 'success';
+      case 'batismo':
+        return 'warn';
+      case 'completo':
+        return 'secondary';
+      default:
+        return 'secondary';
+    }
+  }
+
+  viewDetails(reserva: Reserva): void {
+    console.log('Visualizar detalhes da reserva:', reserva);
+    // TODO: Implementar modal ou navegação para detalhes
+  }
+
+  confirmBooking(reserva: Reserva): void {
+    console.log('Confirmar reserva:', reserva);
+    // TODO: Implementar confirmação de reserva
+  }
+
+  cancelBooking(reserva: Reserva): void {
+    console.log('Cancelar reserva:', reserva);
+    // TODO: Implementar cancelamento de reserva
   }
 }

@@ -147,11 +147,20 @@ export class FirebaseStorageService {
     try {
       const testRef = ref(this.storage, 'test/connection.txt');
       const testBlob = new Blob(['test'], { type: 'text/plain' });
+      
+      // Upload do arquivo de teste
       await uploadBytes(testRef, testBlob);
+      
+      // Aguardar um pouco para garantir que o upload foi processado
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // Deletar o arquivo de teste
       await deleteObject(testRef);
+      
+      console.log('✅ Conexão com Firebase Storage estabelecida com sucesso');
       return true;
     } catch (error) {
-      console.error('Erro de conexão com Firebase Storage:', error);
+      console.error('❌ Erro de conexão com Firebase Storage:', error);
       return false;
     }
   }

@@ -14,63 +14,63 @@
         <p-button label="Adicionar Slide" icon="pi pi-plus" (onClick)="addHeroSlide()"></p-button>
       </div>
       
-      <p-accordion>
-        <p-accordionTab 
-          *ngFor="let slide of conteudo.heroSlides || []; let i = index">
-          <ng-template pTemplate="header">
-            <span>Slide {{ i + 1 }}: {{ slide.title }}</span>
-          </ng-template>
-          
-          <div class="slide-editor">
-            <div class="image-section">
-              <div class="current-image">
-                <img [src]="slide.image" [alt]="slide.alt" class="preview-image">
+      <p-accordion value="0">
+        <p-accordion-panel 
+          *ngFor="let slide of conteudo.heroSlides || []; let i = index"
+          [value]="i">
+          <p-accordion-header>Slide {{ i + 1 }}: {{ slide.title }}</p-accordion-header>
+          <p-accordion-content>
+            <div class="slide-editor">
+              <div class="image-section">
+                <div class="current-image">
+                  <img [src]="slide.image" [alt]="slide.alt" class="preview-image">
+                  <p-button 
+                    label="Trocar Imagem" 
+                    icon="pi pi-upload" 
+                    severity="secondary"
+                    (onClick)="uploadImage('hero', i)">
+                  </p-button>
+                </div>
+              </div>
+              
+              <div class="text-section">
+                <div class="form-group">
+                  <label>Título:</label>
+                  <input pInputText [(ngModel)]="slide.title" placeholder="Título do slide">
+                </div>
+                
+                <div class="form-group">
+                  <label>Subtítulo:</label>
+                  <textarea pInputTextarea [(ngModel)]="slide.subtitle" placeholder="Subtítulo do slide" rows="2"></textarea>
+                </div>
+                
+                <div class="form-group">
+                  <label>Texto do Botão:</label>
+                  <input pInputText [(ngModel)]="slide.cta" placeholder="Ex: Reservar Agora">
+                </div>
+                
+                <div class="form-group">
+                  <label>Texto Alternativo:</label>
+                  <input pInputText [(ngModel)]="slide.alt" placeholder="Descrição da imagem">
+                </div>
+              </div>
+              
+              <div class="actions">
                 <p-button 
-                  label="Trocar Imagem" 
-                  icon="pi pi-upload" 
-                  severity="secondary"
-                  (onClick)="uploadImage('hero', i)">
+                  label="Salvar" 
+                  icon="pi pi-save" 
+                  (onClick)="saveHeroSlide(i)">
+                </p-button>
+                <p-button 
+                  label="Remover slide" 
+                  icon="pi pi-trash" 
+                  severity="danger"
+                  (onClick)="deleteHeroSlide(i)">
                 </p-button>
               </div>
             </div>
-            
-            <div class="text-section">
-              <div class="form-group">
-                <label>Título:</label>
-                <input pInputText [(ngModel)]="slide.title" placeholder="Título do slide">
-              </div>
-              
-              <div class="form-group">
-                <label>Subtítulo:</label>
-                <textarea pInputTextarea [(ngModel)]="slide.subtitle" placeholder="Subtítulo do slide" rows="2"></textarea>
-              </div>
-              
-              <div class="form-group">
-                <label>Texto do Botão:</label>
-                <input pInputText [(ngModel)]="slide.cta" placeholder="Ex: Reservar Agora">
-              </div>
-              
-              <div class="form-group">
-                <label>Texto Alternativo:</label>
-                <input pInputText [(ngModel)]="slide.alt" placeholder="Descrição da imagem">
-              </div>
-            </div>
-            
-            <div class="actions">
-              <p-button 
-                label="Salvar" 
-                icon="pi pi-save" 
-                (onClick)="saveHeroSlide(i)">
-              </p-button>
-              <p-button 
-                label="Remover slide" 
-                icon="pi pi-trash" 
-                severity="danger"
-                (onClick)="deleteHeroSlide(i)">
-              </p-button>
-            </div>
-          </div>
-        </p-accordionTab>
+          </p-accordion-content>
+        </p-accordion-panel>
       </p-accordion>
     </p-card>
 
@@ -81,46 +81,46 @@
         <p-button label="Adicionar Imagem" icon="pi pi-plus" (onClick)="addGalleryImage()"></p-button>
       </div>
       
-      <p-accordion>
-        <p-accordionTab 
-          *ngFor="let image of conteudo.galleryImages || []; let i = index">
-          <ng-template pTemplate="header">
-            <span>Imagem {{ i + 1 }}: {{ image.title }}</span>
-          </ng-template>
-          
-          <div class="image-editor">
-            <div class="current-image">
-              <img [src]="image.thumbnail" [alt]="image.alt" class="preview-image">
-              <p-button 
-                label="Trocar Imagem" 
-                icon="pi pi-upload" 
-                severity="secondary"
-                (onClick)="uploadImage('gallery', i)">
-              </p-button>
+      <p-accordion value="0">
+        <p-accordion-panel 
+          *ngFor="let image of conteudo.galleryImages || []; let i = index"
+          [value]="i">
+          <p-accordion-header>Imagem {{ i + 1 }}: {{ image.title }}</p-accordion-header>
+          <p-accordion-content>
+            <div class="image-editor">
+              <div class="current-image">
+                <img [src]="image.thumbnail" [alt]="image.alt" class="preview-image">
+                <p-button 
+                  label="Trocar Imagem" 
+                  icon="pi pi-upload" 
+                  severity="secondary"
+                  (onClick)="uploadImage('gallery', i)">
+                </p-button>
+              </div>
+              
+              <div class="form-group">
+                <label>Título:</label>
+                <input pInputText [(ngModel)]="image.title" placeholder="Título da imagem">
+                <label>Texto Alternativo:</label>
+                <input pInputText [(ngModel)]="image.alt" placeholder="Descrição da imagem">
+              </div>
+              
+              <div class="actions">
+                <p-button 
+                  label="Salvar" 
+                  icon="pi pi-save" 
+                  (onClick)="saveGalleryImage(i)">
+                </p-button>
+                <p-button 
+                  label="Remover imagem" 
+                  icon="pi pi-trash" 
+                  severity="danger"
+                  (onClick)="deleteGalleryImage(i)">
+                </p-button>
+              </div>
             </div>
-            
-            <div class="form-group">
-              <label>Título:</label>
-              <input pInputText [(ngModel)]="image.title" placeholder="Título da imagem">
-              <label>Texto Alternativo:</label>
-              <input pInputText [(ngModel)]="image.alt" placeholder="Descrição da imagem">
-            </div>
-            
-            <div class="actions">
-              <p-button 
-                label="Salvar" 
-                icon="pi pi-save" 
-                (onClick)="saveGalleryImage(i)">
-              </p-button>
-              <p-button 
-                label="Remover imagem" 
-                icon="pi pi-trash" 
-                severity="danger"
-                (onClick)="deleteGalleryImage(i)">
-              </p-button>
-            </div>
-          </div>
-        </p-accordionTab>
+          </p-accordion-content>
+        </p-accordion-panel>
       </p-accordion>
     </p-card>
 
@@ -131,50 +131,50 @@
         <p-button label="Adicionar Imagem" icon="pi pi-plus" (onClick)="addChaletImage()"></p-button>
       </div>
       
-      <p-accordion>
-        <p-accordionTab 
-          *ngFor="let image of conteudo.chaletImages || []; let i = index">
-          <ng-template pTemplate="header">
-            <span>Chalé {{ i + 1 }}: {{ image.title }}</span>
-          </ng-template>
-          
-          <div class="image-editor">
-            <div class="current-image">
-              <img [src]="image.src" [alt]="image.alt" class="preview-image">
-              <p-button 
-                label="Trocar Imagem" 
-                icon="pi pi-upload" 
-                severity="secondary"
-                (onClick)="uploadImage('chalet', i)">
-              </p-button>
-            </div>
-            
-            <div class="form-group">
-              <label>Título:</label>
-              <input pInputText [(ngModel)]="image.title" placeholder="Título do chalé">
+      <p-accordion value="0">
+        <p-accordion-panel 
+          *ngFor="let image of conteudo.chaletImages || []; let i = index"
+          [value]="i">
+          <p-accordion-header>Chalé {{ i + 1 }}: {{ image.title }}</p-accordion-header>
+          <p-accordion-content>
+            <div class="image-editor">
+              <div class="current-image">
+                <img [src]="image.src" [alt]="image.alt" class="preview-image">
+                <p-button 
+                  label="Trocar Imagem" 
+                  icon="pi pi-upload" 
+                  severity="secondary"
+                  (onClick)="uploadImage('chalet', i)">
+                </p-button>
+              </div>
+              
+              <div class="form-group">
+                <label>Título:</label>
+                <input pInputText [(ngModel)]="image.title" placeholder="Título do chalé">
 
-              <label>Texto Alternativo:</label>
-              <input pInputText [(ngModel)]="image.alt" placeholder="Descrição da imagem">
+                <label>Texto Alternativo:</label>
+                <input pInputText [(ngModel)]="image.alt" placeholder="Descrição da imagem">
 
-              <label>Descrição:</label>
-              <textarea pInputTextarea [(ngModel)]="image.description" placeholder="Descrição do chalé" rows="3"></textarea>
+                <label>Descrição:</label>
+                <textarea pInputTextarea [(ngModel)]="image.description" placeholder="Descrição do chalé" rows="3"></textarea>
+              </div>
+              
+              <div class="actions">
+                <p-button 
+                  label="Salvar" 
+                  icon="pi pi-save" 
+                  (onClick)="saveChaletImage(i)">
+                </p-button>
+                <p-button 
+                  label="Remover" 
+                  icon="pi pi-trash" 
+                  severity="danger"
+                  (onClick)="deleteChaletImage(i)">
+                </p-button>
+              </div>
             </div>
-            
-            <div class="actions">
-              <p-button 
-                label="Salvar" 
-                icon="pi pi-save" 
-                (onClick)="saveChaletImage(i)">
-              </p-button>
-              <p-button 
-                label="Remover" 
-                icon="pi pi-trash" 
-                severity="danger"
-                (onClick)="deleteChaletImage(i)">
-              </p-button>
-            </div>
-          </div>
-        </p-accordionTab>
+          </p-accordion-content>
+        </p-accordion-panel>
       </p-accordion>
     </p-card>
 

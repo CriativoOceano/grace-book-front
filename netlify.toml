@@ -8,6 +8,8 @@
 [build.environment]
   # Versão do Node.js
   NODE_VERSION = "18"
+  # Configuração para resolver conflitos de dependências
+  NPM_FLAGS = "--legacy-peer-deps"
   
   # Variáveis de ambiente (substitua pelos seus valores reais)
   # NG_APP_API_URL = "https://seu-backend.com/api"

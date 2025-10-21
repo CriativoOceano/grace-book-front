@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CardModule } from 'primeng/card';
-import { CalendarModule } from 'primeng/calendar';
+import { DatePickerModule } from 'primeng/datepicker';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -23,7 +23,7 @@ import { DisponibilidadeBloqueio, BloquearDataDto } from '../../../../models/con
     CommonModule,
     FormsModule,
     CardModule,
-    CalendarModule,
+    DatePickerModule,
     TableModule,
     ButtonModule,
     InputTextModule,

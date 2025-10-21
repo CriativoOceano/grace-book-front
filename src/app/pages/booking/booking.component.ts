@@ -9,7 +9,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 import { DatePickerModule } from 'primeng/datepicker';
 import { DividerModule } from 'primeng/divider';
 import { MessageModule } from 'primeng/message';
@@ -48,7 +48,7 @@ import { Configuracao, FaixaPreco } from '../../models/configuracao.model';
     CardModule,
     ButtonModule,
     InputTextModule,
-    DropdownModule,
+    SelectModule,
     DatePickerModule,
     DividerModule,
     MessageModule,
