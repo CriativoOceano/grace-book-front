@@ -2,13 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ToastModule
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
@@ -23,7 +26,8 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
@@ -55,12 +59,20 @@ export class LoginComponent implements OnInit {
       
       // Mock temporário - será substituído pela integração real
       setTimeout(() => {
-        alert('Login realizado com sucesso!');
+        this.messageService.add({ 
+          severity: 'success', 
+          summary: 'Sucesso', 
+          detail: 'Login realizado com sucesso!' 
+        });
         this.router.navigate(['/minhas-reservas']);
         this.isLoading = false;
       }, 1000);
     } else {
-      alert('Preencha todos os campos obrigatórios');
+      this.messageService.add({ 
+        severity: 'error', 
+        summary: 'Erro', 
+        detail: 'Preencha todos os campos obrigatórios' 
+      });
     }
   }
 
@@ -72,7 +84,11 @@ export class LoginComponent implements OnInit {
       // Mock temporário - será substituído pela integração real
       setTimeout(() => {
         this.codigoEnviado = true;
-        alert('Código enviado para seu email!');
+        this.messageService.add({ 
+          severity: 'success', 
+          summary: 'Sucesso', 
+          detail: 'Código enviado para seu email!' 
+        });
         this.isLoading = false;
       }, 1000);
     } else {
@@ -87,12 +103,20 @@ export class LoginComponent implements OnInit {
       
       // Mock temporário - será substituído pela integração real
       setTimeout(() => {
-        alert('Login realizado com sucesso!');
+        this.messageService.add({ 
+          severity: 'success', 
+          summary: 'Sucesso', 
+          detail: 'Login realizado com sucesso!' 
+        });
         this.router.navigate(['/minhas-reservas']);
         this.isLoading = false;
       }, 1000);
     } else {
-      alert('Preencha todos os campos obrigatórios');
+      this.messageService.add({ 
+        severity: 'error', 
+        summary: 'Erro', 
+        detail: 'Preencha todos os campos obrigatórios' 
+      });
     }
   }
 

@@ -190,16 +190,12 @@ export class AuthService {
       const isExpired = currentTime >= (expirationTime - margin);
       
       if (isExpired) {
-        console.warn('🔒 Token expirado:', {
-          currentTime: new Date(currentTime).toISOString(),
-          expirationTime: new Date(expirationTime).toISOString(),
-          margin: '5 minutos'
-        });
+        // Token expirado - não logar dados sensíveis
       }
       
       return isExpired;
     } catch (error) {
-      console.error('❌ Erro ao verificar expiração do token:', error);
+      // Erro ao verificar expiração do token - não logar detalhes
       return true; // Considerar expirado em caso de erro
     }
   }

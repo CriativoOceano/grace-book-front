@@ -282,7 +282,6 @@ export class BookingComponent implements OnInit {
   // Carregar datas bloqueadas (reservas confirmadas)
   private carregarDatasBloqueadas(): void {
     this.isLoadingDatasBloqueadas = true;
-    console.log('🔄 Iniciando carregamento de datas bloqueadas...');
     
     // Limpar array antes de carregar
     this.datasBloqueadas = [];
@@ -293,17 +292,14 @@ export class BookingComponent implements OnInit {
     amanha.setDate(hoje.getDate() + 1);
     amanha.setHours(0, 0, 0, 0); // Normalizar para meia-noite
     this.datasBloqueadas.push(amanha);
-    console.log('🧪 Data de teste adicionada:', amanha.toDateString());
     
     this.bookingService.getReservasConfirmadas().subscribe({
       next: (reservas: any[]) => {
-        console.log('📅 Reservas confirmadas recebidas:', reservas);
+        // Processar reservas sem logar dados sensíveis
         
         reservas.forEach(reserva => {
           const dataInicio = new Date(reserva.dataInicio);
           const dataFim = new Date(reserva.dataFim);
-          
-          console.log(`📆 Processando reserva: ${dataInicio.toDateString()} até ${dataFim.toDateString()}`);
           
           // Adicionar todas as datas do período da reserva
           const dataAtual = new Date(dataInicio);
@@ -318,14 +314,12 @@ export class BookingComponent implements OnInit {
         });
         
         this.isLoadingDatasBloqueadas = false;
-        console.log('✅ Datas bloqueadas carregadas:', this.datasBloqueadas.length);
-        console.log('📋 Lista de datas bloqueadas:', this.datasBloqueadas.map(d => d.toDateString()));
         
         // Aplicar estilos específicos às datas de reservas confirmadas
         this.aplicarEstilosReservasConfirmadas();
       },
       error: (error) => {
-        console.error('❌ Erro ao carregar datas bloqueadas:', error);
+        // Erro ao carregar datas bloqueadas - não logar detalhes
         this.isLoadingDatasBloqueadas = false;
         // Continuar sem bloquear datas em caso de erro
       }
@@ -353,12 +347,7 @@ export class BookingComponent implements OnInit {
         this.qtdMaxPessoas = config.qtdMaxPessoas || 200;
         
         // 🔍 DEBUG: Log das configurações carregadas
-        console.log('🔍 DEBUG - Configurações carregadas:', {
-          config: config,
-          precoChale: this.precoChale,
-          precoBatismo: this.precoBatismo,
-          faixasPreco: this.faixasPreco
-        });
+        // Configurações carregadas com sucesso
         
         // Atualizar data mínima baseada na configuração
         this.atualizarDataMinima();
@@ -436,7 +425,7 @@ export class BookingComponent implements OnInit {
       );
       
       if (isBlocked) {
-        console.log(`🚫 Data bloqueada encontrada: ${dataString}`);
+        // Data bloqueada encontrada
       }
       
       return isBlocked;
@@ -560,12 +549,7 @@ export class BookingComponent implements OnInit {
     const valorChales = (formValue.quantidadeChales || 0) * this.precoChale * quantidadeDias;
     
     // 🔍 DEBUG: Log do cálculo dos chalés
-    console.log('🔍 DEBUG - Cálculo dos chalés:', {
-      quantidadeChales: formValue.quantidadeChales || 0,
-      precoChale: this.precoChale,
-      quantidadeDias: quantidadeDias,
-      valorChales: valorChales
-    });
+    // Cálculo dos chalés realizado
     
     const valorTotalCalculado = this.calculateTotalValue(formValue.tipo, formValue.quantidadePessoas, formValue.quantidadeChales, quantidadeDias);
     
@@ -581,10 +565,7 @@ export class BookingComponent implements OnInit {
     };
     
     // 🔍 DEBUG: Log do pricingData atualizado
-    console.log('🔍 DEBUG - PricingData atualizado:', {
-      pricingData: this.pricingData,
-      valorCalculado: this.valorCalculado
-    });
+    // PricingData atualizado com sucesso
     
     this.valorCalculado = this.pricingData.valorTotal;
   }
@@ -614,16 +595,7 @@ export class BookingComponent implements OnInit {
         valorTotal = (valorDiaria * dias) + valorChales;
         
         // 🔍 DEBUG: Log do cálculo total para diária
-        console.log('🔍 DEBUG - Cálculo TOTAL para diária:', {
-          tipo: tipo,
-          pessoas: pessoas,
-          chales: chales,
-          dias: dias,
-          valorDiaria: valorDiaria,
-          valorDiariaTotal: valorDiaria * dias,
-          valorChales: valorChales,
-          valorTotal: valorTotal
-        });
+        // Cálculo total para diária realizado
         break;
         
       case 'batismo':
@@ -632,15 +604,7 @@ export class BookingComponent implements OnInit {
         valorTotal = valorBatismo + valorChalesBatismo;
         
         // 🔍 DEBUG: Log do cálculo total para batismo
-        console.log('🔍 DEBUG - Cálculo TOTAL para batismo:', {
-          tipo: tipo,
-          pessoas: pessoas,
-          chales: chales,
-          dias: dias,
-          valorBatismo: valorBatismo,
-          valorChalesBatismo: valorChalesBatismo,
-          valorTotal: valorTotal
-        });
+        // Cálculo total para batismo realizado
         break;
         
       default:
@@ -825,14 +789,7 @@ export class BookingComponent implements OnInit {
     const valorChales = quantidadeChales * this.precoChale * multiplicadorDias;
     
     // 🔍 DEBUG: Log do cálculo local dos chalés
-    console.log('🔍 DEBUG - Cálculo LOCAL dos chalés:', {
-      quantidadeChales: quantidadeChales,
-      precoChale: this.precoChale,
-      multiplicadorDias: multiplicadorDias,
-      valorChales: valorChales,
-      valorBase: valorBase,
-      valorTotal: valorBase * multiplicadorDias + valorChales
-    });
+    // Cálculo local dos chalés realizado
     
     this.valorCalculado = valorBase * multiplicadorDias + valorChales;
   }
@@ -871,7 +828,7 @@ export class BookingComponent implements OnInit {
   openDatePicker(): void {
     // Por enquanto, apenas mostra uma mensagem
     // Em uma implementação real, você abriria um modal ou date picker customizado
-    console.log('Abrir seletor de data');
+    // Abrir seletor de data
   }
   
   // Validar campos do step atual
@@ -925,7 +882,7 @@ export class BookingComponent implements OnInit {
   finalizarReserva(): void {
     // Proteção contra cliques duplos
     if (this.isProcessingPayment) {
-      console.log('⚠️ Processamento já em andamento, ignorando clique duplo');
+      // Processamento já em andamento, ignorando clique duplo
       return;
     }
     
@@ -936,8 +893,8 @@ export class BookingComponent implements OnInit {
       
       const customerData = this.getCustomerData();
       
-      console.log('🚀 BookingComponent: Enviando dados para o backend');
-      console.log('📋 Dados da reserva:', customerData);
+      // Enviando dados para o backend
+      // Dados da reserva preparados
       
       const reservaData = {
         tipo: customerData.tipo,
@@ -952,7 +909,7 @@ export class BookingComponent implements OnInit {
       
       this.bookingService.createBooking(reservaData).subscribe({
         next: (response) => {
-          console.log('✅ Resposta do backend:', response);
+          // Resposta do backend recebida
           
           const hasReserva = response.reserva;
           const hasLinkPagamento = response.pagamento?.linkPagamento;
@@ -966,13 +923,13 @@ export class BookingComponent implements OnInit {
             
             this.redirectToCheckout(response);
           } else {
-            console.error('❌ Estrutura de resposta inesperada:', response);
+            // Estrutura de resposta inesperada
             this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao processar pagamento - dados incompletos' });
             this.isProcessingPayment = false;
           }
         },
         error: (error) => {
-          console.error('❌ Erro ao criar reserva:', error);
+          // Erro ao criar reserva - não logar detalhes sensíveis
           
           // Extrair mensagem específica do backend
           let errorMessage = 'Erro ao processar reserva. Tente novamente.';
@@ -1003,15 +960,15 @@ export class BookingComponent implements OnInit {
 
   // Redirecionar para o checkout do ASAAS
   private redirectToCheckout(response: any): void {
-    console.log('🔗 Redirecionando para checkout:', response);
+    // Redirecionando para checkout
     
     const checkoutUrl = response.pagamento?.linkPagamento;
     
     if (checkoutUrl) {
-      console.log('✅ Abrindo URL do checkout:', checkoutUrl);
+      // Abrindo URL do checkout
       window.location.href = checkoutUrl;
     } else {
-      console.error('❌ URL de checkout não encontrada na resposta:', response);
+      // URL de checkout não encontrada na resposta
       this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Link de pagamento não disponível' });
     }
   }

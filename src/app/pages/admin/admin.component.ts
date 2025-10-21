@@ -156,17 +156,14 @@ export class AdminComponent implements OnInit {
   }
 
   viewDetails(reserva: Reserva): void {
-    console.log('Visualizar detalhes da reserva:', reserva);
     // TODO: Implementar modal ou navegação para detalhes
   }
 
   confirmBooking(reserva: Reserva): void {
-    console.log('Confirmar reserva:', reserva);
     // TODO: Implementar confirmação de reserva
   }
 
   cancelBooking(reserva: Reserva): void {
-    console.log('Cancelar reserva:', reserva);
     // TODO: Implementar cancelamento de reserva
   }
 }

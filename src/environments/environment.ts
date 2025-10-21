@@ -9,12 +9,12 @@ export const environment = {
   // Configurações do Firebase
   firebase: firebaseConfig,
   
-  // Configurações do ASAAS (para referência - será usado pelo backend)
+  // Configurações do ASAAS (será usado pelo backend)
   asaas: {
-    apiKey: '$aact_hmlg_000MzkwODA2MWY2OGM3MWRlMDU2NWM3MzJlNzZmNGZhZGY6OjQ2N2Q5YjM5LTAwNTEtNDAwZi04NDdmLWFkZDIxMmRhYzM1MTo6JGFhY2hfZGMwYTE4NzktMTQwYy00ZDQzLWJmZWEtOTM4NDljNDRlNzZj',
-    environment: 'sandbox',
-    baseUrl: 'https://api-sandbox.asaas.com/',
-    webhookUrl: 'http://localhost:3000/webhook/asaas' // Webhook no backend
+    apiKey: process.env['NG_APP_ASAAS_API_KEY'] || '',
+    environment: process.env['NG_APP_ASAAS_ENVIRONMENT'] || 'sandbox',
+    baseUrl: process.env['NG_APP_ASAAS_BASE_URL'] || 'https://api-sandbox.asaas.com/',
+    webhookUrl: process.env['NG_APP_ASAAS_WEBHOOK_URL'] || 'http://localhost:3000/webhook/asaas'
   },
   
   // Configurações de pagamento
