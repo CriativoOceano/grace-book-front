@@ -12,7 +12,7 @@
   NPM_FLAGS = "--legacy-peer-deps"
   
   # Desabilitar scanner de secrets (configurações Firebase são públicas)
-  SECRETS_SCAN_ENABLED = false
+  SECRETS_SCAN_ENABLED = "false"
   
   # Variáveis de ambiente para produção
   # Firebase Configuration - CONFIGURAR NO NETLIFY DASHBOARD
