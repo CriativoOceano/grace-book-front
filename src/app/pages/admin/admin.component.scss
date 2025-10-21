@@ -1,7 +1,6 @@
 // Estilos para painel administrativo
 .admin-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   padding: 40px 0;
 }
 
@@ -31,26 +30,6 @@
   }
 }
 
-// Estatísticas
-.stats-row {
-  margin-bottom: 40px;
-}
-
-.stat-card {
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  border: none;
-  transition: transform 0.3s ease;
-  
-  &:hover {
-    transform: translateY(-4px);
-  }
-  
-  .ant-card-body {
-    padding: 24px;
-  }
-}
-
 // Card de reservas
 .reservas-card {
   border-radius: 16px;
@@ -63,9 +42,6 @@
 }
 
 .card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   margin-bottom: 24px;
   
   h2 {
@@ -73,19 +49,6 @@
     font-weight: 600;
     color: #2c3e50;
     margin: 0;
-  }
-  
-  button {
-    border-radius: 8px;
-    font-weight: 500;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: none;
-    
-    &:hover {
-      background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-    }
   }
 }
 
@@ -97,22 +60,27 @@
   min-height: 200px;
 }
 
-// Tabela
-.ant-table {
-  .ant-table-thead > tr > th {
+// Tabela do PrimeNG
+.p-datatable {
+  .p-datatable-thead > tr > th {
     background: #f8f9fa;
     font-weight: 600;
     color: #2c3e50;
     border-bottom: 2px solid #e9ecef;
+    padding: 16px;
   }
   
-  .ant-table-tbody > tr > td {
+  .p-datatable-tbody > tr > td {
     border-bottom: 1px solid #e9ecef;
     padding: 16px;
   }
   
-  .ant-table-tbody > tr:hover > td {
+  .p-datatable-tbody > tr:hover > td {
     background: #f8f9fa;
+  }
+  
+  .p-datatable-tbody > tr:nth-child(even) > td {
+    background: #fafafa;
   }
 }
 
@@ -144,49 +112,90 @@
   display: flex;
   gap: 8px;
   
-  button {
+  .p-button {
     border-radius: 6px;
     font-size: 0.875rem;
     
-    &.ant-btn-link {
+    &.p-button-text {
       color: #667eea;
       
       &:hover {
         color: #5a6fd8;
+        background-color: rgba(102, 126, 234, 0.1);
       }
     }
     
-    &.ant-btn-dangerous {
+    &.p-button-danger {
       color: #ff4d4f;
       
       &:hover {
         color: #ff7875;
+        background-color: rgba(255, 77, 79, 0.1);
       }
     }
   }
 }
 
-// Tags
-.ant-tag {
+// Tags do PrimeNG
+.p-tag {
   border-radius: 6px;
   font-weight: 500;
   font-size: 0.75rem;
   padding: 4px 12px;
-}
-
-// Estatísticas personalizadas
-.ant-statistic {
-  .ant-statistic-title {
-    color: #666;
-    font-size: 0.875rem;
-    font-weight: 500;
-    margin-bottom: 8px;
+  
+  // Cores personalizadas para status
+  &.p-tag-success {
+    background-color: #10b981 !important;
+    color: white !important;
   }
   
-  .ant-statistic-content {
-    color: #2c3e50;
-    font-size: 1.5rem;
+  &.p-tag-warning {
+    background-color: #f59e0b !important;
+    color: white !important;
+  }
+  
+  &.p-tag-danger {
+    background-color: #ef4444 !important;
+    color: white !important;
+  }
+  
+  &.p-tag-info {
+    background-color: #3b82f6 !important;
+    color: white !important;
+  }
+  
+  &.p-tag-secondary {
+    background-color: #6b7280 !important;
+    color: white !important;
+  }
+}
+
+// Estado vazio da tabela
+.empty-state {
+  text-align: center;
+  padding: 60px 20px !important;
+  border: none !important;
+}
+
+.empty-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  
+  h3 {
+    font-size: 1.25rem;
     font-weight: 600;
+    color: #2c3e50;
+    margin: 0 0 12px 0;
+  }
+  
+  p {
+    margin: 8px 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    max-width: 400px;
   }
 }
 
@@ -194,10 +203,6 @@
 @media (max-width: 768px) {
   .admin-container {
     padding: 20px 0;
-  }
-  
-  .admin-content {
-    padding: 0 16px;
   }
   
   .page-header h1 {
@@ -208,21 +213,145 @@
     padding: 24px;
   }
   
-  .card-header {
-    flex-direction: column;
-    gap: 16px;
-    align-items: stretch;
-  }
-  
-  .stats-row {
-    .ant-col {
-      margin-bottom: 16px;
-    }
-  }
-  
   .table-actions {
     flex-direction: column;
     gap: 4px;
+  }
+  
+  .empty-state {
+    padding: 40px 16px !important;
+  }
+  
+  .empty-message {
+    h3 {
+      font-size: 1.125rem;
+    }
+    
+    p {
+      font-size: 0.875rem;
+      max-width: 300px;
+    }
+  }
+}
+
+// Ajustes específicos para o p-tabView responsivo
+.p-tabview {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+// Container das abas com scroll horizontal
+.p-tabview .p-tabview-nav-container {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e0 #f7fafc;
+  
+  // Estilizar scrollbar no WebKit (Chrome, Safari)
+  &::-webkit-scrollbar {
+    height: 4px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #f7fafc;
+    border-radius: 2px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #cbd5e0;
+    border-radius: 2px;
+    
+    &:hover {
+      background: #a0aec0;
+    }
+  }
+}
+
+// Lista de abas
+.p-tabview .p-tabview-nav {
+  display: flex;
+  flex-wrap: nowrap;
+  min-width: max-content;
+  margin: 0;
+  padding: 0;
+}
+
+// Cada aba individual
+.p-tabview .p-tabview-nav li {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  list-style: none;
+}
+
+// Links das abas
+.p-tabview .p-tabview-nav li .p-tabview-nav-link {
+  white-space: nowrap;
+  display: block;
+  text-decoration: none;
+}
+
+// Painéis de conteúdo
+.p-tabview .p-tabview-panels {
+  overflow: visible;
+  width: 100%;
+  max-width: 100%;
+}
+
+.p-tabview .p-tabview-panel {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+// Responsividade específica para mobile
+@media (max-width: 768px) {
+  .p-tabview .p-tabview-nav li .p-tabview-nav-link {
+    padding: 0.75rem 0.875rem;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    min-width: auto;
+  }
+  
+  // Garantir que tabelas não vazem
+  .p-datatable {
+    overflow-x: auto;
+    width: 100%;
+    
+    .p-datatable-table {
+      min-width: 600px; // largura mínima para manter legibilidade
+    }
+  }
+  
+  // Garantir que cards não vazem
+  .p-card {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  // Garantir que accordions não vazem
+  .p-accordion {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+// Para telas muito pequenas (menos de 480px)
+@media (max-width: 480px) {
+  .admin-content {
+    padding: 0 12px;
+  }
+  
+  .p-tabview .p-tabview-nav li .p-tabview-nav-link {
+    padding: 0.625rem 0.75rem;
+    font-size: 0.8125rem;
+  }
+  
+  .p-datatable .p-datatable-table {
+    min-width: 500px;
   }
 }
 
@@ -243,23 +372,22 @@
 }
 
 // Melhorias visuais
-.ant-table-pagination {
+.p-paginator {
   margin-top: 24px;
   text-align: center;
-}
-
-.ant-pagination {
-  .ant-pagination-item {
+  
+  .p-paginator-page {
     border-radius: 6px;
     
-    &.ant-pagination-item-active {
+    &.p-highlight {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       border-color: #667eea;
+      color: white;
     }
   }
   
-  .ant-pagination-prev,
-  .ant-pagination-next {
+  .p-paginator-prev,
+  .p-paginator-next {
     border-radius: 6px;
   }
 }

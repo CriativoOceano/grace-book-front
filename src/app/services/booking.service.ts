@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 export interface BookingRequest {
@@ -16,6 +16,7 @@ export interface BookingRequest {
   // Dados do pagamento
   dadosPagamento: {
     modoPagamento: string;
+    tipoPagamento?: string;
     parcelas?: number;
     valorTotal: number;
   };
@@ -25,8 +26,15 @@ export interface BookingRequest {
     nome: string;
     sobrenome: string;
     email: string;
+    cpf: string;
     telefone: string;
     observacoes?: string;
+    endereco?: string;
+    numero?: string;
+    cep?: string;
+    bairro?: string;
+    cidade?: string;
+    uf?: string;
   };
 }
 
@@ -251,6 +259,24 @@ export class BookingService {
       }),
       catchError(error => {
         console.error('❌ Erro ao cotar reserva:', error);
+        return this.handleError(error);
+      })
+    );
+  }
+
+  /**
+   * Buscar reservas confirmadas para bloquear datas no calendário
+   */
+  getReservasConfirmadas(): Observable<any[]> {
+    const url = `${this.baseUrl}/reservas/confirmadas`;
+    console.log('🌐 Fazendo requisição para:', url);
+    
+    return this.http.get<any[]>(url).pipe(
+      tap(response => {
+        console.log('✅ Resposta recebida do backend:', response);
+      }),
+      catchError(error => {
+        console.error('❌ Erro na requisição:', error);
         return this.handleError(error);
       })
     );

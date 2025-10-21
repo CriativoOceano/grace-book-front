@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { DividerModule } from 'primeng/divider';
@@ -35,6 +35,12 @@ export class PricingSummaryComponent implements OnInit, OnChanges {
     isLoading: true
   };
 
+  @Input() precoChale: number = 150;
+  @Input() showFinalizeButton: boolean = false;
+  @Input() isProcessing: boolean = false;
+  @Input() canFinalize: boolean = false;
+  @Output() onFinalize = new EventEmitter<void>();
+
   ngOnInit() {
     // Componente inicializado
   }
@@ -47,8 +53,8 @@ export class PricingSummaryComponent implements OnInit, OnChanges {
 
   getTipoLabel(tipo: string): string {
     const tipos: { [key: string]: string } = {
-      'DIARIA': 'Diária Completa',
-      'BATISMO': 'Cerimônia de Batismo',
+      'diaria': 'Diária',
+      'batismo': 'Batismo',
       'CHALE': 'Hospedagem em Chalé'
     };
     return tipos[tipo] || tipo;
@@ -67,5 +73,11 @@ export class PricingSummaryComponent implements OnInit, OnChanges {
     if (pessoas <= 100) return '51-100 pessoas';
     if (pessoas <= 150) return '101-150 pessoas';
     return '151-200 pessoas';
+  }
+
+  finalizarReserva(): void {
+    if (this.canFinalize && !this.isProcessing) {
+      this.onFinalize.emit();
+    }
   }
 }

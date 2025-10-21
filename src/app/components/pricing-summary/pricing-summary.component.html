@@ -85,7 +85,7 @@
               <span *ngIf="pricing.quantidadeDias > 0" class="breakdown-days">× {{ pricing.quantidadeDias }} dia(s)</span>
             </div>
             <div class="breakdown-value">
-              R$ {{ pricing.valorDiaria | number:'1.2-2' }}
+              {{ pricing.valorDiaria | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
             </div>
           </div>
 
@@ -96,7 +96,7 @@
               <span *ngIf="pricing.quantidadeDias > 0" class="breakdown-days">× {{ pricing.quantidadeDias > 1 ? pricing.quantidadeDias + ' dias' : pricing.quantidadeDias + ' dia' }}</span>
             </div>
             <div class="breakdown-value">
-              R$ {{ pricing.valorChales | number:'1.2-2' }}
+              {{ pricing.valorChales | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
             </div>
           </div>
 
@@ -106,18 +106,18 @@
               <span class="breakdown-text">Serviço de Batismo</span>
             </div>
             <div class="breakdown-value">
-              R$ {{ pricing.valorTotal | number:'1.2-2' }}
+              {{ pricing.valorTotal | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
             </div>
           </div>
 
           <!-- Valor dos Chalés (modalidade) -->
           <div *ngIf="pricing.tipoReserva === 'CHALE'" class="breakdown-item">
             <div class="breakdown-label">
-              <span class="breakdown-text">Chalés (R$ 150,00 cada)</span>
+              <span class="breakdown-text">Chalés ({{ precoChale | currency:'BRL':'symbol':'1.2-2':'pt-BR' }} cada)</span>
               <span *ngIf="pricing.quantidadeDias > 0" class="breakdown-days">× {{ pricing.quantidadeChales }} × {{ pricing.quantidadeDias }} dia(s)</span>
             </div>
             <div class="breakdown-value">
-              R$ {{ pricing.valorTotal | number:'1.2-2' }}
+              {{ pricing.valorTotal | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
             </div>
           </div>
         </div>
@@ -131,8 +131,20 @@
               Valor Total
             </div>
             <div class="total-value">
-              R$ {{ pricing.valorTotal | number:'1.2-2' }}
+              {{ pricing.valorTotal | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
             </div>
+          </div>
+          
+          <!-- Botão Finalizar Reserva -->
+          <div *ngIf="showFinalizeButton" class="finalize-button-container">
+            <button
+              class="finalize-btn"
+              [disabled]="!canFinalize || isProcessing"
+              (click)="finalizarReserva()">
+              <i class="pi" [class.pi-spin]="isProcessing" [class.pi-spinner]="isProcessing" [class.pi-check]="!isProcessing"></i>
+              <span *ngIf="!isProcessing">Finalizar Reserva</span>
+              <span *ngIf="isProcessing">Processando...</span>
+            </button>
           </div>
         </div>
   </p-card>

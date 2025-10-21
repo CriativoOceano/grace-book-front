@@ -4,14 +4,7 @@ import { DialogModule } from 'primeng/dialog';
 import { CarouselModule } from 'primeng/carousel';
 import { ButtonModule } from 'primeng/button';
 import { ImageModule } from 'primeng/image';
-
-interface ChaletImage {
-  id: number;
-  src: string;
-  alt: string;
-  title: string;
-  description: string;
-}
+import { ConteudoService, ChaletImage } from '../../core/services/conteudo.service';
 
 @Component({
   selector: 'app-chalet-gallery',
@@ -290,40 +283,27 @@ interface ChaletImage {
 export class ChaletGalleryComponent implements OnInit {
   @Input() displayGallery = false;
   currentIndex = 0;
+  chaletImages: ChaletImage[] = [];
+  isLoading = true;
 
-  chaletImages: ChaletImage[] = [
-    {
-      id: 1,
-      src: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&h=600&fit=crop',
-      alt: 'Chalé 1 - Vista externa',
-      title: 'Chalé Familiar',
-      description: 'Chalé aconchegante ideal para famílias, com vista para o jardim e todas as comodidades necessárias para uma estadia confortável.'
-    },
-    {
-      id: 2,
-      src: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&h=600&fit=crop',
-      alt: 'Chalé 2 - Interior',
-      title: 'Chalé Executivo',
-      description: 'Chalé moderno e elegante, perfeito para executivos que buscam conforto e praticidade durante sua estadia.'
-    },
-    {
-      id: 3,
-      src: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=800&h=600&fit=crop',
-      alt: 'Chalé 3 - Vista panorâmica',
-      title: 'Chalé Premium',
-      description: 'Nosso chalé mais luxuoso, com vista panorâmica e todas as amenidades premium para uma experiência única.'
-    },
-    {
-      id: 4,
-      src: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=600&fit=crop',
-      alt: 'Chalé 4 - Área externa',
-      title: 'Chalé Rústico',
-      description: 'Chalé com estilo rústico e charmoso, ideal para quem busca uma experiência mais próxima da natureza.'
-    }
-  ];
+  constructor(private conteudoService: ConteudoService) {}
 
   ngOnInit() {
-    // Componente inicializado
+    this.carregarChaletImages();
+  }
+
+  carregarChaletImages(): void {
+    this.conteudoService.conteudo$.subscribe({
+      next: (conteudo) => {
+        this.chaletImages = conteudo.chaletImages || [];
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Erro ao carregar imagens dos chalés:', error);
+        this.chaletImages = this.conteudoService.getChaletImages();
+        this.isLoading = false;
+      }
+    });
   }
 
   showGallery() {

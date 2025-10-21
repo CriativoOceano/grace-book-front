@@ -23,6 +23,33 @@ body {
   line-height: 1.6;
   color: #0A2647;
   background-color: #FAFAFA;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+// Container principal para centralizar todo o conteúdo
+.main-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  
+  @media (min-width: 768px) {
+    padding: 0 2rem;
+  }
+  
+  @media (min-width: 1024px) {
+    padding: 0 3rem;
+  }
+  
+  @media (min-width: 1440px) {
+    padding: 0 4rem;
+  }
 }
 
 // Variáveis CSS para paleta oficial Oceano da Graça
@@ -43,34 +70,39 @@ body {
 
 // Tipografia premium
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Playfair Display', serif;
   font-weight: 600;
   color: var(--azul-abissal);
 }
 
-// Scrollbar personalizada
+// Scrollbar personalizada - mais fina e quase invisível
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 4px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--areia-sereno);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--azul-abissal);
-  border-radius: 4px;
+  background: rgba(203, 161, 53, 0.3);
+  border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--turquesa-graca);
+  background: rgba(203, 161, 53, 0.6);
+}
+
+// Para Firefox
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(203, 161, 53, 0.3) transparent;
 }
 
 
 
 .p-card {
   .p-steps-item-active .p-steps-item-label {
-    color: var(--branco-perola) !important;
+    color: var(--dourado-presenca) !important;
     font-weight: 800 !important;
   }
 
@@ -81,15 +113,21 @@ h1, h2, h3, h4, h5, h6 {
   .p-steps-item-number {
     color: var(--azul-abissal) !important;
   }
+  
+  .p-steps-item-active .p-steps-item-number {
+    background-color: var(--dourado-presenca) !important;
+    color: var(--azul-abissal) !important;
+    border-color: var(--dourado-presenca) !important;
+  }
 }
 
 .p-datepicker-day-selected-range {
-  background: var(--turquesa-graca) !important;
+  background: var(--dourado-presenca) !important;
   color: var(--branco-perola) !important;
 }
 
 .p-datepicker-day-selected {
-  background: var(--dourado-presenca) !important;
+  background: var(--azul-abissal) !important;
   color: var(--branco-perola) !important;
 }
 
@@ -147,12 +185,12 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--branco-perola);
     border: 2px solid var(--dourado-presenca);
     
-    &:hover:not(:disabled) {
-      background: var(--dourado-hover);
-      border-color: var(--dourado-hover);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(203, 161, 53, 0.3);
-    }
+    // &:hover:not(:disabled) {
+    //   background: var(--dourado-hover);
+    //   border-color: var(--dourado-hover);
+    //   transform: translateY(-2px);
+    //   box-shadow: 0 8px 25px rgba(203, 161, 53, 0.3);
+    // }
     
     &:active:not(:disabled) {
       transform: translateY(0);
@@ -403,12 +441,12 @@ h1, h2, h3, h4, h5, h6 {
     // Step ativo
     &.ant-steps-item-active {
       .ant-steps-item-icon {
-        background: var(--primary-green) !important;
-        border-color: var(--primary-green) !important;
-        color: white !important;
+        background: var(--dourado-presenca) !important;
+        border-color: var(--dourado-presenca) !important;
+        color: var(--azul-abissal) !important;
         
         .ant-steps-icon {
-          color: white !important;
+          color: var(--azul-abissal) !important;
         }
       }
     }
@@ -456,19 +494,19 @@ h1, h2, h3, h4, h5, h6 {
       color: #6b5b47 !important;
     }
     
-    // Step ativo - título em verde
+    // Step ativo - título em amarelo
     &.ant-steps-item-active {
       .ant-steps-item-title {
-        color: var(--primary-green) !important;
+        color: var(--dourado-presenca) !important;
         font-weight: 600 !important;
         
         &::after {
-          background: var(--primary-green) !important;
+          background: var(--dourado-presenca) !important;
         }
       }
       
       .ant-steps-item-description {
-        color: var(--primary-green) !important;
+        color: var(--dourado-presenca) !important;
       }
     }
     
@@ -536,11 +574,6 @@ input[type="number"] {
     font-weight: 400;
   }
   
-  &:hover {
-    border-color: var(--light-green);
-    box-shadow: 0 4px 12px rgba(139, 124, 90, 0.15);
-  }
-  
   &:focus {
     outline: none;
     border-color: var(--primary-green);
@@ -587,11 +620,6 @@ textarea {
   &::placeholder {
     color: #9ca3af;
     font-weight: 400;
-  }
-  
-  &:hover {
-    border-color: var(--light-green);
-    box-shadow: 0 4px 12px rgba(139, 124, 90, 0.15);
   }
   
   &:focus {
@@ -1424,19 +1452,53 @@ label {
     cursor: not-allowed !important;
   }
   
-  .p-datepicker-calendar td.p-datepicker-today span {
-    background-color: var(--primary-green) !important;
-    color: white !important;
-  }
-  
   .p-datepicker-calendar td.p-datepicker-selected span {
     background-color: var(--secondary-green) !important;
     color: white !important;
   }
   
   .p-datepicker-calendar td:hover span {
-    background-color: var(--light-cream) !important;
-    color: var(--primary-green) !important;
+    background-color: var(--azul-abissal) !important;
+    color: var(--branco-perola) !important;
   }
 }
 
+.p-dialog {
+  border: none !important;
+}
+
+// Estilos para datas bloqueadas no calendário
+.p-datepicker-calendar td .p-datepicker-day.p-disabled {
+  // Estilo padrão para datas passadas (cinza)
+  background-color: #e5e7eb !important;
+  color: #9ca3af !important;
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+}
+
+// Estilos específicos para datas de reservas confirmadas (vermelho)
+.p-datepicker-calendar td .p-datepicker-day.p-disabled.reserva-confirmada {
+  background-color: #dc2626 !important;
+  color: #ffffff !important;
+  opacity: 0.7 !important;
+  cursor: not-allowed !important;
+  position: relative;
+  border-radius: 50% !important;
+  
+  &::after {
+    content: '✕';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 12px;
+    font-weight: 900;
+  }
+}
+
+// Hover para datas de reservas confirmadas
+.p-datepicker-calendar td .p-datepicker-day.p-disabled.reserva-confirmada:hover {
+  background-color: #dc2626 !important;
+  color: #ffffff !important;
+  opacity: 0.8 !important;
+}

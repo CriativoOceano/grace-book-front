@@ -81,6 +81,7 @@ export class PaymentService {
       // Dados do pagamento
       dadosPagamento: {
         modoPagamento: customerData.modoPagamento || 'PIX',
+        tipoPagamento: (customerData.parcelas && customerData.parcelas > 1) ? 'PARCELADO' : 'AVISTA',
         parcelas: customerData.parcelas || 1,
         valorTotal: amount
       }

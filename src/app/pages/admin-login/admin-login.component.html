@@ -1,0 +1,50 @@
+<div class="admin-login-container">
+  <p-toast></p-toast>
+  
+  <div class="login-card">
+    <p-card>
+      <ng-template pTemplate="header">
+        <div class="login-header">
+          <h2>Acesso Administrativo</h2>
+          <p>Digite o código para acessar no painel administrativo</p>
+        </div>
+      </ng-template>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+        <div class="form-group">
+          <label for="codigo">Código de Acesso</label>
+          <input 
+            id="codigo"
+            type="password" 
+            pInputText 
+            formControlName="codigo"
+            placeholder="Digite o código"
+            [disabled]="isLoading"
+            class="w-full"
+          />
+          @if (loginForm.get('codigo')?.invalid && loginForm.get('codigo')?.touched) {
+            <div class="error-message">
+              <small>O código deve ter pelo menos 3 caracteres</small>
+            </div>
+          }
+        </div>
+
+        <div class="form-group">
+          <p-button 
+            type="submit" 
+            label="Entrar" 
+            [loading]="isLoading"
+            [disabled]="loginForm.invalid"
+            class="enter-button w-full"
+          ></p-button>
+        </div>
+
+        @if (errorMessage) {
+          <div class="error-message">
+            <p-message severity="error" [text]="errorMessage"></p-message>
+          </div>
+        }
+      </form>
+    </p-card>
+  </div>
+</div>

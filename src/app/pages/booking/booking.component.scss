@@ -13,11 +13,6 @@
   background: transparent;
 }
 
-.booking-container p {
-  color: #0A2647 !important;
-  background: transparent;
-}
-
 // Fundo com paleta oficial Oceano da Graça
 .booking-container {
   background: #FAFAFA;
@@ -60,7 +55,6 @@
   background: #FAFAFA;
   color: #0A2647;
   text-align: center;
-  border: 2px solid #D9D9D9;
   box-shadow: 0 2px 8px rgba(10, 38, 71, 0.1);
   
   &:hover {
@@ -331,6 +325,371 @@ textarea,
   }
 }
 
+// Seção dos Chalés na página de reserva - Layout simplificado
+.chale-carousel {
+  position: relative;
+  height: 250px;
+  overflow: hidden;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.chale-image-carousel {
+  height: 100%;
+  
+  .p-carousel-content {
+    height: 100%;
+  }
+  
+  .p-carousel-item {
+    height: 100%;
+  }
+}
+
+.chale-image-container {
+  height: 250px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+}
+
+.chale-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  
+  i {
+    color: white;
+    font-size: 2rem;
+  }
+}
+
+.chale-image-container:hover .image-overlay {
+  opacity: 1;
+}
+
+// Informações do chalé no overlay
+.chale-info-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+  padding: 1.5rem;
+  color: #FAFAFA;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.chale-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #FAFAFA;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.chale-description {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: #FAFAFA !important;
+  margin: 0;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.chale-image-container:hover .chale-info-overlay {
+  opacity: 1;
+}
+
+// Mensagem quando não há imagens
+.no-images-message {
+  text-align: center;
+  padding: 3rem 1rem;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 2px dashed #dee2e6;
+  
+  i {
+    display: block;
+    margin-bottom: 1rem;
+  }
+}
+
+// Modal para imagem expandida com carrossel
+.image-dialog {
+  .p-dialog-content {
+    padding: 0 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000;
+    height: calc(100vh - 60px); // Subtrai altura do header
+    overflow: hidden;
+  }
+  
+  .p-dialog {
+    margin: 0 !important;
+    max-height: 100vh !important;
+    height: 100vh !important;
+  }
+  
+  .p-dialog-header {
+    background: #000;
+    color: white;
+    border-bottom: 1px solid #333;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.modal-carousel-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.modal-image-carousel {
+  width: 100%;
+  height: 100%;
+  
+  .p-carousel-content {
+    height: 100%;
+    overflow: hidden;
+  }
+  
+  .p-carousel-item {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  
+  .p-carousel-indicators {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 8px 16px;
+    
+    .p-carousel-indicator {
+      background: rgba(255, 255, 255, 0.5);
+      
+      &.p-highlight {
+        background: #CBA135;
+      }
+    }
+  }
+  
+  .p-carousel-prev,
+  .p-carousel-next {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.1);
+    }
+  }
+}
+
+.modal-image-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+}
+
+.modal-image {
+  width: 100%;
+  height: 75%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.modal-chalet-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+  padding: 1rem 1.5rem;
+  color: #FAFAFA;
+  text-align: center;
+  max-height: 25%;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.modal-chalet-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+  color: #FAFAFA;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.modal-chalet-description {
+  font-size: 0.8rem;
+  line-height: 1.2;
+  color: #FAFAFA;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+// Responsividade para diferentes dispositivos
+@media (max-width: 768px) {
+  .modal-image {
+    height: 70%;
+  }
+  
+  .modal-chalet-info {
+    padding: 0.5rem 0.75rem;
+    max-height: 30%;
+  }
+  
+  .modal-chalet-title {
+    font-size: 0.9rem;
+    margin-bottom: 0.15rem;
+  }
+  
+  .modal-chalet-description {
+    font-size: 0.7rem;
+    line-height: 1.1;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-image {
+    height: 65%;
+  }
+  
+  .modal-chalet-info {
+    padding: 0.4rem 0.6rem;
+    max-height: 35%;
+  }
+  
+  .modal-chalet-title {
+    font-size: 0.8rem;
+    margin-bottom: 0.1rem;
+  }
+  
+  .modal-chalet-description {
+    font-size: 0.65rem;
+    line-height: 1.0;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+  }
+}
+
+@media (min-width: 1024px) {
+  .modal-image {
+    height: 80%;
+  }
+  
+  .modal-chalet-info {
+    padding: 1.2rem 1.8rem;
+    max-height: 20%;
+  }
+  
+  .modal-chalet-title {
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+  }
+  
+  .modal-chalet-description {
+    font-size: 0.85rem;
+    line-height: 1.3;
+    -webkit-line-clamp: 2;
+  line-clamp: 2;
+  }
+}
+
+.amenities-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.amenity-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #0A2647;
+  font-size: 0.9rem;
+  padding: 0.75rem;
+  background: #f6ebd92d;
+  border-radius: 8px;
+  border: 1px solid #D9D9D9;
+  
+  i {
+    color: #CBA135;
+    font-size: 1.1rem;
+  }
+}
+
+.chale-price-display {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  
+  .price-chip {
+    background: #CBA135 !important;
+    color: #FAFAFA !important;
+    font-weight: 600 !important;
+    font-size: 1.1rem !important;
+  }
+  
+  .price-description {
+    color: #2E8A99;
+    font-size: 0.9rem;
+    font-style: italic;
+  }
+}
+
 // Layout responsivo para mobile
 @media (max-width: 1024px) {
   .sticky-summary {
@@ -361,6 +720,31 @@ textarea,
     .card-price {
       font-size: 1rem;
     }
+  }
+  
+  // Chalés responsivos
+  .chale-carousel {
+    height: 200px;
+  }
+  
+  .chale-image-container {
+    height: 200px;
+  }
+  
+  .amenities-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+  
+  .amenity-item {
+    padding: 0.5rem;
+    font-size: 0.85rem;
+  }
+  
+  .chale-price-display {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
   }
 }
 
@@ -536,10 +920,7 @@ textarea,
   gap: 1rem;
   margin-bottom: 2rem;
   padding: 2rem;
-  background: #FAFAFA;
   align-items: center;
-  border-radius: 12px;
-  border: 1px solid #D9D9D9;
 }
 
 @media (min-width: 768px) {
@@ -710,38 +1091,6 @@ textarea,
   transition: all 0.2s ease !important;
 }
 
-// Hover mais específico para garantir que funcione
-.p-datepicker .p-datepicker-calendar td:not(.p-datepicker-selected):not(.p-datepicker-day-selected-range):not(.p-datepicker-day-selected-range-end):hover {
-  background-color: #CBA135 !important;
-  color: #FAFAFA !important;
-  border-radius: 50% !important;
-  transition: all 0.2s ease !important;
-}
-
-// Hover em células específicas do PrimeNG
-.p-datepicker .p-datepicker-calendar .p-datepicker-day:hover {
-  background-color: #CBA135 !important;
-  color: #FAFAFA !important;
-  border-radius: 50% !important;
-  transition: all 0.2s ease !important;
-}
-
-// Hover adicional para garantir que funcione
-.p-datepicker .p-datepicker-calendar td.p-datepicker-day:hover {
-  background-color: #CBA135 !important;
-  color: #FAFAFA !important;
-  border-radius: 50% !important;
-  transition: all 0.2s ease !important;
-}
-
-// Hover em spans dentro das células
-.p-datepicker .p-datepicker-calendar td:hover span {
-  background-color: #CBA135 !important;
-  color: #FAFAFA !important;
-  border-radius: 50% !important;
-  transition: all 0.2s ease !important;
-}
-
 // Dias do range selecionado
 .p-datepicker .p-datepicker-calendar .p-datepicker-day-selected-range {
   background-color: #CBA135 !important;
@@ -762,8 +1111,458 @@ textarea,
   border-radius: 50% !important;
 }
 
+// Datas bloqueadas (reservas confirmadas) - usando as classes corretas do PrimeNG
+.p-datepicker .p-datepicker-calendar td .p-datepicker-day.p-disabled {
+  background-color: #dc2626 !important;
+  color: #ffffff !important;
+  opacity: 0.7 !important;
+  cursor: not-allowed !important;
+  position: relative;
+  border-radius: 50% !important;
+  
+  &::after {
+    content: '✕';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 12px;
+    font-weight: bold;
+  }
+}
+
+// Datas bloqueadas no hover
+.p-datepicker .p-datepicker-calendar td .p-datepicker-day.p-disabled:hover {
+  background-color: #dc2626 !important;
+  color: #ffffff !important;
+  opacity: 0.8 !important;
+}
+
+// Alternativa mais específica para garantir que funcione
+.p-datepicker-calendar td .p-datepicker-day.p-disabled {
+  background-color: #dc2626 !important;
+  color: #ffffff !important;
+  opacity: 0.7 !important;
+  cursor: not-allowed !important;
+  position: relative;
+  border-radius: 50% !important;
+  
+  &::after {
+    content: '✕';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 12px;
+    font-weight: bold;
+  }
+}
+
+// Legenda do calendário
+.calendar-legend {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 0.75rem;
+  background: rgba(10, 38, 71, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(10, 38, 71, 0.1);
+  font-size: 0.875rem;
+  color: #0A2647;
+  
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    
+    .legend-color {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      
+      &.available {
+        background-color: #ffffff;
+        border-color: #e5e7eb;
+      }
+      
+      &.blocked {
+        background-color: #dc2626;
+        border-color: #dc2626;
+        position: relative;
+        
+        &::after {
+          content: '✕';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          font-size: 8px;
+          font-weight: bold;
+          color: white;
+        }
+      }
+      
+      &.past {
+        background-color: #e5e7eb;
+        border-color: #9ca3af;
+      }
+      
+      &.today {
+        background-color: #CBA135;
+        border-color: #CBA135;
+      }
+    }
+  }
+}
+
 .card-header {
   background: #0A2647 !important;
   color: #FAFAFA !important;
   border-radius: 20px 20px 0 0 !important;
+}
+
+// Botão de informação ao lado da label
+.info-button {
+  width: 18px !important;
+  height: 18px !important;
+  padding: 0 !important;
+  color: var(--dourado-presenca) !important;
+  font-size: 12px !important;
+  margin-left: 6px !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+  border: none !important;
+  background: transparent !important;
+  
+  &:hover {
+    background-color: rgba(203, 161, 53, 0.1) !important;
+    color: var(--dourado-hover) !important;
+  }
+  
+  &:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 2px rgba(203, 161, 53, 0.3) !important;
+  }
+}
+
+// Diálogo de informações
+::ng-deep .info-dialog {
+  .p-dialog-header {
+    background: var(--azul-abissal);
+    color: var(--branco-perola);
+    padding: 1.5rem;
+    border-radius: 8px 8px 0 0;
+    
+    .p-dialog-title {
+      font-weight: 600;
+      font-size: 1.25rem;
+    }
+  }
+  
+  .p-dialog-content {
+    padding: 2rem;
+  }
+}
+
+.info-content {
+  .alert-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 1rem;
+    background: rgba(203, 161, 53, 0.1);
+    border-left: 4px solid var(--dourado-presenca);
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+    
+    i {
+      color: var(--dourado-presenca);
+      font-size: 1.5rem;
+      margin-top: 2px;
+    }
+    
+    p {
+      margin: 0;
+      color: var(--azul-abissal);
+      line-height: 1.6;
+    }
+  }
+  
+  .items-section {
+    margin-bottom: 1.5rem;
+    
+    h4 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--azul-abissal);
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      
+      i {
+        color: var(--dourado-presenca);
+      }
+    }
+    
+    ul {
+      list-style: none;
+      padding-left: 2rem;
+      
+      li {
+        position: relative;
+        padding: 0.5rem 0;
+        color: #4a5568;
+        
+        &::before {
+          content: '•';
+          position: absolute;
+          left: -1.5rem;
+          color: var(--dourado-presenca);
+          font-weight: bold;
+          font-size: 1.2rem;
+        }
+      }
+    }
+  }
+  
+  .note-footer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 1rem;
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+    border-radius: 4px;
+    margin-top: 1.5rem;
+    
+    i {
+      color: #856404;
+      font-size: 1.25rem;
+    }
+    
+    span {
+      color: #856404;
+      font-weight: 500;
+    }
+  }
+}
+
+// Grid de métodos de pagamento
+.payment-methods-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+// Cards de método de pagamento (usando os mesmos estilos dos cards de reserva)
+.payment-method-card {
+  border: 2px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.payment-method-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: #CBA135;
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.payment-method-card:hover {
+  border-color: #CBA135;
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(203, 161, 53, 0.2);
+}
+
+.payment-method-card:hover::before {
+  transform: scaleX(1);
+}
+
+.payment-method-card.selected {
+  border-color: #CBA135;
+  background: #FAFAFA;
+  color: #0A2647;
+  transform: translateY(-2px);
+  box-shadow: 0 15px 30px -5px rgba(203, 161, 53, 0.3);
+}
+
+.payment-method-card.selected::before {
+  transform: scaleX(1);
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.payment-method-card.selected .card-title,
+.payment-method-card.selected .card-description {
+  color: #0A2647;
+}
+
+// Link para tabela de preços
+.price-table-link {
+  margin-top: 0.75rem;
+  text-align: center;
+  
+  .link-button {
+    background: transparent;
+    border: none;
+    color: var(--dourado-presenca);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    
+    i {
+      font-size: 1rem;
+    }
+    
+    &:hover {
+      background: rgba(203, 161, 53, 0.1);
+      color: var(--dourado-hover);
+      transform: translateY(-1px);
+    }
+    
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}
+
+// Diálogo de tabela de preços
+::ng-deep .price-table-dialog {
+  .p-dialog-header {
+    background: var(--azul-abissal);
+    color: var(--branco-perola);
+    padding: 1.5rem;
+    border-radius: 8px 8px 0 0;
+    
+    .p-dialog-title {
+      font-weight: 600;
+      font-size: 1.25rem;
+    }
+  }
+  
+  .p-dialog-content {
+    padding: 2rem;
+  }
+}
+
+.price-dialog-content {
+  .price-intro {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 1rem;
+    background: rgba(203, 161, 53, 0.1);
+    border-left: 4px solid var(--dourado-presenca);
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+    
+    i {
+      color: var(--dourado-presenca);
+      font-size: 1.5rem;
+      margin-top: 2px;
+    }
+    
+    p {
+      margin: 0;
+      color: var(--azul-abissal);
+      line-height: 1.6;
+      font-weight: 500;
+    }
+  }
+  
+  .price-items {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .price-item {
+    background: white;
+    border: 2px solid rgba(203, 161, 53, 0.2);
+    border-radius: 8px;
+    padding: 1rem;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      border-color: var(--dourado-presenca);
+      box-shadow: 0 4px 12px rgba(203, 161, 53, 0.15);
+      transform: translateY(-2px);
+    }
+    
+    .price-item-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 0.5rem;
+      
+      i {
+        color: var(--dourado-presenca);
+        font-size: 1.25rem;
+      }
+      
+      .people-range {
+        color: var(--azul-abissal);
+        font-weight: 600;
+        font-size: 1rem;
+      }
+    }
+    
+    .price-item-value {
+      color: var(--dourado-presenca);
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-left: 2.25rem;
+      
+      .per-day {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #6b7280;
+      }
+    }
+  }
+  
+  .price-footer-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 1rem;
+    background: #e0f2fe;
+    border-left: 4px solid #0284c7;
+    border-radius: 4px;
+    
+    i {
+      color: #0284c7;
+      font-size: 1.1rem;
+      margin-top: 2px;
+    }
+    
+    span {
+      color: #075985;
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
+  }
 }

@@ -1,0 +1,133 @@
+<p-card>
+  <!-- Toast para mensagens -->
+  <p-toast></p-toast>
+  
+  <div *ngIf="isLoading" class="loading-container">
+    <p-progressSpinner></p-progressSpinner>
+    <p>Carregando configurações...</p>
+  </div>
+
+  <div *ngIf="!isLoading" class="config-form">
+    <!-- Configurações de Capacidade -->
+    <div class="section">
+      <h3>Limites de Capacidade</h3>
+      <p class="section-description">
+        Configure os limites máximos para reservas
+      </p>
+      
+      <div class="capacidade-grid">
+        <div class="capacidade-item">
+          <div class="capacidade-header">
+            <i class="pi pi-home"></i>
+            <h4>Chalés Disponíveis</h4>
+          </div>
+          <p class="capacidade-description">
+            Quantidade máxima de chalés que podem ser reservados simultaneamente
+          </p>
+          <div class="input-group">
+            <label>Quantidade Máxima:</label>
+            <p-inputNumber 
+              [(ngModel)]="quantidadeMaximaChales"
+              [min]="1"
+              [max]="20"
+              mode="decimal"
+              [showButtons]="true"
+              buttonLayout="horizontal"
+              [incrementButtonIcon]="'pi pi-plus'"
+              [decrementButtonIcon]="'pi pi-minus'">
+            </p-inputNumber>
+          </div>
+        </div>
+        
+        
+        <div class="capacidade-item">
+          <div class="capacidade-header">
+            <i class="pi pi-calendar"></i>
+            <h4>Antecedência Mínima</h4>
+          </div>
+          <p class="capacidade-description">
+            Quantidade mínima de dias de antecedência para fazer uma reserva
+          </p>
+          <div class="input-group">
+            <label>Dias Mínimos:</label>
+            <p-inputNumber 
+              [(ngModel)]="diasAntecedenciaMinima"
+              [min]="0"
+              [max]="30"
+              mode="decimal"
+              [showButtons]="true"
+              buttonLayout="horizontal"
+              [incrementButtonIcon]="'pi pi-plus'"
+              [decrementButtonIcon]="'pi pi-minus'">
+            </p-inputNumber>
+          </div>
+        </div>
+        
+        <div class="capacidade-item">
+          <div class="capacidade-header">
+            <i class="pi pi-users"></i>
+            <h4>Capacidade Máxima de Pessoas</h4>
+          </div>
+          <p class="capacidade-description">
+            Quantidade máxima de pessoas permitidas por reserva
+          </p>
+          <div class="input-group">
+            <label>Máximo de Pessoas:</label>
+            <p-inputNumber 
+              [(ngModel)]="qtdMaxPessoas"
+              [min]="1"
+              [max]="500"
+              mode="decimal"
+              [showButtons]="true"
+              buttonLayout="horizontal"
+              [incrementButtonIcon]="'pi pi-plus'"
+              [decrementButtonIcon]="'pi pi-minus'">
+            </p-inputNumber>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Informações Adicionais -->
+    <div class="section">
+      <h3>Informações Importantes</h3>
+      <div class="info-cards">
+        <div class="info-card">
+          <i class="pi pi-info-circle"></i>
+          <div>
+            <h5>Chalés Disponíveis</h5>
+            <p>Este limite se aplica a reservas que incluem chalés. Quando atingido, novas reservas com chalés serão bloqueadas.</p>
+          </div>
+        </div>
+        
+        
+        <div class="info-card">
+          <i class="pi pi-clock"></i>
+          <div>
+            <h5>Antecedência Mínima</h5>
+            <p>Os clientes só poderão fazer reservas com pelo menos este número de dias de antecedência.</p>
+          </div>
+        </div>
+        
+        <div class="info-card">
+          <i class="pi pi-users"></i>
+          <div>
+            <h5>Capacidade Máxima de Pessoas</h5>
+            <p>Este limite define o número máximo de pessoas que podem ser incluídas em uma única reserva.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botão Salvar -->
+    <div class="actions">
+      <p-button 
+        label="Salvar Configurações"
+        icon="pi pi-save"
+        [loading]="isSaving"
+        [disabled]="isSaving"
+        (onClick)="salvarCapacidade()">
+      </p-button>
+    </div>
+  </div>
+</p-card>

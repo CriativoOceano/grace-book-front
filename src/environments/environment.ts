@@ -1,8 +1,13 @@
+import { firebaseConfig } from './firebase.config';
+
 export const environment = {
   production: false,
   
   // Configurações da API Backend
   apiUrl: 'http://localhost:3000',
+  
+  // Configurações do Firebase
+  firebase: firebaseConfig,
   
   // Configurações do ASAAS (para referência - será usado pelo backend)
   asaas: {

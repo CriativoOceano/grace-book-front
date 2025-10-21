@@ -1,419 +1,289 @@
-// Hero Section
-.hero-section {
-  position: relative;
-  height: 70vh;
-  overflow: hidden;
-}
-
-.hero-carousel {
-  height: 100%;
-}
-
-.hero-slide {
-  position: relative;
-  height: 70vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.hero-image {
+// Home Page - Container principal da landing page
+.home-page {
+  overflow-x: hidden;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 1;
-}
-
-.hero-content {
-  position: relative;
-  z-index: 2;
-  text-align: center;
-  color: white;
-  background: rgba(0, 0, 0, 0.4);
-  padding: 3rem;
-  border-radius: 1rem;
-  backdrop-filter: blur(10px);
-}
-
-.hero-title {
-  font-size: 3rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-.hero-subtitle {
-  font-size: 1.25rem;
-  margin-bottom: 2rem;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-.hero-button {
-  font-size: 1.125rem;
-  padding: 1rem 2rem;
-}
-
-// Seções
-.section-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--primary-green);
-  margin-bottom: 1rem;
-}
-
-.section-subtitle {
-  font-size: 1.125rem;
-  color: var(--text-dark);
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-// Features
-.feature-card {
-  height: 100%;
-}
-
-.feature-card-content {
-  height: 100%;
-  text-align: center;
-  transition: transform 0.3s ease;
-}
-
-.feature-card-content:hover {
-  transform: translateY(-5px);
-}
-
-.feature-icon {
-  background: var(--primary-green);
-  color: white;
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 1rem;
-  font-size: 2rem;
-}
-
-.feature-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--primary-green);
-  margin-bottom: 0.5rem;
-}
-
-.feature-description {
-  color: var(--text-dark);
-  line-height: 1.6;
-}
-
-// Reservation Types
-.reservation-type-card {
-  height: 100%;
-}
-
-.reservation-card {
-  height: 100%;
-  text-align: center;
-  transition: transform 0.3s ease;
-}
-
-.reservation-card:hover {
-  transform: translateY(-5px);
-}
-
-.reservation-icon {
-  background: var(--light-cream);
-  color: var(--primary-green);
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 1rem;
-  font-size: 2rem;
-}
-
-.reservation-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--primary-green);
-  margin-bottom: 1rem;
-}
-
-.reservation-description {
-  color: var(--text-dark);
-  line-height: 1.6;
-  margin-bottom: 1.5rem;
-}
-
-.reservation-price {
-  margin-bottom: 1.5rem;
-}
-
-.price-chip {
-  background: var(--primary-green);
-  color: white;
-  font-weight: 600;
-}
-
-.reservation-button {
-  width: 100%;
-}
-
-// Testimonials
-.testimonial-card {
-  height: 100%;
-}
-
-.testimonial-card-content {
-  height: 100%;
-}
-
-.testimonial-content {
-  text-align: center;
-  padding: 1rem;
-}
-
-.testimonial-stars {
-  color: #fbbf24;
-  font-size: 1.25rem;
-  margin-bottom: 1rem;
-}
-
-.testimonial-text {
-  font-style: italic;
-  color: var(--text-dark);
-  line-height: 1.6;
-  margin-bottom: 1rem;
-}
-
-.testimonial-author {
-  color: var(--primary-green);
-  font-weight: 600;
-}
-
-// CTA Section
-.cta-section {
-  background: var(--primary-green);
-  color: white;
-}
-
-.cta-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-}
-
-.cta-subtitle {
-  font-size: 1.25rem;
-  margin-bottom: 2rem;
-  opacity: 0.9;
-}
-
-.cta-buttons {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.cta-primary-button {
-  background: white;
-  color: var(--primary-green);
-  border-color: white;
-  font-size: 1.125rem;
-  padding: 1rem 2rem;
-}
-
-.cta-primary-button:hover {
-  background: var(--light-cream);
-  color: var(--primary-green);
-}
-
-.cta-secondary-button {
-  color: white;
-  border-color: white;
-  font-size: 1.125rem;
-  padding: 1rem 2rem;
-}
-
-.cta-secondary-button:hover {
-  background: white;
-  color: var(--primary-green);
-}
-
-// Seção dos Chalés
-.chales-section {
-  background: linear-gradient(135deg, #F6EBD9 0%, #FAFAFA 100%);
-}
-
-.chale-card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
   
-  &:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(10, 38, 71, 0.15);
-  }
-}
-
-.chale-card-content {
-  border-radius: 16px !important;
-  overflow: hidden !important;
-  border: 1px solid #D9D9D9 !important;
-  box-shadow: 0 8px 32px rgba(10, 38, 71, 0.1) !important;
-}
-
-.chale-carousel {
-  position: relative;
-  height: 250px;
-  overflow: hidden;
-}
-
-.chale-image-carousel {
-  height: 100%;
-  
-  .p-carousel-content {
-    height: 100%;
-  }
-  
-  .p-carousel-item {
-    height: 100%;
-  }
-}
-
-.chale-image-container {
-  height: 250px;
-  overflow: hidden;
-  position: relative;
-}
-
-.chale-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.3s ease;
-  
-  &:hover {
-    transform: scale(1.05);
-  }
-}
-
-.chale-content {
-  padding: 1.5rem;
-}
-
-.chale-title {
-  color: #0A2647;
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  font-family: 'Playfair Display', serif;
-}
-
-.chale-price {
-  margin-bottom: 1.5rem;
-  
-  .price-chip {
-    background: #CBA135 !important;
-    color: #FAFAFA !important;
-    font-weight: 600 !important;
-  }
-}
-
-.amenities-section {
-  margin-bottom: 1.5rem;
-}
-
-.amenities-title {
-  color: #0A2647;
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-}
-
-.amenities-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.75rem;
-}
-
-.amenity-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #2E8A99;
-  font-size: 0.9rem;
-  
-  i {
-    color: #CBA135;
-    font-size: 1rem;
-  }
-}
-
-.chale-actions {
-  text-align: center;
-}
-
-.chale-button {
-  background: #0A2647 !important;
-  color: #FAFAFA !important;
-  border-color: #0A2647 !important;
-  
-  &:hover:not(:disabled) {
-    background: #2E8A99 !important;
-    border-color: #2E8A99 !important;
-  }
-}
-
-// Responsive
-@media (max-width: 768px) {
-  .hero-title {
-    font-size: 2rem;
-  }
-  
-  .hero-subtitle {
-    font-size: 1rem;
-  }
-  
-  .section-title {
-    font-size: 2rem;
-  }
-  
-  .cta-title {
-    font-size: 2rem;
-  }
-  
-  .cta-buttons {
+  // Container padrão para todas as seções - Sistema de containers centralizados
+  .container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem; // Padding mínimo para smartphones
+    display: flex;
     flex-direction: column;
     align-items: center;
+    text-align: center;
+    
+    @media (min-width: 480px) {
+      padding: 0 1.5rem; // Padding maior para telas pequenas
+    }
+    
+    @media (min-width: 768px) {
+      padding: 0 2rem;
+    }
+    
+    @media (min-width: 1024px) {
+      padding: 0 2.5rem;
+    }
+    
+    @media (min-width: 1440px) {
+      padding: 0 3rem;
+    }
   }
   
-  .cta-primary-button,
-  .cta-secondary-button {
+  // Seções com largura total e conteúdo centralizado
+  section {
     width: 100%;
-    max-width: 300px;
+    padding: 3rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    
+    // Padding lateral para todas as seções exceto hero
+    padding-left: 1rem;
+    padding-right: 1rem;
+    
+    @media (min-width: 480px) {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+    
+    @media (min-width: 768px) {
+      padding: 4rem 2rem;
+    }
+    
+    @media (min-width: 1024px) {
+      padding: 5rem 2.5rem;
+    }
+    
+    @media (min-width: 1440px) {
+      padding: 6rem 3rem;
+    }
   }
   
-  // Chalés responsivos
-  .chale-carousel {
-    height: 200px;
+  // Títulos de seção padronizados
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: var(--azul-abissal);
+    text-align: center;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+    
+    @media (min-width: 768px) {
+      font-size: 2.25rem;
+    }
+    
+    @media (min-width: 1024px) {
+      font-size: 2.5rem;
+    }
   }
   
-  .chale-image-container {
-    height: 200px;
+  // Subtítulos de seção
+  .section-subtitle {
+    font-size: 1.125rem;
+    color: #666;
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto 3rem;
+    line-height: 1.7;
+    
+    @media (min-width: 768px) {
+      font-size: 1.25rem;
+    }
   }
   
-  .amenities-grid {
+  // Botões CTA principais
+  .cta-button {
+    background: var(--dourado-presenca);
+    color: var(--branco-perola);
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-size: 1.125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(203, 161, 53, 0.3);
+    
+    &:hover {
+      background: var(--dourado-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(203, 161, 53, 0.4);
+    }
+    
+    &:active {
+      transform: translateY(0);
+    }
+    
+    &.large {
+      padding: 1.5rem 3rem;
+      font-size: 1.25rem;
+    }
+    
+    i {
+      font-size: 1.25rem;
+    }
+  }
+  
+  // Botões secundários
+  .secondary-btn {
+    background: transparent;
+    color: var(--dourado-presenca);
+    border: 2px solid var(--dourado-presenca);
+    padding: 0.875rem 2rem;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    
+    &:hover {
+      background: var(--dourado-presenca);
+      color: var(--branco-perola);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(203, 161, 53, 0.3);
+    }
+    
+    &:active {
+      transform: translateY(0);
+    }
+  }
+  
+  // Grid responsivo padrão - Conteúdo centralizado
+  .content-grid {
+    width: 100%;
+    display: grid;
+    gap: 3rem;
+    align-items: center;
+    justify-items: center;
     grid-template-columns: 1fr;
+    
+    @media (min-width: 768px) {
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+      justify-items: center;
+    }
+    
+    @media (min-width: 1024px) {
+      gap: 5rem;
+    }
+    
+    @media (min-width: 1440px) {
+      gap: 6rem;
+    }
   }
   
-  .chale-title {
-    font-size: 1.25rem;
+  // Animações de entrada
+  .fade-in-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease-out;
+    
+    &.animated {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .fade-in-scale {
+    opacity: 0;
+    transform: scale(0.95);
+    transition: all 0.5s ease-out;
+    
+    &.animated {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  .slide-in-left {
+    opacity: 0;
+    transform: translateX(-50px);
+    transition: all 0.8s ease-out;
+    
+    &.animated {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  // Centralização de conteúdo - Melhores práticas UI
+  .section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    width: 100%;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .section-subtitle {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto;
+    width: 100%;
+    line-height: 1.7;
+  }
+  
+  // Conteúdo das colunas com melhor distribuição
+  .image-column,
+  .text-column,
+  .info-column,
+  .map-column {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    
+    @media (min-width: 768px) {
+      text-align: left;
+      align-items: flex-start;
+    }
+  }
+  
+  // Sistema de features grid otimizado
+  .features-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    justify-items: center;
+    
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2.5rem;
+      justify-items: center;
+    }
+    
+    @media (min-width: 1024px) {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3rem;
+      justify-items: center;
+    }
+  }
+  
+  // CTA Section centralizada
+  .cta-section {
+    width: 100%;
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
   }
 }

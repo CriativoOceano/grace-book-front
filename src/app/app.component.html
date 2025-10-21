@@ -2,47 +2,114 @@
   <!-- Header -->
   <header class="app-header">
     <div class="header-content">
-            <!-- Logo -->
-            <div class="logo">
-              <a routerLink="/home">
-                <img src="https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=40&h=40&fit=crop&crop=center" alt="Sede Campestre" class="logo-img">
-                <span class="logo-text">Sede Campestre</span>
-              </a>
-            </div>
+      <!-- Logo -->
+      <div class="logo">
+        <a routerLink="/home">
+          <img src="/assets/images/logo.svg" alt="Sede Campestre" class="logo-img">
+          <span class="logo-text">Sede Campestre</span>
+        </a>
+      </div>
 
-      <!-- Navigation Menu -->
-      <nav class="main-menu">
+      <!-- Desktop Navigation Menu -->
+      <nav class="main-menu desktop-menu">
         <ul>
           <li><a routerLink="/home" routerLinkActive="active">Início</a></li>
-          <li><a routerLink="/reservar" routerLinkActive="active">Reservar</a></li>
-          <li><a routerLink="/galeria" routerLinkActive="active">Galeria</a></li>
-          <li><a routerLink="/contato" routerLinkActive="active">Contato</a></li>
+          <li><a (click)="scrollToSection('about')">Sobre</a></li>
+          <li><a (click)="scrollToSection('structure')">Estrutura</a></li>
+          <li><a (click)="scrollToSection('gallery')">Galeria</a></li>
+          <li><a (click)="scrollToSection('location')">Localização</a></li>
         </ul>
       </nav>
 
       <!-- User Actions -->
       <div class="user-actions">
-        <ng-container *ngIf="!isLoggedIn; else loggedInTemplate">
-          <button class="btn btn-primary" routerLink="/login">
-            Entrar
-          </button>
-        </ng-container>
-        
-        <ng-template #loggedInTemplate>
-          <div class="user-dropdown">
-            <div class="user-info">
-              <span class="user-avatar">{{ user?.nome?.charAt(0) }}</span>
-              <span class="user-name">{{ user?.nome }}</span>
+        @if (!isLoggedIn) {
+          <ng-container>
+            <!-- Botão Reservar - apenas em desktop -->
+            <button class="btn btn-primary desktop-only" routerLink="/reservar">
+              <i class="pi pi-calendar-plus"></i>
+              Reservar
+            </button>
+            <button class="btn btn-secondary mobile-btn" routerLink="/admin-login" (click)="closeMenu()">
+              <i class="pi pi-cog"></i>
+            </button>
+          </ng-container>
+        } @else {
+          <ng-template #loggedInTemplate>
+            <div class="user-dropdown">
+              <div class="user-info">
+                <span class="user-avatar">{{ user?.nome?.charAt(0) }}</span>
+                <span class="user-name">{{ user?.nome }}</span>
+              </div>
+              <div class="dropdown-menu">
+                <a routerLink="/minhas-reservas">Minhas Reservas</a>
+                @if (user?.isAdmin) {
+                  <a routerLink="/admin">Administração</a>
+                }
+                <a (click)="logout()">Sair</a>
+              </div>
             </div>
-            <div class="dropdown-menu">
-              <a routerLink="/minhas-reservas">Minhas Reservas</a>
-              <a routerLink="/admin" *ngIf="user?.isAdmin">Administração</a>
-              <a (click)="logout()">Sair</a>
-            </div>
-          </div>
-        </ng-template>
+            
+            <!-- Botão Sair direto para admin -->
+            @if (user?.isAdmin) {
+              <button class="btn btn-secondary" (click)="logout()">
+                <i class="pi pi-sign-out"></i>
+                Sair
+              </button>
+            }
+          </ng-template>
+        }
+
+        <!-- Mobile Menu Button -->
+        <button class="mobile-menu-btn" (click)="toggleMenu()" [class.active]="isMenuOpen">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
       </div>
     </div>
+
+    <!-- Mobile Navigation Menu -->
+    <nav class="mobile-menu" [class.open]="isMenuOpen">
+      <div class="mobile-menu-content">
+        <ul class="mobile-menu-list">
+          <li><a routerLink="/home" routerLinkActive="active" (click)="closeMenu()">Início</a></li>
+          <li><a (click)="scrollToSection('about')">Sobre</a></li>
+          <li><a (click)="scrollToSection('structure')">Estrutura</a></li>
+          <li><a (click)="scrollToSection('gallery')">Galeria</a></li>
+          <li><a (click)="scrollToSection('location')">Localização</a></li>
+        </ul>
+        
+        <!-- Mobile User Actions -->
+        <div class="mobile-user-actions">
+          @if (!isLoggedIn) {
+            <button class="btn btn-primary mobile-btn" routerLink="/reservar" (click)="closeMenu()">
+              <i class="pi pi-calendar-plus"></i>
+              Reservar
+            </button>
+            
+            <!-- Botão Admin no mobile -->
+            <button class="btn btn-secondary mobile-btn" routerLink="/admin-login" (click)="closeMenu()">
+              <i class="pi pi-cog"></i>
+            </button>
+          } @else {
+            <div class="mobile-user-info">
+              <div class="user-info">
+                <span class="user-avatar">{{ user?.nome?.charAt(0) }}</span>
+                <span class="user-name">{{ user?.nome }}</span>
+              </div>
+              <div class="mobile-user-menu">
+                <a routerLink="/minhas-reservas" (click)="closeMenu()">Minhas Reservas</a>
+                @if (user?.isAdmin) {
+                  <a routerLink="/admin" (click)="closeMenu()">Administração</a>
+                }
+                <a (click)="logout(); closeMenu()">Sair</a>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </nav>
   </header>
 
   <!-- Main Content -->
@@ -53,17 +120,19 @@
   <!-- Footer -->
   <footer class="app-footer">
     <div class="footer-content">
-          <div class="footer-section">
-            <h3>Sede Campestre</h3>
-            <p>Sistema de reservas da Chácara da Igreja</p>
-            <p>Um refúgio de paz e tranquilidade</p>
-          </div>
+      <div class="footer-section logo-section">
+        <div class="footer-logo">
+          <img src="/assets/images/logo.svg" alt="Sede Campestre" width="50" height="50">
+          <h3>Sede Campestre</h3>
+        </div>
+        <p>Um refúgio cercado por natureza e propósito</p>
+      </div>
       
       <div class="footer-section">
         <h4>Contato</h4>
         <p>📞 (11) 99999-9999</p>
         <p>📧 contato&#64;sedecampestre.com</p>
-        <p>📍 São Paulo, SP</p>
+        <p>📍 Águas Lindas de Goiás, GO</p>
       </div>
       
       <div class="footer-section">
@@ -73,12 +142,15 @@
           <li><a routerLink="/galeria">Galeria</a></li>
           <li><a routerLink="/contato">Contato</a></li>
           <li><a routerLink="/sobre">Sobre Nós</a></li>
+          <li><a routerLink="/admin">Administrar</a></li>
         </ul>
       </div>
     </div>
     
     <div class="footer-bottom">
-      <p>&copy; 2024 Sede Campestre. Todos os direitos reservados.</p>
+      <p>&copy; {{ currentYear }} Sede Campestre. Todos os direitos reservados.</p>
+      <a routerLink="/admin" *ngIf="user?.isAdmin" class="admin-link">Admin</a>
+
     </div>
   </footer>
 </div>

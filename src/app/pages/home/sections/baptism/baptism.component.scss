@@ -1,0 +1,330 @@
+// Baptism Section - Batismos e celebrações com storytelling premium
+.baptism {
+  background-color: #FAFAFA;
+  padding: 4rem 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  
+  @media (min-width: 768px) {
+    padding: 6rem 0;
+  }
+  
+  @media (min-width: 1024px) {
+    padding: 8rem 0;
+  }
+  
+  // Títulos da seção Baptism centralizados e com tamanhos equilibrados
+  .section-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    width: 100%;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--azul-abissal);
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      
+      @media (min-width: 768px) {
+        font-size: 2.75rem;
+        margin-bottom: 2rem;
+      }
+      
+      @media (min-width: 1024px) {
+        font-size: 3.25rem;
+      }
+    }
+    
+    .section-subtitle {
+      font-size: 1.125rem;
+      color: #666;
+      line-height: 1.6;
+      font-weight: 400;
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+      padding: 0 1rem;
+      
+      @media (min-width: 768px) {
+        font-size: 1.25rem;
+        line-height: 1.7;
+      }
+      
+      @media (min-width: 1024px) {
+        font-size: 1.375rem;
+      }
+    }
+  }
+}
+
+.content-grid {
+  width: 100%;
+  display: grid;
+  gap: 3rem;
+  align-items: center;
+  justify-items: center;
+  grid-template-columns: 1fr;
+  padding: 0 1rem;
+  
+  @media (min-width: 768px) {
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+    justify-items: center;
+  }
+  
+  @media (min-width: 1024px) {
+    gap: 5rem;
+  }
+}
+
+.text-column {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  
+  @media (min-width: 768px) {
+    align-items: flex-start;
+    text-align: left;
+  }
+  
+  .ceremony-story {
+    width: 100%;
+    margin-bottom: 2rem;
+    
+    .lead {
+      font-size: 1.25rem;
+      color: var(--azul-abissal);
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+      font-weight: 500;
+      
+      @media (min-width: 768px) {
+        font-size: 1.375rem;
+      }
+    }
+    
+    p {
+      font-size: 1.125rem;
+      color: #666;
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+      
+      @media (min-width: 768px) {
+        font-size: 1.25rem;
+      }
+    }
+  }
+  
+  .ceremony-features {
+    display: grid;
+    gap: 1rem;
+    margin: 2rem 0;
+    width: 100%;
+    
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      background: rgba(203, 161, 53, 0.08);
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background: rgba(203, 161, 53, 0.12);
+        transform: translateY(-2px);
+      }
+      
+      i {
+        font-size: 1.25rem;
+        color: var(--dourado-presenca);
+        flex-shrink: 0;
+      }
+      
+      span {
+        font-size: 1rem;
+        color: var(--azul-abissal);
+        font-weight: 500;
+        line-height: 1.5;
+      }
+    }
+  }
+  
+  .ceremony-highlight {
+    background: var(--areia-sereno);
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin: 2rem 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-left: 4px solid var(--verde-montanha);
+    box-shadow: 0 4px 12px rgba(78, 148, 79, 0.1);
+    
+    i {
+      font-size: 1.5rem;
+      color: var(--areia-sereno);
+      flex-shrink: 0;
+    }
+    
+    span {
+      font-size: 1.125rem;
+      color: var(--azul-abissal);
+      font-weight: 500;
+      line-height: 1.6;
+    }
+  }
+  
+  .cta-button {
+    background: linear-gradient(135deg, var(--dourado-presenca) 0%, #d4a853 100%);
+    color: var(--branco-perola);
+    border: none;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    font-size: 1.125rem;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 24px rgba(203, 161, 53, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    width: fit-content;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s ease;
+    }
+    
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(203, 161, 53, 0.4);
+      background: linear-gradient(135deg, #d4a853 0%, var(--dourado-presenca) 100%);
+      
+      &::before {
+        left: 100%;
+      }
+    }
+    
+    &:active {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(203, 161, 53, 0.3);
+    }
+    
+    i {
+      font-size: 1.25rem;
+      transition: transform 0.3s ease;
+    }
+    
+    &:hover i {
+      transform: scale(1.1);
+    }
+    
+    @media (min-width: 768px) {
+      margin: 0;
+      padding: 1.25rem 3rem;
+      font-size: 1.25rem;
+    }
+    
+    @media (min-width: 1024px) {
+      padding: 1.5rem 3.5rem;
+      font-size: 1.375rem;
+    }
+  }
+}
+
+.image-column {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  justify-content: center;
+  
+  .image-wrapper {
+    position: relative;
+    width: 100%;
+    
+    img {
+      width: 100%;
+      height: 400px;
+      object-fit: cover;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(10, 38, 71, 0.15);
+      transition: transform 0.3s ease;
+      
+      &:hover {
+        transform: scale(1.02);
+      }
+      
+      @media (min-width: 768px) {
+        height: 500px;
+      }
+    }
+  }
+  
+  .ceremony-badge {
+    position: absolute;
+    top: -15px;
+    left: -15px;
+    background: var(--dourado-presenca);
+    color: var(--branco-perola);
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    box-shadow: 0 8px 24px rgba(203, 161, 53, 0.3);
+    animation: float 3s ease-in-out infinite;
+    
+    i {
+      font-size: 1rem;
+    }
+    
+    @media (max-width: 767px) {
+      padding: 0.5rem 1rem;
+      font-size: 0.75rem;
+      top: -10px;
+      left: -10px;
+    }
+  }
+}
+
+// Animação float para o badge
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}

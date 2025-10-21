@@ -1,0 +1,56 @@
+<section id="baptism" class="baptism" appScrollAnimation>
+  <div class="container">
+    <div class="section-header fade-in-up">
+      <h2>Viva momentos que transformam</h2>
+      <p class="section-subtitle">Celebre batismos e cerimônias especiais em um ambiente único, cercado pela natureza e inspiração</p>
+    </div>
+    
+    <div class="content-grid">
+      <div class="text-column fade-in-up">
+        <div class="ceremony-story">
+          <p class="lead">A Sede campestre oferece um espaço único para batismos e celebrações em meio à natureza. Com infraestrutura completa e um ambiente inspirador, cada cerimônia se torna uma experiência inesquecível.</p>
+          
+          <div class="ceremony-features">
+            <div class="feature-item">
+              <i class="pi pi-check-circle"></i>
+              <span>Espaço ao ar livre</span>
+            </div>
+            <div class="feature-item">
+              <i class="pi pi-check-circle"></i>
+              <span>Infraestrutura completa para cerimônias</span>
+            </div>
+            <div class="feature-item">
+              <i class="pi pi-check-circle"></i>
+              <span>Ambiente inspirador e acolhedor</span>
+            </div>
+            <div class="feature-item">
+              <i class="pi pi-check-circle"></i>
+              <span>Suporte completo para organização</span>
+            </div>
+          </div>
+          
+          <!-- <div class="ceremony-highlight">
+            <i class="pi pi-heart"></i>
+            <span>Cada batismo é uma celebração única, cercada pela beleza natural e o propósito que inspira momentos marcantes.</span>
+          </div> -->
+        </div>
+        
+        <button class="cta-button" (click)="goToBooking()">
+          <i class="pi pi-calendar"></i>
+          Reservar data para batismo
+        </button>
+      </div>
+      
+      <div class="image-column fade-in-up">
+        <div class="image-wrapper">
+          <img [src]="baptismImage?.url || 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=1200&h=800&fit=crop'" 
+               [alt]="baptismImage?.alt || 'Cerimônia de batismo ao ar livre'">
+          <div class="ceremony-badge">
+            <i class="pi pi-star"></i>
+            <span>Momento Especial</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

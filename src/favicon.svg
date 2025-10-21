@@ -1,0 +1,29 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Campo verde (base) -->
+  <path d="M4 20C4 20 6.4 24 16 24C25.6 24 28 20 28 20V28H4V20Z" fill="#4E944F"/>
+  
+  <!-- Contornos do campo -->
+  <path d="M6.4 22.4C6.4 22.4 8 24 16 24C24 24 25.6 22.4 25.6 22.4" stroke="#2E8A99" stroke-width="0.8" fill="none"/>
+  <path d="M9.6 20.8C9.6 20.8 11.2 22.4 16 22.4C20.8 22.4 22.4 20.8 22.4 20.8" stroke="#2E8A99" stroke-width="0.8" fill="none"/>
+  
+  <!-- Casa -->
+  <rect x="6.4" y="16" width="4.8" height="4" fill="white" stroke="black" stroke-width="0.8"/>
+  <path d="M5.6 16L8.8 12L12 16" fill="white" stroke="black" stroke-width="0.8"/>
+  
+  <!-- Árvore -->
+  <rect x="19.2" y="14.4" width="1.6" height="5.6" fill="#8B4513"/>
+  <ellipse cx="20" cy="12.8" rx="3.2" ry="2.4" fill="#4E944F"/>
+  
+  <!-- Sol -->
+  <circle cx="20" cy="6.4" r="3.2" fill="#CBA135"/>
+  
+  <!-- Raios do sol -->
+  <line x1="20" y1="1.6" x2="20" y2="3.2" stroke="black" stroke-width="0.8"/>
+  <line x1="23.2" y1="3.2" x2="22.4" y2="4.8" stroke="black" stroke-width="0.8"/>
+  <line x1="25.6" y1="6.4" x2="24" y2="6.4" stroke="black" stroke-width="0.8"/>
+  <line x1="23.2" y1="9.6" x2="22.4" y2="8" stroke="black" stroke-width="0.8"/>
+  <line x1="20" y1="11.2" x2="20" y2="9.6" stroke="black" stroke-width="0.8"/>
+  <line x1="16.8" y1="9.6" x2="17.6" y2="8" stroke="black" stroke-width="0.8"/>
+  <line x1="14.4" y1="6.4" x2="16" y2="6.4" stroke="black" stroke-width="0.8"/>
+  <line x1="16.8" y1="3.2" x2="17.6" y2="4.8" stroke="black" stroke-width="0.8"/>
+</svg>

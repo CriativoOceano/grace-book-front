@@ -32,7 +32,6 @@
 }
 
 .card-title {
-  font-family: 'Playfair Display', serif;
   font-size: 1.25rem;
   font-weight: 600;
   margin: 0;
@@ -44,10 +43,6 @@
 
 .pricing-content {
   padding: 1.5rem;
-}
-
-.loading-content {
-  // Removido space-y que não é uma propriedade CSS válida
 }
 
 .loading-item {
@@ -165,8 +160,7 @@
 .total-value {
   font-size: 1.5rem;
   font-weight: 700;
-  font-family: 'Playfair Display', serif;
-  color: #CBA135;
+  color: #ffffff;
 }
 
 .additional-info {
@@ -210,6 +204,49 @@
   }
 
   .total-value {
+    font-size: 1.25rem;
+  }
+}
+
+.finalize-button-container {
+  margin-top: 1rem;
+  padding-top: 1rem;
+}
+
+.finalize-btn {
+  width: 100%;
+  padding: 1rem;
+  background: #CBA135;
+  color: #FAFAFA;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(203, 161, 53, 0.3);
+  
+  &:hover:not(:disabled) {
+    background: #B38E2E;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(203, 161, 53, 0.4);
+  }
+  
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+  
+  i {
     font-size: 1.25rem;
   }
 }

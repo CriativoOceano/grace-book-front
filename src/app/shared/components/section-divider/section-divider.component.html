@@ -1,0 +1,27 @@
+<div class="section-divider" [ngClass]="['divider-' + type, 'color-' + color]">
+  <!-- Wave Divider -->
+  <svg *ngIf="type === 'wave'" class="wave-svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+    <path d="M0,60 C300,20 600,100 900,60 C1050,40 1200,80 1200,60 L1200,120 L0,120 Z" fill="currentColor"></path>
+  </svg>
+
+  <!-- Decorative Line Divider -->
+  <div *ngIf="type === 'decorative-line'" class="decorative-line">
+    <div class="line-left"></div>
+    <div class="center-element">
+      <div class="diamond"></div>
+    </div>
+    <div class="line-right"></div>
+  </div>
+
+  <!-- Curve Divider -->
+  <svg *ngIf="type === 'curve'" class="curve-svg" viewBox="0 0 1200 80" preserveAspectRatio="none">
+    <defs>
+      <linearGradient id="curveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" style="stop-color:currentColor;stop-opacity:0.1" />
+        <stop offset="50%" style="stop-color:currentColor;stop-opacity:0.2" />
+        <stop offset="100%" style="stop-color:currentColor;stop-opacity:0.1" />
+      </linearGradient>
+    </defs>
+    <path d="M0,40 C200,10 400,70 600,40 C800,10 1000,70 1200,40 L1200,80 L0,80 Z" fill="url(#curveGradient)"></path>
+  </svg>
+</div>

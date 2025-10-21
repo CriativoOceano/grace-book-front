@@ -1,0 +1,113 @@
+<p-card>
+  <!-- Toast para mensagens -->
+  <p-toast></p-toast>
+  
+  @if(isLoading) { 
+    <div class="loading-container">
+      <p-progressSpinner></p-progressSpinner>
+      <p>Carregando configurações...</p>
+    </div>
+  }
+
+  @if(!isLoading) {
+    <div class="config-form">
+      <!-- Faixas de Preço por Pessoas -->
+      <div class="section">
+        <h3>Preços por Faixa de Pessoas</h3>
+        <p class="section-description">
+          Configure o valor da diária para diferentes quantidades de pessoas
+        </p>
+        
+        <div class="faixas-grid">
+          <div *ngFor="let faixa of faixasPreco; let i = index" class="faixa-item">
+            <div class="faixa-label">
+              <label>{{ getFaixaLabel(i) }}</label>
+            </div>
+            <div class="faixa-inputs">
+              <!-- <div class="input-group">
+                <label>Máx. Pessoas:</label>
+                <p-inputNumber 
+                  [(ngModel)]="faixa.maxPessoas"
+                  [min]="1"
+                  [max]="200"
+                  mode="decimal"
+                  [showButtons]="true"
+                  buttonLayout="horizontal"
+                  [incrementButtonIcon]="'pi pi-plus'"
+                  [decrementButtonIcon]="'pi pi-minus'">
+                </p-inputNumber>
+              </div> -->
+              <div class="input-group">
+                <label>Valor (R$):</label>
+                <p-inputNumber 
+                  [(ngModel)]="faixa.valor"
+                  [min]="0"
+                  mode="currency"
+                  currency="BRL"
+                  locale="pt-BR"
+                  [showButtons]="true"
+                  buttonLayout="horizontal"
+                  [incrementButtonIcon]="'pi pi-plus'"
+                  [decrementButtonIcon]="'pi pi-minus'">
+                </p-inputNumber>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Preços Fixos -->
+      <div class="section">
+        <h3>Preços Fixos</h3>
+        <p class="section-description">
+          Configure valores fixos para chalés e batismos
+        </p>
+        
+        <div class="precos-fixos">
+          <div class="preco-item">
+            <label>Preço do Chalé por Dia:</label>
+            <p-inputNumber 
+              [(ngModel)]="precoChale"
+              [min]="0"
+              mode="currency"
+              currency="BRL"
+              locale="pt-BR"
+              [showButtons]="true"
+              buttonLayout="horizontal"
+              [incrementButtonIcon]="'pi pi-plus'"
+              [decrementButtonIcon]="'pi pi-minus'">
+            </p-inputNumber>
+          </div>
+          
+          <div class="preco-item">
+            <label>Preço do Batismo:</label>
+            <p-inputNumber 
+              [(ngModel)]="precoBatismo"
+              [min]="0"
+              mode="currency"
+              currency="BRL"
+              locale="pt-BR"
+              [showButtons]="true"
+              buttonLayout="horizontal"
+              [incrementButtonIcon]="'pi pi-plus'"
+              [decrementButtonIcon]="'pi pi-minus'">
+            </p-inputNumber>
+          </div>
+        </div>
+      </div>
+
+  
+      <!-- Botão Salvar -->
+      <div class="actions">
+        <p-button 
+          label="Salvar Configurações"
+          icon="pi pi-save"
+          [loading]="isSaving"
+          [disabled]="isSaving"
+          (onClick)="salvarPrecos()">
+        </p-button>
+      </div>
+    </div>
+   }
+  
+</p-card>

@@ -1,8 +1,13 @@
+import { firebaseConfigProd } from './firebase.config';
+
 export const environment = {
   production: true,
   
   // Configurações da API Backend
   apiUrl: 'https://your-production-api.com/api',
+  
+  // Configurações do Firebase
+  firebase: firebaseConfigProd,
   
   // Configurações do ASAAS
   asaas: {

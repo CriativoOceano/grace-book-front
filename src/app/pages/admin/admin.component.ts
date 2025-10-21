@@ -1,47 +1,45 @@
 import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { RouterLink } from '@angular/router';
-import { NzCardModule } from 'ng-zorro-antd/card';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzTableModule } from 'ng-zorro-antd/table';
-import { NzTagModule } from 'ng-zorro-antd/tag';
-import { NzTypographyModule } from 'ng-zorro-antd/typography';
-import { NzStatisticModule } from 'ng-zorro-antd/statistic';
-import { NzGridModule } from 'ng-zorro-antd/grid';
-import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { CommonModule, isPlatformBrowser, CurrencyPipe } from '@angular/common';
+import { TabViewModule } from 'primeng/tabview';
+import { CardModule } from 'primeng/card';
+import { TableModule } from 'primeng/table';
+import { TagModule } from 'primeng/tag';
+import { ButtonModule } from 'primeng/button';
+import { AccordionModule } from 'primeng/accordion';
+import { ContentManagerComponent } from './components/content-manager/content-manager.component';
+import { ConfigPrecosComponent } from './components/config-precos/config-precos.component';
+import { ConfigDisponibilidadeComponent } from './components/config-disponibilidade/config-disponibilidade.component';
+import { ConfigCapacidadeComponent } from './components/config-capacidade/config-capacidade.component';
+import { ReservaService, Reserva } from '../../core/services/reserva.service';
 
 @Component({
   selector: 'app-admin',
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink,
-    NzCardModule,
-    NzButtonModule,
-    NzIconModule,
-    NzTableModule,
-    NzTagModule,
-    NzTypographyModule,
-    NzStatisticModule,
-    NzGridModule,
-    NzSpinModule
+    TabViewModule,
+    CardModule,
+    TableModule,
+    TagModule,
+    ButtonModule,
+    AccordionModule,
+    ContentManagerComponent,
+    ConfigPrecosComponent,
+    ConfigDisponibilidadeComponent,
+    ConfigCapacidadeComponent
   ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.scss'
 })
 export class AdminComponent implements OnInit {
   
-  reservas: any[] = [];
+  reservas: Reserva[] = [];
   isLoading = false;
-  estatisticas = {
-    totalReservas: 0,
-    reservasConfirmadas: 0,
-    reservasPendentes: 0,
-    valorTotal: 0
-  };
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private reservaService: ReservaService
+  ) {}
 
   ngOnInit(): void {
     this.scrollToTop();
@@ -58,46 +56,18 @@ export class AdminComponent implements OnInit {
   carregarDados(): void {
     this.isLoading = true;
     
-    // Mock temporário - será substituído pela integração real
-    setTimeout(() => {
-      this.reservas = [
-        {
-          id: '1',
-          codigo: 'RES1001',
-          tipo: 'diaria',
-          statusReserva: 'CONFIRMADA',
-          dataInicio: new Date('2024-02-15'),
-          dataFim: new Date('2024-02-15'),
-          quantidadePessoas: 4,
-          quantidadeChales: 1,
-          valorTotal: 200,
-          usuarioNome: 'João Silva',
-          usuarioEmail: 'joao@email.com'
-        },
-        {
-          id: '2',
-          codigo: 'RES1002',
-          tipo: 'batismo',
-          statusReserva: 'PENDENTE_PAGAMENTO',
-          dataInicio: new Date('2024-02-20'),
-          dataFim: new Date('2024-02-20'),
-          quantidadePessoas: 8,
-          quantidadeChales: 0,
-          valorTotal: 300,
-          usuarioNome: 'Maria Santos',
-          usuarioEmail: 'maria@email.com'
-        }
-      ];
-      this.calcularEstatisticas();
-      this.isLoading = false;
-    }, 1000);
-  }
-
-  private calcularEstatisticas(): void {
-    this.estatisticas.totalReservas = this.reservas.length;
-    this.estatisticas.reservasConfirmadas = this.reservas.filter(r => r.statusReserva === 'CONFIRMADA').length;
-    this.estatisticas.reservasPendentes = this.reservas.filter(r => r.statusReserva === 'PENDENTE_PAGAMENTO').length;
-    this.estatisticas.valorTotal = this.reservas.reduce((total, r) => total + r.valorTotal, 0);
+    this.reservaService.getAllReservas().subscribe({
+      next: (reservas) => {
+        this.reservas = reservas;
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Erro ao carregar reservas:', error);
+        this.isLoading = false;
+        // Em caso de erro, manter array vazio
+        this.reservas = [];
+      }
+    });
   }
 
   getStatusColor(status: string): string {
@@ -131,6 +101,23 @@ export class AdminComponent implements OnInit {
         return 'Em Andamento';
       default:
         return status;
+    }
+  }
+
+  getStatusSeverity(status: string): string {
+    switch (status) {
+      case 'CONFIRMADA':
+        return 'success';
+      case 'PENDENTE_PAGAMENTO':
+        return 'warning';
+      case 'CANCELADA':
+        return 'danger';
+      case 'FINALIZADA':
+        return 'info';
+      case 'EM_ANDAMENTO':
+        return 'secondary';
+      default:
+        return 'secondary';
     }
   }
 }

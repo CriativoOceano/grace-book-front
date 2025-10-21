@@ -3,136 +3,129 @@
     <!-- Header -->
     <div class="page-header">
       <h1>Painel Administrativo</h1>
-      <p>Gerencie as reservas da chácara</p>
+      <p>Gerencie reservas e conteúdo do site</p>
     </div>
 
-    <!-- Estatísticas -->
-    <nz-row nzGutter="24" class="stats-row">
-      <nz-col nzXs="24" nzSm="6">
-        <nz-card class="stat-card">
-          <nz-statistic 
-            nzTitle="Total de Reservas" 
-            [nzValue]="estatisticas.totalReservas"
-            nzPrefix="📅">
-          </nz-statistic>
-        </nz-card>
-      </nz-col>
-      <nz-col nzXs="24" nzSm="6">
-        <nz-card class="stat-card">
-          <nz-statistic 
-            nzTitle="Confirmadas" 
-            [nzValue]="estatisticas.reservasConfirmadas"
-            nzPrefix="✅">
-          </nz-statistic>
-        </nz-card>
-      </nz-col>
-      <nz-col nzXs="24" nzSm="6">
-        <nz-card class="stat-card">
-          <nz-statistic 
-            nzTitle="Pendentes" 
-            [nzValue]="estatisticas.reservasPendentes"
-            nzPrefix="⏳">
-          </nz-statistic>
-        </nz-card>
-      </nz-col>
-      <nz-col nzXs="24" nzSm="6">
-        <nz-card class="stat-card">
-          <nz-statistic 
-            nzTitle="Valor Total" 
-            [nzValue]="estatisticas.valorTotal"
-            nzPrefix="R$"
-            nzSuffix=""
-            [nzValueStyle]="{ color: '#28a745' }">
-          </nz-statistic>
-        </nz-card>
-      </nz-col>
-    </nz-row>
+    <!-- Tabs -->
+    <p-tabView scrollable="true">
+      <!-- Tab Todas as Reservas -->
+      <p-tabPanel header="Todas as Reservas">
+        <!-- Tabela de reservas -->
+        <p-card>
+          <p-table 
+            [value]="reservas" 
+            [loading]="isLoading"
+            [paginator]="true" 
+            [rows]="10"
+            [showCurrentPageReport]="true"
+            currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} reservas"
+            styleClass="p-datatable-gridlines">
+            
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Código</th>
+                <th>Cliente</th>
+                <th>Tipo</th>
+                <th>Data</th>
+                <th>Status</th>
+                <th>Valor</th>
+                <!-- <th>Ações</th> -->
+              </tr>
+            </ng-template>
+            
+            <ng-template pTemplate="body" let-reserva>
+              <tr>
+                <td><strong>{{ reserva.codigo }}</strong></td>
+                <td>
+                  <div class="cliente-info">
+                    <div class="cliente-nome">{{ reserva.usuarioNome }}</div>
+                    <div class="cliente-email">{{ reserva.usuarioEmail }}</div>
+                  </div>
+                </td>
+                <td>
+                  <p-tag [value]="reserva.tipo | titlecase" severity="info"></p-tag>
+                </td>
+                <td>
+                  <div class="data-info">
+                    <div>{{ reserva.dataInicio | date:'dd/MM/yyyy' }}</div>
+                    <div *ngIf="reserva.dataFim" class="data-fim">
+                      até {{ reserva.dataFim | date:'dd/MM/yyyy' }}
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <p-tag 
+                    [value]="getStatusText(reserva.statusReserva)" 
+                    [severity]="getStatusSeverity(reserva.statusReserva)">
+                  </p-tag>
+                </td>
+                <td><strong>{{ reserva.valorTotal | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}</strong></td>
+                <!-- <td>
+                  <div class="table-actions">
+                    <p-button 
+                      icon="pi pi-eye" 
+                      [text]="true" 
+                      severity="secondary"
+                      size="small">
+                    </p-button>
+                    <p-button 
+                      icon="pi pi-pencil" 
+                      [text]="true" 
+                      severity="secondary"
+                      size="small">
+                    </p-button>
+                    <p-button 
+                      *ngIf="reserva.statusReserva === 'PENDENTE_PAGAMENTO'"
+                      icon="pi pi-times" 
+                      [text]="true" 
+                      severity="danger"
+                      size="small">
+                    </p-button>
+                  </div>
+                </td> -->
+              </tr>
+            </ng-template>
 
-    <!-- Tabela de reservas -->
-    <nz-card class="reservas-card">
-      <div class="card-header">
-        <h2>Todas as Reservas</h2>
-        <button nz-button nzType="primary" routerLink="/reservar">
-          <i nz-icon nzType="plus"></i>
-          Nova Reserva
-        </button>
-      </div>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="7" class="empty-state">
+                  <div class="empty-message">
+                    <i class="pi pi-calendar-times" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
+                    <h3>Nenhuma reserva encontrada</h3>
+                    <p>Ainda não existem reservas cadastradas no sistema.</p>
+                    <p>As reservas aparecerão aqui quando os clientes fizerem suas solicitações.</p>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-card>
+      </p-tabPanel>
 
-      <div *ngIf="isLoading" class="loading-container">
-        <nz-spin nzSize="large"></nz-spin>
-      </div>
+      <!-- Tab Conteúdo do Site -->
+      <p-tabPanel header="Conteúdo do Site">
+        <app-content-manager></app-content-manager>
+      </p-tabPanel>
 
-      <nz-table 
-        *ngIf="!isLoading"
-        [nzData]="reservas" 
-        [nzPageSize]="10"
-        [nzShowPagination]="true"
-        nzBordered>
-        <thead>
-          <tr>
-            <th>Código</th>
-            <th>Cliente</th>
-            <th>Tipo</th>
-            <th>Data</th>
-            <th>Status</th>
-            <th>Valor</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let reserva of reservas">
-            <td>
-              <strong>{{ reserva.codigo }}</strong>
-            </td>
-            <td>
-              <div class="cliente-info">
-                <div class="cliente-nome">{{ reserva.usuarioNome }}</div>
-                <div class="cliente-email">{{ reserva.usuarioEmail }}</div>
-              </div>
-            </td>
-            <td>
-              <nz-tag>{{ reserva.tipo | titlecase }}</nz-tag>
-            </td>
-            <td>
-              <div class="data-info">
-                <div>{{ reserva.dataInicio | date:'dd/MM/yyyy' }}</div>
-                <div *ngIf="reserva.dataFim" class="data-fim">
-                  até {{ reserva.dataFim | date:'dd/MM/yyyy' }}
-                </div>
-              </div>
-            </td>
-            <td>
-              <nz-tag [nzColor]="getStatusColor(reserva.statusReserva)">
-                {{ getStatusText(reserva.statusReserva) }}
-              </nz-tag>
-            </td>
-            <td>
-              <strong>R$ {{ reserva.valorTotal | number:'1.2-2' }}</strong>
-            </td>
-            <td>
-              <div class="table-actions">
-                <button nz-button nzType="link" nzSize="small">
-                  <i nz-icon nzType="eye"></i>
-                  Ver
-                </button>
-                <button nz-button nzType="link" nzSize="small">
-                  <i nz-icon nzType="edit"></i>
-                  Editar
-                </button>
-                <button 
-                  nz-button 
-                  nzType="link" 
-                  nzSize="small"
-                  nzDanger
-                  *ngIf="reserva.statusReserva === 'PENDENTE_PAGAMENTO'">
-                  <i nz-icon nzType="close"></i>
-                  Cancelar
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </nz-table>
-    </nz-card>
+      <!-- Tab Configurações -->
+      <p-tabPanel header="Configurações">
+        <p-accordion>
+          <!-- Configuração de Preços -->
+          <p-accordionTab header="Preços e Valores">
+            <app-config-precos></app-config-precos>
+          </p-accordionTab>
+
+          <!-- Configuração de Disponibilidade -->
+          <p-accordionTab header="Disponibilidade de Datas">
+            <app-config-disponibilidade></app-config-disponibilidade>
+          </p-accordionTab>
+
+          <!-- Configuração de Capacidade -->
+          <p-accordionTab header="Capacidade e Limites">
+            <app-config-capacidade></app-config-capacidade>
+          </p-accordionTab>
+        </p-accordion>
+      </p-tabPanel>
+    </p-tabView>
   </div>
 </div>

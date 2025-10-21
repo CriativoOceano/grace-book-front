@@ -1,0 +1,31 @@
+<section id="structure" class="structure" appScrollAnimation>
+  <div class="container">
+    <div class="section-header fade-in-up">
+      <h2>Conforto, natureza e estrutura completa</h2>
+      <p class="section-subtitle">Tudo que você precisa para viver dias especiais em um ambiente único e acolhedor</p>
+    </div>
+    
+    <div class="features-grid">
+      <div class="feature-card fade-in-up" 
+           *ngFor="let feature of features; let i = index"
+           [style.animation-delay]="(i * 0.1) + 's'">
+        <div class="icon">
+          <i [class]="feature.icon"></i>
+        </div>
+        <h3>{{ feature.title }}</h3>
+        <p>{{ feature.description }}</p>
+      </div>
+    </div>
+    
+    <div class="cta-section fade-in-up">
+      <div class="cta-content">
+        <h3>Pronto para sua experiência?</h3>
+        <p class="cta-text">Tudo integrado a um sistema de reservas simples e rápido — escolha a data, veja a disponibilidade e confirme em poucos cliques.</p>
+        <button class="cta-button" (click)="goToBooking()">
+          <i class="pi pi-search"></i>
+          Ver disponibilidade
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

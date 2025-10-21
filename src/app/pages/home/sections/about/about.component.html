@@ -1,0 +1,53 @@
+<section id="about" class="about" appScrollAnimation>
+  <div class="container">
+    <div class="section-header fade-in-up">
+      <h2>Um refúgio cercado por natureza e propósito</h2>
+      <p class="section-subtitle">Descubra um espaço único onde cada momento se torna especial</p>
+    </div>
+    
+    <div class="content-grid">
+      <div class="image-column fade-in-up">
+        <div class="image-wrapper">
+          <img [src]="aboutImage?.url || 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&h=600&fit=crop'" 
+               [alt]="aboutImage?.alt || 'Sede campestre - Vista panorâmica'">
+          <div class="decorative-icon">
+            <i class="pi pi-heart"></i>
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-column fade-in-up">
+        <div class="story-content">
+          <p class="lead">A Sede campestre é um espaço pensado para acolher pessoas e grupos que buscam descanso, comunhão e momentos marcantes.</p>
+          
+          <p>Aqui, cada detalhe foi planejado para proporcionar tranquilidade, conexão e boas memórias — seja em retiros, eventos ou finais de semana especiais.</p>
+          
+          <div class="highlight">
+            <i class="pi pi-leaf"></i>
+            <span>Um lugar que inspira paz e propósito — sem precisar sair da cidade.</span>
+          </div>
+          
+          <div class="story-features">
+            <div class="story-feature">
+              <i class="pi pi-check-circle"></i>
+              <span>Ambiente acolhedor e inspirador</span>
+            </div>
+            <div class="story-feature">
+              <i class="pi pi-check-circle"></i>
+              <span>Infraestrutura completa para grupos</span>
+            </div>
+            <div class="story-feature">
+              <i class="pi pi-check-circle"></i>
+              <span>Localização privilegiada na natureza</span>
+            </div>
+          </div>
+        </div>
+        
+        <button class="cta-button" (click)="goToBooking()">
+          <i class="pi pi-calendar-plus"></i>
+          Reservar agora
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

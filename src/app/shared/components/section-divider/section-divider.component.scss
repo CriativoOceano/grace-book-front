@@ -1,0 +1,167 @@
+// Section Divider Component - Divisórias premium entre seções
+.section-divider {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  
+  // Altura base para todos os tipos
+  height: 60px;
+  
+  @media (min-width: 768px) {
+    height: 80px;
+  }
+  
+  @media (min-width: 1024px) {
+    height: 100px;
+  }
+}
+
+// Wave Divider
+.divider-wave {
+  .wave-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    transition: all 0.3s ease;
+  }
+}
+
+// Decorative Line Divider
+.divider-decorative-line {
+  height: 80px;
+  
+  @media (min-width: 768px) {
+    height: 100px;
+  }
+  
+  @media (min-width: 1024px) {
+    height: 120px;
+  }
+  
+  .decorative-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 600px;
+    position: relative;
+    
+    .line-left,
+    .line-right {
+      flex: 1;
+      height: 1px;
+      background: currentColor;
+      opacity: 0.15;
+      transition: all 0.3s ease;
+    }
+    
+    .center-element {
+      margin: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      .diamond {
+        width: 12px;
+        height: 12px;
+        background: currentColor;
+        opacity: 0.2;
+        transform: rotate(45deg);
+        transition: all 0.3s ease;
+        
+        @media (min-width: 768px) {
+          width: 16px;
+          height: 16px;
+        }
+      }
+    }
+    
+    &:hover {
+      .line-left,
+      .line-right {
+        opacity: 0.25;
+      }
+      
+      .diamond {
+        opacity: 0.3;
+        transform: rotate(45deg) scale(1.1);
+      }
+    }
+  }
+}
+
+// Curve Divider
+.divider-curve {
+  .curve-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    transition: all 0.3s ease;
+  }
+}
+
+// Color Variations
+.color-primary {
+  color: var(--azul-abissal);
+}
+
+.color-secondary {
+  color: var(--dourado-presenca);
+}
+
+.color-accent {
+  color: var(--areia-sereno);
+}
+
+// Responsive adjustments
+@media (max-width: 767px) {
+  .section-divider {
+    height: 40px;
+  }
+  
+  .divider-decorative-line {
+    height: 60px;
+    
+    .decorative-line {
+      .center-element {
+        margin: 0 1rem;
+        
+        .diamond {
+          width: 10px;
+          height: 10px;
+        }
+      }
+    }
+  }
+}
+
+// Subtle animations
+.section-divider {
+  &:hover {
+    .wave-svg,
+    .curve-svg {
+      transform: scaleY(1.05);
+    }
+  }
+}
+
+// Accessibility
+@media (prefers-reduced-motion: reduce) {
+  .section-divider,
+  .wave-svg,
+  .curve-svg,
+  .decorative-line,
+  .diamond {
+    transition: none;
+  }
+  
+  .section-divider:hover {
+    .wave-svg,
+    .curve-svg {
+      transform: none;
+    }
+  }
+}

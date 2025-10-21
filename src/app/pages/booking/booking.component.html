@@ -1,4 +1,6 @@
 <div class="booking-container min-h-screen py-8">
+  <p-toast></p-toast>
+  
   <div class="container mx-auto px-4 max-w-7xl">
     
     <!-- Header -->
@@ -55,55 +57,68 @@
                 <div class="form-group">
                   <label class="form-label required">Escolha o tipo de reserva que melhor se adapta às suas necessidades</label>
                   <div class="reservation-type-cards">
-                    <div 
-                      *ngFor="let tipo of tiposReserva" 
-                      class="reservation-card"
-                      [class.selected]="bookingForm.get('tipo')?.value === tipo.value"
-                      (click)="bookingForm.get('tipo')?.setValue(tipo.value)">
-                      <div class="card-title">
-                        <i [class]="getTypeIcon(tipo.value)" class="mr-2"></i>
-                        {{ tipo.label }}
-                      </div>
-                      <div class="card-description">{{ tipo.description }}</div>
-                      <div class="card-price">{{ getTypePrice(tipo.value) }}</div>
-                      
-                      <!-- Quantidade de Pessoas dentro do card (apenas para Diária) -->
-                      <div *ngIf="tipo.value === 'diaria' && bookingForm.get('tipo')?.value === 'diaria'" 
-                           class="card-quantity-section"
-                           [@slideInUp]="showQuantitiesSection">
-                        <div class="quantity-label">Quantidade de Pessoas</div>
-                        <div class="quantity-input-container">
-                          <button 
-                            type="button" 
-                            class="quantity-btn minus"
-                            (click)="decreaseQuantity('quantidadePessoas')"
-                            [disabled]="bookingForm.get('quantidadePessoas')?.value <= 1">
-                            <i class="pi pi-minus"></i>
-                          </button>
-                          <input 
-                            type="number" 
-                            formControlName="quantidadePessoas"
-                            class="quantity-input"
-                            min="1" 
-                            max="200"
-                            maxlength="3"
-                            (input)="validatePessoasInput($event)"
-                            (keydown)="preventInvalidInput($event)">
-                          <button 
-                            type="button" 
-                            class="quantity-btn plus"
-                            (click)="increaseQuantity('quantidadePessoas')"
-                            [disabled]="bookingForm.get('quantidadePessoas')?.value >= 200">
-                            <i class="pi pi-plus"></i>
-                          </button>
+                    @for (tipo of tiposReserva; track tipo.value) {
+                      <div 
+                        class="reservation-card"
+                        [class.selected]="bookingForm.get('tipo')?.value === tipo.value"
+                        (click)="bookingForm.get('tipo')?.setValue(tipo.value)">
+                        <div class="card-title">
+                          <i [class]="getTypeIcon(tipo.value)" class="mr-2"></i>
+                          {{ tipo.label }}
                         </div>
-                        <div *ngIf="bookingForm.get('quantidadePessoas')?.invalid && bookingForm.get('quantidadePessoas')?.touched" 
-                             class="error-message">
-                          <i class="pi pi-exclamation-triangle"></i>
-                          Quantidade deve ser entre 1 e 200 pessoas
+                        <div class="card-description">{{ tipo.description }}</div>
+                        <div class="card-price">{{ getTypePrice(tipo.value) }}</div>
+                        
+                        <!-- Quantidade de Pessoas dentro do card (apenas para Diária) -->
+                        <div *ngIf="tipo.value === 'diaria' && bookingForm.get('tipo')?.value === 'diaria'" 
+                             class="card-quantity-section"
+                             [@slideInUp]="showQuantitiesSection">
+                          <div class="quantity-label">Quantidade de Pessoas</div>
+                          <div class="quantity-input-container">
+                            <button 
+                              type="button" 
+                              class="quantity-btn minus"
+                              (click)="decreaseQuantity('quantidadePessoas')"
+                              [disabled]="bookingForm.get('quantidadePessoas')?.value <= 1">
+                              <i class="pi pi-minus"></i>
+                            </button>
+                            <input 
+                              type="number" 
+                              formControlName="quantidadePessoas"
+                              class="quantity-input"
+                              min="1" 
+                              [max]="qtdMaxPessoas"
+                              maxlength="3"
+                              (input)="validatePessoasInput($event)"
+                              (keydown)="preventInvalidInput($event)">
+                            <button 
+                              type="button" 
+                              class="quantity-btn plus"
+                              (click)="increaseQuantity('quantidadePessoas')"
+                              [disabled]="bookingForm.get('quantidadePessoas')?.value >= qtdMaxPessoas">
+                              <i class="pi pi-plus"></i>
+                            </button>
+                          </div>
+                          
+                          <!-- Link para Tabela de Preços -->
+                          <div class="price-table-link">
+                            <button 
+                              type="button"
+                              class="link-button"
+                              (click)="mostrarTabelaPrecos()">
+                              <i class="pi pi-list"></i>
+                              Ver Tabela de Preços
+                            </button>
+                          </div>
+                          
+                          <div *ngIf="bookingForm.get('quantidadePessoas')?.invalid && bookingForm.get('quantidadePessoas')?.touched" 
+                               class="error-message">
+                            <i class="pi pi-exclamation-triangle"></i>
+                            Quantidade deve ser entre 1 e 200 pessoas
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    }
                   </div>
                   <div *ngIf="bookingForm.get('tipo')?.invalid && bookingForm.get('tipo')?.touched" 
                        class="error-message">
@@ -119,20 +134,50 @@
                   <label class="form-label required">Período da Reserva</label>
                   <p-datepicker 
                     formControlName="periodoReserva"
-                    selectionMode="range"
+                    [selectionMode]="bookingForm.get('tipo')?.value === 'batismo' ? 'single' : 'range'"
                     [readonlyInput]="true"
-                    placeholder="Selecione o período"
+                    [placeholder]="bookingForm.get('tipo')?.value === 'batismo' ? 'Selecione o dia' : 'Selecione o período'"
                     dateFormat="dd/mm/yy"
                     [showIcon]="true"
+                    inline="true"
                     inputId="periodoReserva"
                     styleClass="w-full"
                     [minDate]="minDate"
-                    [maxDate]="maxDate">
+                    [maxDate]="maxDate"
+                    [disabledDates]="datasBloqueadas">
                   </p-datepicker>
+                  
+                  <!-- Legenda do calendário -->
+                  <!-- <div class="calendar-legend mt-4">
+                    <div class="legend-item">
+                      <div class="legend-color available"></div>
+                      <span>Disponível</span>
+                    </div>
+                    <div class="legend-item">
+                      <div class="legend-color blocked"></div>
+                      <span>Reservado</span>
+                    </div>
+                    <div class="legend-item">
+                      <div class="legend-color past"></div>
+                      <span>Passado</span>
+                    </div>
+                    <div class="legend-item">
+                      <div class="legend-color today"></div>
+                      <span>Hoje</span>
+                    </div>
+                  </div> -->
                   <div *ngIf="bookingForm.get('periodoReserva')?.invalid && bookingForm.get('periodoReserva')?.touched" 
                        class="error-message">
                     <i class="pi pi-exclamation-triangle"></i>
-                    Selecione o período da reserva
+                    <span *ngIf="bookingForm.get('periodoReserva')?.errors?.['required']">
+                      {{ bookingForm.get('tipo')?.value === 'batismo' ? 'Selecione o dia do batismo' : 'Selecione o período da reserva' }}
+                    </span>
+                    <span *ngIf="bookingForm.get('periodoReserva')?.errors?.['dataBloqueada']">
+                      {{ bookingForm.get('tipo')?.value === 'batismo' ? 'Este dia já está reservado' : 'Este período contém datas já reservadas' }}
+                    </span>
+                    <span *ngIf="bookingForm.get('periodoReserva')?.errors?.['periodoInvalido']">
+                      {{ bookingForm.get('tipo')?.value === 'batismo' ? 'Selecione uma data válida para o batismo' : 'Selecione um período válido' }}
+                    </span>
                   </div>
                 </div>
 
@@ -168,10 +213,100 @@
               </ng-template>
 
               <div class="space-y-6">
-                
+
+                <!-- Carrossel de Imagens do Chalé -->
+                <div class="form-group">
+                  <label class="form-label">Nossos Chalés</label>
+                  
+                  <!-- Loading state -->
+                  <div *ngIf="chaletImagesLoading" class="flex justify-center items-center py-8">
+                    <p-progressSpinner 
+                      styleClass="w-8 h-8" 
+                      strokeWidth="4" 
+                      fill="transparent" 
+                      animationDuration="1s">
+                    </p-progressSpinner>
+                    <p class="ml-3 text-gray-600">Carregando imagens dos chalés...</p>
+                  </div>
+                  
+                  <!-- Carrossel de imagens -->
+                  <div *ngIf="!chaletImagesLoading && chaletImages.length > 0" class="chale-carousel">
+                    <p-carousel 
+                      [value]="chaletImages" 
+                      [numVisible]="1" 
+                      [numScroll]="1"
+                      [circular]="true"
+                      [autoplayInterval]="4000"
+                      [showIndicators]="true"
+                      [showNavigators]="false"
+                      styleClass="chale-image-carousel">
+                      <ng-template pTemplate="item" let-chalet>
+                        <div class="chale-image-container" (click)="expandirImagem()">
+                          <img [src]="chalet.src" [alt]="chalet.alt" class="chale-image">
+                          <div class="image-overlay">
+                            <i class="pi pi-search-plus"></i>
+                          </div>
+                          <div class="chale-info-overlay">
+                            <h4 class="chale-title">{{ chalet.title }}</h4>
+                            <p class="chale-description">{{ chalet.description }}</p>
+                          </div>
+                        </div>
+                      </ng-template>
+                    </p-carousel>
+                  </div>
+                  
+                  <!-- Fallback quando não há imagens -->
+                  <div *ngIf="!chaletImagesLoading && chaletImages.length === 0" class="no-images-message">
+                    <i class="pi pi-image text-4xl text-gray-400 mb-4"></i>
+                    <p class="text-gray-600">Nenhuma imagem de chalé disponível no momento.</p>
+                  </div>
+                </div>
+
+                <!-- Amenidades -->
+                <div class="form-group">
+                  <label class="form-label">
+                    Amenidades dos Chalés
+                    <!-- Botão de informações sobre itens necessários - COMENTADO TEMPORARIAMENTE -->
+                  <!--
+                  <button 
+                      type="button"
+                      class="info-button"
+                      (click)="mostrarInfoItensNecessarios()"
+                      pButton
+                      icon="pi pi-info-circle"
+                      [rounded]="true"
+                      [text]="true"
+                      severity="info"
+                      size="small"
+                      [disabled]="(bookingForm.get('quantidadeChales')?.value || 0) === 0"
+                      [title]="(bookingForm.get('quantidadeChales')?.value || 0) === 0 ? 'Selecione pelo menos um chalé para ver os itens necessários' : 'Ver itens necessários para sua estadia'">
+                    </button>
+                  -->
+                  </label>
+                  <div class="amenities-grid">
+                    <div class="amenity-item">
+                      <i class="pi pi-users"></i>
+                      <span>Até 2 pessoas por chalé</span>
+                    </div>
+                    <div class="amenity-item">
+                      <i class="pi pi-home"></i>
+                      <span>Ar condicionado</span>
+                    </div>
+                    <div class="amenity-item">
+                      <i class="pi pi-car"></i>
+                      <span>Estacionamento</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="chale-price-display">
+                    <p-chip [label]="(precoChale | currency:'BRL':'symbol':'1.2-2':'pt-BR') + '/dia por chalé'" styleClass="price-chip"></p-chip>
+                  </div>
+                </div>
+
                 <!-- Quantidade de Chalés -->
                 <div class="form-group">
-                  <label class="form-label">Quantidade de Chalés Adicionais</label>
+                  <label class="form-label">Quantidade de Chalés</label>
                   <div class="quantity-input-container">
                     <button 
                       type="button" 
@@ -185,26 +320,21 @@
                       formControlName="quantidadeChales"
                       class="quantity-input"
                       min="0" 
-                      max="4"
+                      [max]="quantidadeMaximaChales"
                       readonly>
                     <button 
                       type="button" 
                       class="quantity-btn plus"
                       (click)="increaseQuantity('quantidadeChales')"
-                      [disabled]="bookingForm.get('quantidadeChales')?.value >= 4">
+                      [disabled]="bookingForm.get('quantidadeChales')?.value >= quantidadeMaximaChales">
                       <i class="pi pi-plus"></i>
                     </button>
                   </div>
                   <div class="quantity-info">
                     <span class="text-sm text-gray-600">
-                      R$ 150,00 por chalé (máx. 4) - Disponível para qualquer tipo de reserva
+                      R$ {{precoChale | number:'1.2-2':'pt-BR'}}/dia por chalé
                     </span>
                   </div>
-                </div>
-
-                <!-- Galeria de Chalés -->
-                <div class="form-group" *ngIf="bookingForm.get('quantidadeChales')?.value > 0">
-                  <app-chalet-gallery></app-chalet-gallery>
                 </div>
 
                 <!-- Observações -->
@@ -256,18 +386,17 @@
                 </div>
               </ng-template>
 
-              <div class="space-y-6">
+              <div class="space-y-3">
                 
                 <!-- Nome e Sobrenome -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div class="form-group">
                     <label class="form-label required">Nome</label>
-                    <p-inputText 
+                    <input 
+                      pInputText
                       formControlName="nomeHospede"
                       placeholder="Digite seu nome"
-                      styleClass="w-full"
-                      inputStyleClass="w-full p-4 text-lg">
-                    </p-inputText>
+                      class="w-full p-4 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-green focus:border-transparent">
                     <div *ngIf="bookingForm.get('nomeHospede')?.invalid && bookingForm.get('nomeHospede')?.touched" 
                          class="error-message">
                       <i class="pi pi-exclamation-triangle"></i>
@@ -277,12 +406,11 @@
 
                   <div class="form-group">
                     <label class="form-label required">Sobrenome</label>
-                    <p-inputText 
+                    <input 
+                      pInputText
                       formControlName="sobrenomeHospede"
                       placeholder="Digite seu sobrenome"
-                      styleClass="w-full"
-                      inputStyleClass="w-full p-4 text-lg">
-                    </p-inputText>
+                      class="w-full p-4 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-green focus:border-transparent">
                     <div *ngIf="bookingForm.get('sobrenomeHospede')?.invalid && bookingForm.get('sobrenomeHospede')?.touched" 
                          class="error-message">
                       <i class="pi pi-exclamation-triangle"></i>
@@ -292,16 +420,15 @@
                 </div>
 
                 <!-- Email e CPF -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div class="form-group">
                     <label class="form-label required">Email</label>
-                    <p-inputText 
+                    <input 
+                      pInputText
+                      type="email"
                       formControlName="emailHospede"
                       placeholder="Digite seu email"
-                      type="email"
-                      styleClass="w-full"
-                      inputStyleClass="w-full p-4 text-lg">
-                    </p-inputText>
+                      class="w-full p-4 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-green focus:border-transparent">
                     <div *ngIf="bookingForm.get('emailHospede')?.invalid && bookingForm.get('emailHospede')?.touched" 
                          class="error-message">
                       <i class="pi pi-exclamation-triangle"></i>
@@ -311,14 +438,13 @@
 
                   <div class="form-group">
                     <label class="form-label required">CPF</label>
-                    <p-inputText 
+                    <input 
+                      pInputText
                       formControlName="cpfHospede"
                       placeholder="000.000.000-00"
                       maxlength="14"
-                      (onInput)="formatCPF($event)"
-                      styleClass="w-full"
-                      inputStyleClass="w-full p-4 text-lg">
-                    </p-inputText>
+                      (input)="formatCPF($event)"
+                      class="w-full p-4 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-green focus:border-transparent">
                     <div *ngIf="bookingForm.get('cpfHospede')?.invalid && bookingForm.get('cpfHospede')?.touched" 
                          class="error-message">
                       <i class="pi pi-exclamation-triangle"></i>
@@ -330,18 +456,105 @@
                 <!-- Telefone -->
                 <div class="form-group">
                   <label class="form-label required">Telefone</label>
-                  <p-inputText 
+                  <input 
+                    pInputText
                     formControlName="telefoneHospede"
                     placeholder="(11) 99999-9999"
                     maxlength="15"
-                    (onInput)="formatPhone($event)"
-                    styleClass="w-full"
-                    inputStyleClass="w-full p-4 text-lg">
-                  </p-inputText>
+                    (input)="formatPhone($event)"
+                    class="w-full p-4 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-green focus:border-transparent">
                   <div *ngIf="bookingForm.get('telefoneHospede')?.invalid && bookingForm.get('telefoneHospede')?.touched" 
                        class="error-message">
                     <i class="pi pi-exclamation-triangle"></i>
                     Telefone é obrigatório
+                  </div>
+                </div>
+
+                <!-- CEP -->
+                <div class="form-group">
+                  <label class="form-label">CEP</label>
+                  <input 
+                    pInputText
+                    formControlName="cepHospede"
+                    placeholder="00000-000"
+                    maxlength="9"
+                    (input)="formatCEP($event)"
+                    class="w-full p-4 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-green focus:border-transparent">
+                  <div *ngIf="buscandoCep" class="mt-2 text-sm text-blue-600 flex items-center gap-1">
+                    <i class="pi pi-spin pi-spinner"></i>
+                    <span>Buscando endereço...</span>
+                  </div>
+                  <div *ngIf="cepEncontrado" class="mt-2 text-sm text-green-600 flex items-center justify-between">
+                    <div class="flex items-center gap-1">
+                      <i class="pi pi-check-circle"></i>
+                      <span>Endereço encontrado automaticamente</span>
+                    </div>
+                    <button 
+                      type="button"
+                      (click)="limparEndereco()"
+                      class="text-xs text-blue-600 hover:text-blue-800 underline">
+                      Editar manualmente
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Endereço -->
+                <div class="form-group">
+                  <label class="form-label">Endereço</label>
+                  <input 
+                    pInputText
+                    formControlName="enderecoHospede"
+                    placeholder="Rua, Avenida, etc."
+                    [readonly]="cepEncontrado"
+                    [class.bg-gray-100]="cepEncontrado"
+                    class="w-full p-4 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-green focus:border-transparent">
+                </div>
+
+                <!-- Número -->
+                <div class="form-group">
+                  <label class="form-label">Número</label>
+                  <input 
+                    pInputText
+                    formControlName="numeroHospede"
+                    placeholder="123"
+                    class="w-full p-4 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-green focus:border-transparent">
+                </div>
+
+                <!-- Bairro -->
+                <div class="form-group">
+                  <label class="form-label">Bairro</label>
+                  <input 
+                    pInputText
+                    formControlName="bairroHospede"
+                    placeholder="Nome do bairro"
+                    [readonly]="cepEncontrado"
+                    [class.bg-gray-100]="cepEncontrado"
+                    class="w-full p-4 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-green focus:border-transparent">
+                </div>
+
+                <!-- Cidade e UF -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div class="form-group">
+                    <label class="form-label">Cidade</label>
+                    <input 
+                      pInputText
+                      formControlName="cidadeHospede"
+                      placeholder="Nome da cidade"
+                      [readonly]="cepEncontrado"
+                      [class.bg-gray-100]="cepEncontrado"
+                      class="w-full p-4 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-green focus:border-transparent">
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">UF</label>
+                    <input 
+                      pInputText
+                      formControlName="ufHospede"
+                      placeholder="Estado"
+                      maxlength="2"
+                      [readonly]="cepEncontrado"
+                      [class.bg-gray-100]="cepEncontrado"
+                      class="w-full p-4 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-green focus:border-transparent">
                   </div>
                 </div>
 
@@ -368,14 +581,14 @@
                   </p-button>
                   
                   <p-button 
-                    label="Verificar Disponibilidade" 
-                    icon="pi pi-search"
+                    label="Continuar" 
+                    icon="pi pi-arrow-right"
                     iconPos="right"
                     size="large"
-                    (onClick)="verificarDisponibilidade()"
+                    (onClick)="nextStepWithValidation()"
                     [loading]="isLoading"
-                    [disabled]="!validateStep(1)"
-                    styleClass="verify-btn">
+                    [disabled]="!validateStep(2)"
+                    styleClass="continue-btn">
                   </p-button>
                 </div>
               </div>
@@ -401,18 +614,19 @@
                 <!-- Modo de Pagamento -->
                 <div class="form-group">
                   <label class="form-label required">Modo de Pagamento</label>
-                  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div 
-                      *ngFor="let modo of modosPagamento" 
-                      class="payment-method-card"
-                      [class.selected]="bookingForm.get('modoPagamento')?.value === modo.value"
-                      (click)="bookingForm.get('modoPagamento')?.setValue(modo.value)">
-                      <div class="payment-icon">
-                        <i [class]="getPaymentIcon(modo.value)"></i>
+                  <div class="payment-methods-grid">
+                    @for (modo of modosPagamento; track modo.value) {
+                      <div 
+                        class="payment-method-card"
+                        [class.selected]="bookingForm.get('modoPagamento')?.value === modo.value"
+                        (click)="bookingForm.get('modoPagamento')?.setValue(modo.value)">
+                        <div class="card-title">
+                          <i [class]="getPaymentIcon(modo.value)" class="mr-2"></i>
+                          {{ modo.label }}
+                        </div>
+                        <div class="card-description">{{ modo.description }}</div>
                       </div>
-                      <h3 class="payment-title">{{ modo.label }}</h3>
-                      <p class="payment-description">{{ modo.description }}</p>
-                    </div>
+                    }
                   </div>
                   <div *ngIf="bookingForm.get('modoPagamento')?.invalid && bookingForm.get('modoPagamento')?.touched" 
                        class="error-message">
@@ -433,44 +647,8 @@
                   </p-dropdown>
                 </div>
 
-                <!-- Resumo da Reserva -->
-                <div class="resumo-reserva">
-                  <p-divider>
-                    <div class="flex items-center gap-2">
-                      <i class="pi pi-list"></i>
-                      <span class="font-semibold">Resumo da Reserva</span>
-                    </div>
-                  </p-divider>
-                  
-                  <div class="space-y-3 mt-4">
-                    <div class="flex justify-between items-center">
-                      <span class="text-gray-600">Tipo:</span>
-                      <span class="font-semibold">{{ getTipoLabel(bookingForm.get('tipo')?.value) }}</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                      <span class="text-gray-600">Período:</span>
-                      <span class="font-semibold">{{ getPeriodoFormatado() }}</span>
-                    </div>
-                    <div class="flex justify-between items-center" *ngIf="bookingForm.get('tipo')?.value === 'diaria'">
-                      <span class="text-gray-600">Pessoas:</span>
-                      <span class="font-semibold">{{ bookingForm.get('quantidadePessoas')?.value }}</span>
-                    </div>
-                    <div class="flex justify-between items-center" *ngIf="bookingForm.get('quantidadeChales')?.value > 0">
-                      <span class="text-gray-600">Chalés:</span>
-                      <span class="font-semibold">{{ bookingForm.get('quantidadeChales')?.value }}</span>
-                    </div>
-                    
-                    <p-divider></p-divider>
-                    
-                    <div class="flex justify-between items-center text-xl font-bold text-primary-600">
-                      <span>Valor Total:</span>
-                      <span>R$ {{ valorCalculado | number:'1.2-2' }}</span>
-                    </div>
-                  </div>
-                </div>
-
                 <!-- Actions -->
-                <div class="flex justify-between">
+                <div class="flex justify-start">
                   <p-button 
                     label="Voltar" 
                     icon="pi pi-arrow-left"
@@ -478,17 +656,6 @@
                     severity="secondary"
                     size="large"
                     (onClick)="prevStep()">
-                  </p-button>
-                  
-                  <p-button 
-                    label="Finalizar Reserva" 
-                    icon="pi pi-credit-card"
-                    iconPos="right"
-                    size="large"
-                    [loading]="isProcessingPayment"
-                    (onClick)="finalizarReserva()"
-                    [disabled]="!validateStep(2)"
-                    styleClass="finalize-btn">
                   </p-button>
                 </div>
               </div>
@@ -501,10 +668,129 @@
         <!-- Summary Sidebar - Sticky -->
         <div class="lg:col-span-1" *ngIf="hasFormData()">
           <div class="sticky-summary" [@fadeInSlide]="hasFormData()">
-            <app-pricing-summary [pricing]="pricingData"></app-pricing-summary>
+            <app-pricing-summary 
+              [pricing]="pricingData"
+              [precoChale]="precoChale"
+              [showFinalizeButton]="currentStep === 3"
+              [isProcessing]="isProcessingPayment"
+              [canFinalize]="bookingForm.get('modoPagamento')?.valid || false"
+              (onFinalize)="finalizarReserva()">
+            </app-pricing-summary>
           </div>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Modal para Imagem Expandida com Carrossel -->
+  <p-dialog 
+    [(visible)]="imagemExpandidaVisible" 
+    [modal]="true" 
+    [closable]="true"
+    [draggable]="false"
+    [resizable]="false"
+    styleClass="image-dialog"
+    [style]="{width: '100vw', height: '100vh', maxWidth: '100vw', maxHeight: '100vh'}">
+    <ng-template pTemplate="header">
+      <span class="text-lg font-semibold">Nossos Chalés</span>
+    </ng-template>
+    <div class="modal-carousel-container">
+      <p-carousel 
+        [value]="chaletImages" 
+        [numVisible]="1" 
+        [numScroll]="1"
+        [circular]="true"
+        [showIndicators]="true"
+        [showNavigators]="true"
+        styleClass="modal-image-carousel">
+        <ng-template pTemplate="item" let-chalet>
+          <div class="modal-image-container">
+            <img [src]="chalet.src" [alt]="chalet.alt" class="modal-image">
+            <div class="modal-chalet-info">
+              <h3 class="modal-chalet-title">{{ chalet.title }}</h3>
+              <p class="modal-chalet-description">{{ chalet.description }}</p>
+            </div>
+          </div>
+        </ng-template>
+      </p-carousel>
+    </div>
+  </p-dialog>
+
+  <!-- Dialog para informações sobre itens necessários - COMENTADO TEMPORARIAMENTE -->
+  <!--
+  <p-dialog 
+    [(visible)]="infoItensVisible" 
+    [modal]="true" 
+    [closable]="true"
+    [draggable]="false"
+    [resizable]="false"
+    header="Itens Necessários para sua Estadia"
+    styleClass="info-dialog"
+    [style]="{width: '90vw', maxWidth: '600px'}">
+    <div class="info-content">
+      <div class="alert-banner">
+        <i class="pi pi-info-circle"></i>
+        <p>Para garantir seu conforto durante a estadia, é importante trazer os seguintes itens:</p>
+      </div>
+      
+      <div class="items-section">
+        <h4><i class="pi pi-home"></i> Roupas de Cama</h4>
+        <ul>
+          <li>Lençóis</li>
+          <li>Fronhas</li>
+          <li>Cobertores ou edredons</li>
+        </ul>
+      </div>
+      
+      <div class="items-section">
+        <h4><i class="pi pi-sparkles"></i> Itens de Higiene Pessoal</h4>
+        <ul>
+          <li>Toalhas de banho</li>
+          <li>Sabonete e shampoo</li>
+          <li>Produtos de higiene pessoal</li>
+        </ul>
+      </div>
+      
+      <div class="note-footer">
+        <i class="pi pi-exclamation-triangle"></i>
+        <span>Os chalés não fornecem estes itens.</span>
+      </div>
+    </div>
+  </p-dialog>
+  -->
+
+  <!-- Dialog para Tabela de Preços -->
+  <p-dialog 
+    [(visible)]="tabelaPrecosVisible" 
+    [modal]="true" 
+    [closable]="true"
+    [draggable]="false"
+    [resizable]="false"
+    header="Tabela de Preços - Diária Completa"
+    styleClass="price-table-dialog"
+    [style]="{width: '90vw', maxWidth: '600px'}">
+    <div class="price-dialog-content">
+      <div class="price-intro">
+        <i class="pi pi-info-circle"></i>
+        <p>Nossos valores são calculados por dia de acordo com a quantidade de pessoas:</p>
+      </div>
+      
+      <div class="price-items">
+        @for (faixa of faixasPreco; track faixa.maxPessoas) {
+          <div class="price-item">
+            <div class="price-item-header">
+              <i class="pi pi-users"></i>
+              <span class="people-range">Até {{ faixa.maxPessoas }} pessoas</span>
+            </div>
+            <div class="price-item-value">{{ faixa.valor | currency:'BRL':'symbol':'1.2-2':'pt-BR' }} <span class="per-day">/dia</span></div>
+          </div>
+        }
+      </div>
+      
+      <div class="price-footer-note">
+        <i class="pi pi-info-circle"></i>
+        <span>O valor total será calculado multiplicando o valor da faixa pelo número de dias da reserva.</span>
+      </div>
+    </div>
+  </p-dialog>
 </div>

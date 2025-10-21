@@ -1,0 +1,37 @@
+<section id="hero" class="hero" 
+         (mouseenter)="onMouseEnter()" 
+         (mouseleave)="onMouseLeave()">
+  <div class="hero-carousel">
+    <div class="slide" 
+         *ngFor="let slide of slides; let i = index"
+         [class.active]="currentSlide === i">
+      <img [src]="slide.image" 
+           [alt]="slide.alt"
+           loading="eager">
+      <div class="overlay"></div>
+      <div class="content">
+        <h1 class="title">{{ slides[currentSlide]?.title }}</h1>
+        <p class="subtitle">{{ slides[currentSlide]?.subtitle }}</p>
+        <!-- <button class="cta-button" (click)="onBookingClick()">
+          {{ slide.cta }}
+        </button> -->
+      </div>
+    </div>
+  </div>
+  
+  <div class="carousel-controls">
+    <button class="control-btn prev" (click)="prevSlide()">
+      <i class="pi pi-chevron-left"></i>
+    </button>
+    
+    <div class="dots">
+      <span *ngFor="let slide of slides; let i = index" 
+            [class.active]="currentSlide === i"
+            (click)="goToSlide(i)"></span>
+    </div>
+    
+    <button class="control-btn next" (click)="nextSlide()">
+      <i class="pi pi-chevron-right"></i>
+    </button>
+  </div>
+</section>
