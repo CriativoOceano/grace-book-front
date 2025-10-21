@@ -6,8 +6,8 @@
   command = "npm run build:prod"
 
 [build.environment]
-  # Versão do Node.js
-  NODE_VERSION = "18"
+  # Versão do Node.js (compatível com Angular 20)
+  NODE_VERSION = "20"
   # Configuração para resolver conflitos de dependências
   NPM_FLAGS = "--legacy-peer-deps"
 
