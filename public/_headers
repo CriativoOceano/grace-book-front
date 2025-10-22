@@ -1,5 +1,5 @@
 # Headers de segurança para Netlify
-# Este arquivo complementa as configurações do netlify.toml
+# Configuração corrigida para evitar ERR_CONTENT_DECODING_FAILED
 
 # Headers para todos os arquivos
 /*
@@ -9,15 +9,20 @@
   Referrer-Policy: strict-origin-when-cross-origin
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com https://www.google.com https://maps.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api-sandbox.asaas.com https://api.asaas.com https://*.firebaseapp.com https://*.googleapis.com https://grace-book-back.onrender.com https://viacep.com.br https://*.firebasestorage.app; frame-src 'self' https://www.google.com https://maps.google.com https://*.google.com;
 
-# Headers específicos para arquivos JavaScript
+# Headers específicos para arquivos JavaScript (sem compressão adicional)
 /*.js
   Cache-Control: public, max-age=31536000, immutable
   Content-Type: application/javascript
 
-# Headers específicos para arquivos CSS
+# Headers específicos para arquivos CSS (sem compressão adicional)
 /*.css
   Cache-Control: public, max-age=31536000, immutable
   Content-Type: text/css
+
+# Headers para arquivos HTML
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+  Content-Type: text/html
 
 # Headers para assets estáticos
 /assets/*
@@ -43,3 +48,11 @@
 /*.ico
   Cache-Control: public, max-age=31536000, immutable
   Content-Type: image/x-icon
+
+/*.webp
+  Cache-Control: public, max-age=31536000, immutable
+  Content-Type: image/webp
+
+/*.avif
+  Cache-Control: public, max-age=31536000, immutable
+  Content-Type: image/avif
