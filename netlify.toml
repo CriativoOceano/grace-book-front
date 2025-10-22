@@ -25,7 +25,7 @@
   NG_APP_FIREBASE_MEASUREMENT_ID = ""
   
   # API Configuration - CONFIGURAR NO NETLIFY DASHBOARD
-  NG_APP_API_URL = "https://grace-book-backend.onrender.com"
+  NG_APP_API_URL = "https://grace-book-back.onrender.com"
   
   # ASAAS Configuration - CONFIGURAR NO NETLIFY DASHBOARD
   NG_APP_ASAAS_API_KEY = ""
@@ -34,8 +34,8 @@
   NG_APP_ASAAS_WEBHOOK_URL = ""
   
   # Payment Configuration - CONFIGURAR NO NETLIFY DASHBOARD
-  NG_APP_PAYMENT_SUCCESS_URL = ""
-  NG_APP_PAYMENT_CANCEL_URL = ""
+  NG_APP_PAYMENT_SUCCESS_URL = "https://sedecampestre.oceanodagraca.com/payment-success"
+  NG_APP_PAYMENT_CANCEL_URL = "https://sedecampestre.oceanodagraca.com/booking"
   NG_APP_PAYMENT_WEBHOOK_SECRET = ""
 
 # Configurações de redirecionamento para SPA

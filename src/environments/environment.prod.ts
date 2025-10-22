@@ -2,31 +2,16 @@ export const environment = {
   production: true,
   
   // Configurações da API Backend
-  apiUrl: (globalThis as any)['NG_APP_API_URL'] || 'https://grace-book-backend.onrender.com',
+  apiUrl: 'https://grace-book-back.onrender.com',
   
   // Configurações do Firebase
   firebase: {
-    apiKey: (globalThis as any)['NG_APP_FIREBASE_API_KEY'] || '',
-    authDomain: (globalThis as any)['NG_APP_FIREBASE_AUTH_DOMAIN'] || '',
-    projectId: (globalThis as any)['NG_APP_FIREBASE_PROJECT_ID'] || '',
-    storageBucket: (globalThis as any)['NG_APP_FIREBASE_STORAGE_BUCKET'] || '',
-    messagingSenderId: (globalThis as any)['NG_APP_FIREBASE_MESSAGING_SENDER_ID'] || '',
-    appId: (globalThis as any)['NG_APP_FIREBASE_APP_ID'] || '',
-    measurementId: (globalThis as any)['NG_APP_FIREBASE_MEASUREMENT_ID'] || ''
+    apiKey: "AIzaSyCnL84TMKFVcl1Pwc36_sDM8qPfcjDl3Y4",
+    authDomain: "sede-campestre-oceano.firebaseapp.com",
+    projectId: "sede-campestre-oceano",
+    storageBucket: "sede-campestre-oceano.firebasestorage.app",
+    messagingSenderId: "587888881295",
+    appId: "1:587888881295:web:1c29e8f89c65226a2a4afa",
+    measurementId: "G-PQ3VY53780"
   },
-  
-  // Configurações do ASAAS
-  asaas: {
-    apiKey: (globalThis as any)['NG_APP_ASAAS_API_KEY'] || '',
-    environment: (globalThis as any)['NG_APP_ASAAS_ENVIRONMENT'] || 'production',
-    baseUrl: (globalThis as any)['NG_APP_ASAAS_BASE_URL'] || '',
-    webhookUrl: (globalThis as any)['NG_APP_ASAAS_WEBHOOK_URL'] || ''
-  },
-  
-  // Configurações de pagamento
-  payment: {
-    successUrl: (globalThis as any)['NG_APP_PAYMENT_SUCCESS_URL'] || '',
-    cancelUrl: (globalThis as any)['NG_APP_PAYMENT_CANCEL_URL'] || '',
-    webhookSecret: (globalThis as any)['NG_APP_PAYMENT_WEBHOOK_SECRET'] || ''
-  }
 };

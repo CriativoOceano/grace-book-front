@@ -1,25 +1,17 @@
-import { firebaseConfig } from './firebase.config';
-
 export const environment = {
   production: false,
-  
+
   // Configurações da API Backend
   apiUrl: (globalThis as any)['NG_APP_API_URL'] || 'http://localhost:3000',
-  
+
   // Configurações do Firebase
-  firebase: firebaseConfig,
-  
-  // Configurações do ASAAS (será usado pelo backend)
-  asaas: {
-    apiKey: (globalThis as any)['NG_APP_ASAAS_API_KEY'] || '',
-    environment: (globalThis as any)['NG_APP_ASAAS_ENVIRONMENT'] || 'sandbox',
-    baseUrl: (globalThis as any)['NG_APP_ASAAS_BASE_URL'] || 'https://api-sandbox.asaas.com/',
-    webhookUrl: (globalThis as any)['NG_APP_ASAAS_WEBHOOK_URL'] || 'http://localhost:3000/webhook/asaas'
+  firebase: {
+    apiKey: 'AIzaSyCnL84TMKFVcl1Pwc36_sDM8qPfcjDl3Y4',
+    authDomain: 'sede-campestre-oceano.firebaseapp.com',
+    projectId: 'sede-campestre-oceano',
+    storageBucket: 'sede-campestre-oceano.firebasestorage.app',
+    messagingSenderId: '587888881295',
+    appId: '1:587888881295:web:1c29e8f89c65226a2a4afa',
+    measurementId: 'G-PQ3VY53780',
   },
-  
-  // Configurações de pagamento
-  payment: {
-    successUrl: (globalThis as any)['NG_APP_PAYMENT_SUCCESS_URL'] || 'http://localhost:4200/payment-success',
-    cancelUrl: (globalThis as any)['NG_APP_PAYMENT_CANCEL_URL'] || 'http://localhost:4200/booking'
-  }
 };
