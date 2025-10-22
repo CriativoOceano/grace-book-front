@@ -11,10 +11,10 @@ export const environment = {
   
   // Configurações do ASAAS (será usado pelo backend)
   asaas: {
-    apiKey: process.env['NG_APP_ASAAS_API_KEY'] || '',
-    environment: process.env['NG_APP_ASAAS_ENVIRONMENT'] || 'sandbox',
-    baseUrl: process.env['NG_APP_ASAAS_BASE_URL'] || 'https://api-sandbox.asaas.com/',
-    webhookUrl: process.env['NG_APP_ASAAS_WEBHOOK_URL'] || 'http://localhost:3000/webhook/asaas'
+    apiKey: (globalThis as any)['NG_APP_ASAAS_API_KEY'] || '',
+    environment: (globalThis as any)['NG_APP_ASAAS_ENVIRONMENT'] || 'sandbox',
+    baseUrl: (globalThis as any)['NG_APP_ASAAS_BASE_URL'] || 'https://api-sandbox.asaas.com/',
+    webhookUrl: (globalThis as any)['NG_APP_ASAAS_WEBHOOK_URL'] || 'http://localhost:3000/webhook/asaas'
   },
   
   // Configurações de pagamento

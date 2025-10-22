@@ -1,21 +1,21 @@
 // Configurações do Firebase para desenvolvimento
 export const firebaseConfig = {
-  apiKey: process.env['NG_APP_FIREBASE_API_KEY'] || '',
-  authDomain: process.env['NG_APP_FIREBASE_AUTH_DOMAIN'] || '',
-  projectId: process.env['NG_APP_FIREBASE_PROJECT_ID'] || '',
-  storageBucket: process.env['NG_APP_FIREBASE_STORAGE_BUCKET'] || '',
-  messagingSenderId: process.env['NG_APP_FIREBASE_MESSAGING_SENDER_ID'] || '',
-  appId: process.env['NG_APP_FIREBASE_APP_ID'] || '',
-  measurementId: process.env['NG_APP_FIREBASE_MEASUREMENT_ID'] || ''
+  apiKey: (globalThis as any)['NG_APP_FIREBASE_API_KEY'] || '',
+  authDomain: (globalThis as any)['NG_APP_FIREBASE_AUTH_DOMAIN'] || '',
+  projectId: (globalThis as any)['NG_APP_FIREBASE_PROJECT_ID'] || '',
+  storageBucket: (globalThis as any)['NG_APP_FIREBASE_STORAGE_BUCKET'] || '',
+  messagingSenderId: (globalThis as any)['NG_APP_FIREBASE_MESSAGING_SENDER_ID'] || '',
+  appId: (globalThis as any)['NG_APP_FIREBASE_APP_ID'] || '',
+  measurementId: (globalThis as any)['NG_APP_FIREBASE_MEASUREMENT_ID'] || ''
 };
 
 // Configurações do Firebase para produção (usando apenas env vars)
 export const firebaseConfigProd = {
-  apiKey: process.env['NG_APP_FIREBASE_API_KEY'],
-  authDomain: process.env['NG_APP_FIREBASE_AUTH_DOMAIN'],
-  projectId: process.env['NG_APP_FIREBASE_PROJECT_ID'],
-  storageBucket: process.env['NG_APP_FIREBASE_STORAGE_BUCKET'],
-  messagingSenderId: process.env['NG_APP_FIREBASE_MESSAGING_SENDER_ID'],
-  appId: process.env['NG_APP_FIREBASE_APP_ID'],
-  measurementId: process.env['NG_APP_FIREBASE_MEASUREMENT_ID']
+  apiKey: (globalThis as any)['NG_APP_FIREBASE_API_KEY'],
+  authDomain: (globalThis as any)['NG_APP_FIREBASE_AUTH_DOMAIN'],
+  projectId: (globalThis as any)['NG_APP_FIREBASE_PROJECT_ID'],
+  storageBucket: (globalThis as any)['NG_APP_FIREBASE_STORAGE_BUCKET'],
+  messagingSenderId: (globalThis as any)['NG_APP_FIREBASE_MESSAGING_SENDER_ID'],
+  appId: (globalThis as any)['NG_APP_FIREBASE_APP_ID'],
+  measurementId: (globalThis as any)['NG_APP_FIREBASE_MEASUREMENT_ID']
 };
