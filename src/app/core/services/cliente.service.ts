@@ -35,47 +35,18 @@ export class ClienteService {
    * Criar novo cliente/hóspede
    */
   createCliente(cliente: Cliente): Observable<ClienteResponse> {
-    // Mock temporário - simular criação de cliente
-    console.log('Simulando criação de cliente:', cliente);
-    
-    const mockResponse: ClienteResponse = {
-      success: true,
-      data: {
-        ...cliente,
-        id: `cliente_${Date.now()}`,
-        dataCadastro: new Date(),
-        ativo: true
-      },
-      message: 'Cliente criado com sucesso'
-    };
-
-    return new Observable(observer => {
-      setTimeout(() => {
-        observer.next(mockResponse);
-        observer.complete();
-      }, 500); // Simular delay da API
-    });
+    return this.http.post<ClienteResponse>(this.baseUrl, cliente).pipe(
+      catchError(this.handleError.bind(this))
+    );
   }
 
   /**
    * Buscar cliente por email
    */
   getClienteByEmail(email: string): Observable<ClienteResponse> {
-    // Mock temporário - simular busca de cliente
-    console.log('Simulando busca de cliente por email:', email);
-    
-    const mockResponse: ClienteResponse = {
-      success: false, // Simular que cliente não existe
-      data: null,
-      message: 'Cliente não encontrado'
-    };
-
-    return new Observable(observer => {
-      setTimeout(() => {
-        observer.next(mockResponse);
-        observer.complete();
-      }, 300);
-    });
+    return this.http.get<ClienteResponse>(`${this.baseUrl}/email/${email}`).pipe(
+      catchError(this.handleError.bind(this))
+    );
   }
 
   /**
@@ -91,24 +62,9 @@ export class ClienteService {
    * Atualizar cliente existente
    */
   updateCliente(id: string, cliente: Partial<Cliente>): Observable<ClienteResponse> {
-    // Mock temporário - simular atualização de cliente
-    console.log('Simulando atualização de cliente:', id, cliente);
-    
-    const mockResponse: ClienteResponse = {
-      success: true,
-      data: {
-        id,
-        ...cliente
-      } as Cliente,
-      message: 'Cliente atualizado com sucesso'
-    };
-
-    return new Observable(observer => {
-      setTimeout(() => {
-        observer.next(mockResponse);
-        observer.complete();
-      }, 300);
-    });
+    return this.http.put<ClienteResponse>(`${this.baseUrl}/${id}`, cliente).pipe(
+      catchError(this.handleError.bind(this))
+    );
   }
 
   /**
@@ -148,7 +104,6 @@ export class ClienteService {
         }
       }),
       catchError(error => {
-        console.error('Erro ao verificar/criar cliente:', error);
         return throwError(() => error);
       })
     );

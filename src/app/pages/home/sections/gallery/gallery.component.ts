@@ -42,7 +42,6 @@ export class GalleryComponent implements OnInit {
 
   openLightbox(image: any): void {
     // Implementar lightbox futuramente
-    console.log('Abrir lightbox para:', image.alt);
   }
 
   goToBooking(): void {

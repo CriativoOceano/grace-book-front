@@ -11,6 +11,7 @@ import { ToastModule } from 'primeng/toast';
 import { take } from 'rxjs/operators';
 import { ConteudoService, ConteudoSite } from '../../../../core/services/conteudo.service';
 import { FirebaseStorageService } from '../../../../core/services/firebase-storage.service';
+import { ImageOptimizerService } from '../../../../core/services/image-optimizer.service';
 
 @Component({
   selector: 'app-content-manager',
@@ -36,6 +37,7 @@ export class ContentManagerComponent implements OnInit {
   constructor(
     private conteudoService: ConteudoService,
     private firebaseStorage: FirebaseStorageService,
+    private imageOptimizer: ImageOptimizerService,
     private messageService: MessageService
   ) {}
 
@@ -47,13 +49,7 @@ export class ContentManagerComponent implements OnInit {
   async testarFirebaseConnection(): Promise<void> {
     try {
       const isConnected = await this.firebaseStorage.testConnection();
-      if (isConnected) {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Firebase',
-          detail: 'Conexão com Firebase Storage estabelecida com sucesso!'
-        });
-      } else {
+      if(!isConnected) {
         this.messageService.add({
           severity: 'warn',
           summary: 'Firebase',
@@ -61,7 +57,6 @@ export class ContentManagerComponent implements OnInit {
         });
       }
     } catch (error) {
-      console.error('Erro ao testar conexão Firebase:', error);
       this.messageService.add({
         severity: 'error',
         summary: 'Firebase',
@@ -107,17 +102,28 @@ export class ContentManagerComponent implements OnInit {
 
   private async handleImageUpload(file: File, type: string, index: number): Promise<void> {
     try {
+      // Mostrar mensagem de otimização
       this.messageService.add({
         severity: 'info',
-        summary: 'Upload',
-        detail: 'Fazendo upload da imagem...'
+        summary: 'Otimização',
+        detail: 'Otimizando imagem antes do upload...'
       });
       
       // Gerar nome único para o arquivo
       const fileName = this.firebaseStorage.generateUniqueFileName(file.name, type);
       
-      // Upload para Firebase Storage
-      const imageUrl = await this.firebaseStorage.uploadImage(file, fileName);
+      // Upload otimizado para Firebase Storage
+      const { url: imageUrl, optimization } = await this.firebaseStorage.uploadOptimizedImage(file, fileName, type);
+      
+      // Mostrar feedback de otimização
+      const originalSize = this.imageOptimizer.formatFileSize(optimization.originalSize);
+      const optimizedSize = this.imageOptimizer.formatFileSize(optimization.optimizedSize);
+      
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Otimização Concluída',
+        detail: `Imagem otimizada: ${originalSize} → ${optimizedSize} (${optimization.reductionPercentage}% menor)`
+      });
       
       // Atualizar o conteúdo local
       this.updateImageInContent(type, index, imageUrl);

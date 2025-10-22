@@ -952,7 +952,6 @@ export class BookingComponent implements OnInit {
       });
     } else {
       const camposInvalidos = this.getInvalidFields();
-      console.log('❌ Campos inválidos encontrados:', camposInvalidos);
       
       this.messageService.add({ severity: 'error', summary: 'Erro', detail: `Preencha os campos obrigatórios: ${camposInvalidos.join(', ')}` });
     }
@@ -1048,22 +1047,8 @@ export class BookingComponent implements OnInit {
   private getCustomerData(): any {
     const formValue = this.bookingForm.value;
     
-    // 🔍 DEBUG: Log dos valores do formulário
-    console.log('🔍 DEBUG - Valores do formulário:', formValue);
-    console.log('🔍 DEBUG - Campos do hóspede:', {
-      nomeHospede: formValue.nomeHospede,
-      sobrenomeHospede: formValue.sobrenomeHospede,
-      emailHospede: formValue.emailHospede,
-      cpfHospede: formValue.cpfHospede,
-      telefoneHospede: formValue.telefoneHospede
-    });
-    
     // ✅ Validar campos obrigatórios antes de enviar
     if (!formValue.emailHospede || !formValue.cpfHospede) {
-      console.error('❌ Campos obrigatórios ausentes:', {
-        email: formValue.emailHospede,
-        cpf: formValue.cpfHospede
-      });
       throw new Error('Email e CPF são obrigatórios para criar uma reserva');
     }
     
@@ -1076,20 +1061,16 @@ export class BookingComponent implements OnInit {
     
     if (tipoReserva === 'batismo') {
       // Para batismo: data única
-      console.log('🔍 DEBUG - Processando batismo com data:', periodoReserva);
       
       if (periodoReserva instanceof Date) {
         dataInicio = new Date(periodoReserva);
         dataFim = new Date(periodoReserva); // Mesma data para início e fim
         quantidadeDiarias = 1; // Batismo sempre é 1 diária
-        console.log('🔍 DEBUG - Batismo: data única processada:', { dataInicio, dataFim, quantidadeDiarias });
       } else if (Array.isArray(periodoReserva) && periodoReserva.length === 1) {
         dataInicio = new Date(periodoReserva[0]);
         dataFim = new Date(periodoReserva[0]);
         quantidadeDiarias = 1;
-        console.log('🔍 DEBUG - Batismo: array com 1 data processada:', { dataInicio, dataFim, quantidadeDiarias });
       } else {
-        console.error('❌ DEBUG - Batismo: formato de data inválido:', periodoReserva);
         throw new Error('Data de batismo inválida');
       }
     } else {
@@ -1101,15 +1082,6 @@ export class BookingComponent implements OnInit {
         // Calcular quantidade de diárias
         const diferencaMS = dataFim.getTime() - dataInicio.getTime();
         quantidadeDiarias = Math.max(1, Math.ceil(diferencaMS / (1000 * 60 * 60 * 24)));
-        
-        // 🔍 DEBUG: Log detalhado do cálculo
-        console.log('🔍 DEBUG - Cálculo de diárias:', {
-          dataInicio: dataInicio.toISOString(),
-          dataFim: dataFim.toISOString(),
-          diferencaMS: diferencaMS,
-          diferencaDias: diferencaMS / (1000 * 60 * 60 * 24),
-          quantidadeDiarias: quantidadeDiarias
-        });
       } else {
         throw new Error('Período de reserva inválido');
       }

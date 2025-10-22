@@ -63,11 +63,6 @@ export class PaymentService {
     successUrl: string,
     externalReference?: string
   ): Observable<BookingResponse> {
-    console.log('🚀 PaymentService: Criando pagamento via backend');
-    console.log('📋 Dados do cliente:', customerData);
-    console.log('💰 Valor:', amount);
-    console.log('📝 Descrição:', description);
-
     // Preparar dados para o backend
     const bookingRequest: BookingRequest = {
       // Dados da reserva (vêm do formulário)
@@ -89,7 +84,6 @@ export class PaymentService {
 
     return this.bookingService.createBooking(bookingRequest).pipe(
       catchError(error => {
-        console.error('❌ Erro ao criar pagamento via backend:', error);
         return throwError(() => error);
       })
     );
@@ -103,7 +97,6 @@ export class PaymentService {
     customerData: any, 
     successUrl: string
   ): Observable<BookingResponse> {
-    console.log('🎯 PaymentService: Criando checkout para modo:', modoPagamento);
     
     // Calcular valor (isso deve vir do componente)
     const amount = customerData.valorCalculado || 1000; // Valor padrão para teste
@@ -148,7 +141,6 @@ export class PaymentService {
   checkPaymentStatus(paymentId: string): Observable<any> {
     // Este método deveria fazer uma chamada para o ASAAS para verificar o status
     // Por enquanto, vamos retornar um mock
-    console.log('🔍 Verificando status do pagamento:', paymentId);
     
     return new Observable(observer => {
       setTimeout(() => {

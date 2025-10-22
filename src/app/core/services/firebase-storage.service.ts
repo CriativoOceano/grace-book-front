@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { initializeApp } from 'firebase/app';
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject, StorageReference } from 'firebase/storage';
 import { environment } from '../../../environments/environment';
+import { ImageOptimizerService, OptimizationResult } from './image-optimizer.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,14 +10,14 @@ import { environment } from '../../../environments/environment';
 export class FirebaseStorageService {
   private storage: any;
 
-  constructor() {
+  constructor(private imageOptimizer: ImageOptimizerService) {
     // Inicializar Firebase
     const app = initializeApp(environment.firebase);
     this.storage = getStorage(app);
   }
 
   /**
-   * Upload de imagem para o Firebase Storage
+   * Upload de imagem para o Firebase Storage (método original - mantido para retrocompatibilidade)
    * @param file Arquivo de imagem (máximo 9MB)
    * @param path Caminho onde salvar (ex: 'hero/slide1.jpg')
    * @returns Promise com URL de download
@@ -25,7 +26,7 @@ export class FirebaseStorageService {
     try {
       // Validar tipo de arquivo
       if (!this.isValidImageType(file)) {
-        throw new Error('Tipo de arquivo não suportado. Use JPG, PNG ou WEBP.');
+        throw new Error('Tipo de arquivo não suportado. Use JPG, PNG, WEBP ou AVIF.');
       }
 
       // Validar tamanho (9MB máximo)
@@ -45,6 +46,28 @@ export class FirebaseStorageService {
       return downloadURL;
     } catch (error) {
       console.error('Erro no upload:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Upload de imagem otimizada para o Firebase Storage
+   * @param file Arquivo de imagem original
+   * @param path Caminho onde salvar (ex: 'hero/slide1.jpg')
+   * @param type Tipo da imagem para aplicar dimensões específicas
+   * @returns Promise com URL de download e informações de otimização
+   */
+  async uploadOptimizedImage(file: File, path: string, type: string): Promise<{ url: string; optimization: OptimizationResult }> {
+    try {
+      // Otimizar imagem antes do upload
+      const { file: optimizedFile, result } = await this.imageOptimizer.optimizeImage(file, type);
+      
+      // Upload da imagem otimizada
+      const url = await this.uploadImage(optimizedFile, path);
+      
+      return { url, optimization: result };
+    } catch (error) {
+      console.error('Erro no upload otimizado:', error);
       throw error;
     }
   }
@@ -90,7 +113,7 @@ export class FirebaseStorageService {
    * @returns true se for uma imagem válida
    */
   private isValidImageType(file: File): boolean {
-    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/avif'];
     return validTypes.includes(file.type);
   }
 

@@ -169,11 +169,9 @@ export class BookingService {
       'Content-Type': 'application/json'
     });
 
-    console.log('🚀 Enviando dados para o backend (público):', bookingData);
 
     return this.http.post<BookingResponse>(url, bookingData, { headers }).pipe(
       map(response => {
-        console.log('✅ Resposta do backend:', response);
         return response;
       }),
       catchError(error => {
@@ -226,11 +224,9 @@ export class BookingService {
       'Content-Type': 'application/json'
     });
 
-    console.log('🔍 Verificando disponibilidade:', request);
 
     return this.http.post<VerificarDisponibilidadeResponse>(url, request, { headers }).pipe(
       map(response => {
-        console.log('✅ Resposta da disponibilidade:', response);
         return response;
       }),
       catchError(error => {
@@ -250,11 +246,9 @@ export class BookingService {
       'Content-Type': 'application/json'
     });
 
-    console.log('💰 Cotando reserva (público):', request);
 
     return this.http.post<CotarReservaResponse>(url, request, { headers }).pipe(
       map(response => {
-        console.log('✅ Resposta da cotação:', response);
         return response;
       }),
       catchError(error => {
@@ -269,11 +263,10 @@ export class BookingService {
    */
   getReservasConfirmadas(): Observable<any[]> {
     const url = `${this.baseUrl}/reservas/confirmadas`;
-    console.log('🌐 Fazendo requisição para:', url);
     
     return this.http.get<any[]>(url).pipe(
       tap(response => {
-        console.log('✅ Resposta recebida do backend:', response);
+        // Resposta recebida do backend
       }),
       catchError(error => {
         console.error('❌ Erro na requisição:', error);
