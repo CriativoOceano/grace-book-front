@@ -1,0 +1,229 @@
+<div class="consultar-reserva-container">
+  <div class="consultar-reserva-content">
+    <!-- Header -->
+    <div class="page-header">
+      <h1>Consultar Reserva</h1>
+      <p>Digite o código da sua reserva e email para visualizar os detalhes</p>
+    </div>
+
+    <!-- Card de Consulta -->
+    <div class="consulta-card" *ngIf="!mostrarResultado || !reservaEncontrada">
+      <form [formGroup]="consultaForm" (ngSubmit)="consultarReserva()">
+        <div class="form-grid">
+          <div class="form-item">
+            <label>Código da Reserva *</label>
+            <input 
+              formControlName="codigo"
+              placeholder="Ex: RES1001"
+              [class.error]="consultaForm.get('codigo')?.invalid && consultaForm.get('codigo')?.touched"
+            />
+            <div 
+              class="error-message" 
+              *ngIf="consultaForm.get('codigo')?.invalid && consultaForm.get('codigo')?.touched">
+              <span *ngIf="consultaForm.get('codigo')?.errors?.['required']">
+                Código da reserva é obrigatório
+              </span>
+              <span *ngIf="consultaForm.get('codigo')?.errors?.['minlength']">
+                Código deve ter pelo menos 3 caracteres
+              </span>
+            </div>
+          </div>
+
+          <div class="form-item">
+            <label>Email *</label>
+            <input 
+              type="email"
+              formControlName="email"
+              placeholder="seu@email.com"
+              [class.error]="consultaForm.get('email')?.invalid && consultaForm.get('email')?.touched"
+            />
+            <div 
+              class="error-message" 
+              *ngIf="consultaForm.get('email')?.invalid && consultaForm.get('email')?.touched">
+              <span *ngIf="consultaForm.get('email')?.errors?.['required']">
+                Email é obrigatório
+              </span>
+              <span *ngIf="consultaForm.get('email')?.errors?.['email']">
+                Digite um email válido
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button 
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="consultaForm.invalid || isLoading">
+            <i class="pi pi-search"></i>
+            {{ isLoading ? 'Consultando...' : 'Consultar Reserva' }}
+          </button>
+        </div>
+      </form>
+
+      <!-- Erro de Consulta -->
+      <div 
+        *ngIf="erroConsulta" 
+        class="error-alert">
+        <i class="pi pi-exclamation-triangle"></i>
+        {{ erroConsulta }}
+      </div>
+    </div>
+
+    <!-- Resultado da Consulta -->
+    <div *ngIf="mostrarResultado && reservaEncontrada" class="resultado-container">
+      <div class="reserva-card">
+        <div class="reserva-header">
+          <div class="reserva-info">
+            <h2>{{ reservaEncontrada.codigo }}</h2>
+            <div class="reserva-tags">
+              <p-tag 
+                [value]="getTipoText(reservaEncontrada.tipo)" 
+                [severity]="getTipoSeverity(reservaEncontrada.tipo)">
+              </p-tag>
+            </div>
+          </div>
+          <div class="status-tags">
+            <p-tag 
+              [value]="getStatusText(reservaEncontrada.statusReserva)" 
+              [severity]="getStatusSeverity(reservaEncontrada.statusReserva)">
+            </p-tag>
+            <p-tag 
+              *ngIf="reservaEncontrada.pagamento?.status"
+              [value]="getStatusPagamentoText(reservaEncontrada.pagamento?.status || '')" 
+              [severity]="getStatusPagamentoSeverity(reservaEncontrada.pagamento?.status || '')"
+              class="status-pagamento-tag">
+            </p-tag>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Detalhes da Reserva -->
+        <div class="reserva-details">
+          <div class="details-grid">
+            <div class="detail-item">
+              <i class="pi pi-calendar"></i>
+              <div class="detail-content">
+                <span class="detail-label">Data de Início</span>
+                <span class="detail-value">{{ reservaEncontrada.dataInicio | date:'dd/MM/yyyy' }}</span>
+              </div>
+            </div>
+
+            <div class="detail-item">
+              <i class="pi pi-calendar"></i>
+              <div class="detail-content">
+                <span class="detail-label">Data de Fim</span>
+                <span class="detail-value">{{ reservaEncontrada.dataFim | date:'dd/MM/yyyy' }}</span>
+              </div>
+            </div>
+
+            <div class="detail-item">
+              <i class="pi pi-users"></i>
+              <div class="detail-content">
+                <span class="detail-label">Quantidade de Pessoas</span>
+                <span class="detail-value">{{ reservaEncontrada.quantidadePessoas }}</span>
+              </div>
+            </div>
+
+            <div class="detail-item" *ngIf="reservaEncontrada.quantidadeChales > 0">
+              <i class="pi pi-home"></i>
+              <div class="detail-content">
+                <span class="detail-label">Quantidade de Chalés</span>
+                <span class="detail-value">{{ reservaEncontrada.quantidadeChales }}</span>
+              </div>
+            </div>
+
+            <div class="detail-item">
+              <i class="pi pi-clock"></i>
+              <div class="detail-content">
+                <span class="detail-label">Quantidade de Diárias</span>
+                <span class="detail-value">{{ reservaEncontrada.quantidadeDiarias }}</span>
+              </div>
+            </div>
+
+            <div class="detail-item">
+              <i class="pi pi-dollar"></i>
+              <div class="detail-content">
+                <span class="detail-label">Valor Total</span>
+                <span class="detail-value valor-total">R$ {{ reservaEncontrada.valorTotal | number:'1.2-2' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dados do Hóspede -->
+        <div *ngIf="reservaEncontrada.dadosHospede" class="hospede-section">
+          <div class="divider">
+            <span class="divider-text">Dados do responsável pela reserva</span>
+          </div>
+          <div class="hospede-details-simple">
+            <div class="hospede-field">
+              <span class="hospede-label">Nome:</span>
+              <span class="hospede-value">{{ reservaEncontrada.dadosHospede.nome }} {{ reservaEncontrada.dadosHospede.sobrenome }}</span>
+            </div>
+            <div class="hospede-field">
+              <span class="hospede-label">Email:</span>
+              <span class="hospede-value">{{ reservaEncontrada.dadosHospede.email }}</span>
+            </div>
+            <div class="hospede-field" *ngIf="reservaEncontrada.dadosHospede.telefone">
+              <span class="hospede-label">Telefone:</span>
+              <span class="hospede-value">{{ reservaEncontrada.dadosHospede.telefone }}</span>
+            </div>
+            <div class="hospede-field" *ngIf="reservaEncontrada.dadosHospede.cpf">
+              <span class="hospede-label">CPF:</span>
+              <span class="hospede-value">{{ reservaEncontrada.dadosHospede.cpf }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Observações -->
+        <div *ngIf="reservaEncontrada.observacoes" class="observacoes-section">
+          <div class="divider">
+            <span class="divider-text">Observações</span>
+          </div>
+          <p class="observacoes-text">{{ reservaEncontrada.observacoes }}</p>
+        </div>
+
+        <!-- Ações -->
+        <div class="reserva-actions">
+          <button 
+            class="btn btn-primary"
+            *ngIf="podePagar()"
+            (click)="pagarReserva()">
+            <i class="pi pi-credit-card"></i>
+            Realizar Pagamento
+          </button>
+
+          <button 
+            class="btn btn-danger"
+            *ngIf="podeCancelar()"
+            (click)="cancelarReserva()">
+            <i class="pi pi-times"></i>
+            Cancelar Reserva
+          </button>
+
+          <button 
+            class="btn btn-secondary"
+            (click)="novaConsulta()">
+            <i class="pi pi-refresh"></i>
+            Nova Consulta
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estado Vazio -->
+    <div *ngIf="mostrarResultado && !reservaEncontrada" class="empty-state">
+      <div class="empty-content">
+        <i class="pi pi-search empty-icon"></i>
+        <h3>Nenhuma reserva encontrada</h3>
+        <p>Verifique o código da reserva e email informados.</p>
+        <button class="btn btn-primary" (click)="novaConsulta()">
+          <i class="pi pi-refresh"></i>
+          Nova Consulta
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

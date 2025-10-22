@@ -210,6 +210,25 @@ textarea,
   }
 }
 
+// Estilos para o summary mobile
+.mobile-summary {
+  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  
+  &:hover {
+    transform: translateY(-2px);
+  }
+  
+  // Garantir que o card tenha largura total no mobile
+  ::ng-deep .pricing-summary-container {
+    width: 100%;
+    
+    .p-card {
+      width: 100%;
+      margin: 0;
+    }
+  }
+}
+
 // Efeito de pulsação para elementos importantes
 @keyframes pulse-glow {
   0% {
@@ -339,10 +358,19 @@ textarea,
   
   .p-carousel-content {
     height: 100%;
+    overflow: hidden;
   }
   
   .p-carousel-item {
     height: 100%;
+    overflow: hidden;
+  }
+  
+  // Esconder indicadores e navegadores
+  .p-carousel-indicators,
+  .p-carousel-prev,
+  .p-carousel-next {
+    display: none !important;
   }
 }
 
@@ -470,15 +498,22 @@ textarea,
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  position: relative;
 }
 
 .modal-image-carousel {
   width: 100%;
   height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   
   .p-carousel-content {
     height: 100%;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   
   .p-carousel-item {
@@ -489,20 +524,12 @@ textarea,
     overflow: hidden;
   }
   
+  // Esconder apenas indicadores
   .p-carousel-indicators {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-    padding: 8px 16px;
-    
-    .p-carousel-indicator {
-      background: rgba(255, 255, 255, 0.5);
-      
-      &.p-highlight {
-        background: #CBA135;
-      }
-    }
+    display: none !important;
   }
   
+  // Estilizar navegadores
   .p-carousel-prev,
   .p-carousel-next {
     background: rgba(255, 255, 255, 0.2);
@@ -514,11 +541,21 @@ textarea,
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
+    z-index: 10;
+    position: absolute;
     
     &:hover {
       background: rgba(255, 255, 255, 0.3);
       transform: scale(1.1);
     }
+  }
+  
+  .p-carousel-prev {
+    left: 20px;
+  }
+  
+  .p-carousel-next {
+    right: 20px;
   }
 }
 
@@ -530,119 +567,51 @@ textarea,
   justify-content: center;
   position: relative;
   flex-direction: column;
-  padding: 0;
+  padding: 2rem;
   overflow: hidden;
+  margin: 0 auto;
 }
 
 .modal-image {
-  width: 100%;
-  height: 75%;
-  object-fit: cover;
+  max-width: 95%;
+  max-height: 95%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
   border-radius: 8px;
-}
-
-.modal-chalet-info {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
-  padding: 1rem 1.5rem;
-  color: #FAFAFA;
-  text-align: center;
-  max-height: 25%;
-  overflow: hidden;
-  z-index: 10;
-}
-
-.modal-chalet-title {
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 0.2rem;
-  color: #FAFAFA;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-}
-
-.modal-chalet-description {
-  font-size: 0.8rem;
-  line-height: 1.2;
-  color: #FAFAFA;
-  margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
 }
 
 // Responsividade para diferentes dispositivos
 @media (max-width: 768px) {
+  .modal-image-container {
+    padding: 1rem;
+  }
+  
   .modal-image {
-    height: 70%;
-  }
-  
-  .modal-chalet-info {
-    padding: 0.5rem 0.75rem;
-    max-height: 30%;
-  }
-  
-  .modal-chalet-title {
-    font-size: 0.9rem;
-    margin-bottom: 0.15rem;
-  }
-  
-  .modal-chalet-description {
-    font-size: 0.7rem;
-    line-height: 1.1;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
+    max-width: 98%;
+    max-height: 85%;
   }
 }
 
 @media (max-width: 480px) {
+  .modal-image-container {
+    padding: 0.5rem;
+  }
+  
   .modal-image {
-    height: 65%;
-  }
-  
-  .modal-chalet-info {
-    padding: 0.4rem 0.6rem;
-    max-height: 35%;
-  }
-  
-  .modal-chalet-title {
-    font-size: 0.8rem;
-    margin-bottom: 0.1rem;
-  }
-  
-  .modal-chalet-description {
-    font-size: 0.65rem;
-    line-height: 1.0;
-    -webkit-line-clamp: 4;
-    line-clamp: 4;
+    max-width: 98%;
+    max-height: 80%;
   }
 }
 
 @media (min-width: 1024px) {
+  .modal-image-container {
+    padding: 3rem;
+  }
+  
   .modal-image {
-    height: 80%;
-  }
-  
-  .modal-chalet-info {
-    padding: 1.2rem 1.8rem;
-    max-height: 20%;
-  }
-  
-  .modal-chalet-title {
-    font-size: 1.1rem;
-    margin-bottom: 0.3rem;
-  }
-  
-  .modal-chalet-description {
-    font-size: 0.85rem;
-    line-height: 1.3;
-    -webkit-line-clamp: 2;
-  line-clamp: 2;
+    max-width: 90%;
+    max-height: 90%;
   }
 }
 

@@ -15,6 +15,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/booking/booking.component').then(m => m.BookingComponent) 
   },
   { 
+    path: 'consultar-reserva', 
+    loadComponent: () => import('./pages/consultar-reserva/consultar-reserva.component').then(m => m.ConsultarReservaComponent) 
+  },
+  { 
     path: 'payment-success', 
     loadComponent: () => import('./pages/payment-success/payment-success.component').then(m => m.PaymentSuccessComponent) 
   },

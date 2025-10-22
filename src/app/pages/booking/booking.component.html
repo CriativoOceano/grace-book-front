@@ -28,6 +28,20 @@
     
     <div *ngIf="formInitialized">
       
+      <!-- Summary Mobile - Top -->
+      <div class="block lg:hidden mb-6" *ngIf="hasFormData()">
+        <div class="mobile-summary" [@fadeInSlide]="hasFormData()">
+          <app-pricing-summary 
+            [pricing]="pricingData"
+            [precoChale]="precoChale"
+            [showFinalizeButton]="currentStep === 3"
+            [isProcessing]="isProcessingPayment"
+            [canFinalize]="bookingForm.get('modoPagamento')?.valid || false"
+            (onFinalize)="finalizarReserva()">
+          </app-pricing-summary>
+        </div>
+      </div>
+
       <!-- Main Content - Form and Summary Side by Side -->
       <div [class]="hasFormData() ? 'grid grid-cols-1 lg:grid-cols-3 gap-8' : 'grid grid-cols-1 gap-8'">
         
@@ -237,7 +251,7 @@
                       [numScroll]="1"
                       [circular]="true"
                       [autoplayInterval]="4000"
-                      [showIndicators]="true"
+                      [showIndicators]="false"
                       [showNavigators]="false"
                       styleClass="chale-image-carousel">
                       <ng-template let-chalet #item>
@@ -665,8 +679,8 @@
         </form>
         </div>
         
-        <!-- Summary Sidebar - Sticky -->
-        <div class="lg:col-span-1" *ngIf="hasFormData()">
+        <!-- Summary Sidebar - Desktop Only -->
+        <div class="hidden lg:block lg:col-span-1" *ngIf="hasFormData()">
           <div class="sticky-summary" [@fadeInSlide]="hasFormData()">
             <app-pricing-summary 
               [pricing]="pricingData"
@@ -700,16 +714,12 @@
         [numVisible]="1" 
         [numScroll]="1"
         [circular]="true"
-        [showIndicators]="true"
+        [showIndicators]="false"
         [showNavigators]="true"
         styleClass="modal-image-carousel">
         <ng-template let-chalet #item>
           <div class="modal-image-container">
             <img [src]="chalet.src" [alt]="chalet.alt" class="modal-image">
-            <div class="modal-chalet-info">
-              <h3 class="modal-chalet-title">{{ chalet.title }}</h3>
-              <p class="modal-chalet-description">{{ chalet.description }}</p>
-            </div>
           </div>
         </ng-template>
       </p-carousel>

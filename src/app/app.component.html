@@ -18,6 +18,7 @@
           <li><a (click)="scrollToSection('structure')">Estrutura</a></li>
           <li><a (click)="scrollToSection('gallery')">Galeria</a></li>
           <li><a (click)="scrollToSection('location')">Localização</a></li>
+          <li><a routerLink="/consultar-reserva">Minhas Reservas</a></li>
         </ul>
       </nav>
 
@@ -29,9 +30,6 @@
             <button class="btn btn-primary desktop-only" routerLink="/reservar">
               <i class="pi pi-calendar-plus"></i>
               Reservar
-            </button>
-            <button class="btn btn-secondary mobile-btn" routerLink="/admin-login" (click)="closeMenu()">
-              <i class="pi pi-cog"></i>
             </button>
           </ng-container>
         } @else {
@@ -83,14 +81,14 @@
         <!-- Mobile User Actions -->
         <div class="mobile-user-actions">
           @if (!isLoggedIn) {
+            <button class="btn btn-outline mobile-btn" routerLink="/consultar-reserva" (click)="closeMenu()">
+              <i class="pi pi-search"></i>
+              Consultar Reserva
+            </button>
+            
             <button class="btn btn-primary mobile-btn" routerLink="/reservar" (click)="closeMenu()">
               <i class="pi pi-calendar-plus"></i>
               Reservar
-            </button>
-            
-            <!-- Botão Admin no mobile -->
-            <button class="btn btn-secondary mobile-btn" routerLink="/admin-login" (click)="closeMenu()">
-              <i class="pi pi-cog"></i>
             </button>
           } @else {
             <div class="mobile-user-info">
@@ -149,8 +147,6 @@
     
     <div class="footer-bottom">
       <p>&copy; {{ currentYear }} Sede Campestre. Todos os direitos reservados.</p>
-      <a routerLink="/admin" *ngIf="user?.isAdmin" class="admin-link">Admin</a>
-
     </div>
   </footer>
 </div>

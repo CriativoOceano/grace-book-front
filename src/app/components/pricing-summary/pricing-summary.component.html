@@ -79,13 +79,13 @@
         <!-- Breakdown de Preços -->
         <div class="pricing-breakdown">
           <!-- Valor da Diária -->
-          <div *ngIf="pricing.tipoReserva === 'DIARIA'" class="breakdown-item">
+          <div *ngIf="pricing.tipoReserva === 'diaria'" class="breakdown-item">
             <div class="breakdown-label">
               <span class="breakdown-text">Diária ({{ getFaixaPessoas() }})</span>
               <span *ngIf="pricing.quantidadeDias > 0" class="breakdown-days">× {{ pricing.quantidadeDias }} dia(s)</span>
             </div>
             <div class="breakdown-value">
-              {{ pricing.valorDiaria | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
+              {{ (pricing.valorDiaria * pricing.quantidadeDias) | currency:'BRL':'symbol':'1.2-2':'pt-BR' }}
             </div>
           </div>
 
@@ -101,7 +101,7 @@
           </div>
 
           <!-- Valor do Batismo -->
-          <div *ngIf="pricing.tipoReserva === 'BATISMO'" class="breakdown-item">
+          <div *ngIf="pricing.tipoReserva === 'batismo'" class="breakdown-item">
             <div class="breakdown-label">
               <span class="breakdown-text">Serviço de Batismo</span>
             </div>

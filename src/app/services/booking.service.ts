@@ -275,6 +275,29 @@ export class BookingService {
     );
   }
 
+  /**
+   * Consultar reserva por código e email (público)
+   */
+  consultarReserva(codigo: string, email: string): Observable<any> {
+    const url = `${this.baseUrl}/reservas/consultar`;
+    
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+
+    const body = { codigo, email };
+
+    return this.http.post<any>(url, body, { headers }).pipe(
+      map(response => {
+        return response;
+      }),
+      catchError(error => {
+        console.error('❌ Erro ao consultar reserva:', error);
+        return this.handleError(error);
+      })
+    );
+  }
+
   private handleError(error: any): Observable<never> {
     console.error('Erro no BookingService:', error);
     let errorMessage = 'Ocorreu um erro desconhecido.';
