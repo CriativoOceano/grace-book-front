@@ -25,7 +25,7 @@
   NG_APP_FIREBASE_MEASUREMENT_ID = ""
   
   # API Configuration - CONFIGURAR NO NETLIFY DASHBOARD
-  NG_APP_API_URL = ""
+  NG_APP_API_URL = "https://grace-book-backend.onrender.com"
   
   # ASAAS Configuration - CONFIGURAR NO NETLIFY DASHBOARD
   NG_APP_ASAAS_API_KEY = ""

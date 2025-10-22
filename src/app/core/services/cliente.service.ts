@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
 import { map, catchError, switchMap } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 export interface Cliente {
   id?: string;
@@ -26,7 +27,7 @@ export interface ClienteResponse {
   providedIn: 'root'
 })
 export class ClienteService {
-  private readonly baseUrl = 'http://localhost:3000/api/clientes'; // URL fixa por enquanto
+  private readonly baseUrl = `${environment.apiUrl}/api/clientes`;
 
   constructor(private http: HttpClient) {}
 

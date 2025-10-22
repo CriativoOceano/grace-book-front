@@ -4,7 +4,7 @@ export const environment = {
   production: false,
   
   // Configurações da API Backend
-  apiUrl: 'http://localhost:3000',
+  apiUrl: (globalThis as any)['NG_APP_API_URL'] || 'http://localhost:3000',
   
   // Configurações do Firebase
   firebase: firebaseConfig,
@@ -19,7 +19,7 @@ export const environment = {
   
   // Configurações de pagamento
   payment: {
-    successUrl: 'http://localhost:4200/payment-success',
-    cancelUrl: 'http://localhost:4200/booking'
+    successUrl: (globalThis as any)['NG_APP_PAYMENT_SUCCESS_URL'] || 'http://localhost:4200/payment-success',
+    cancelUrl: (globalThis as any)['NG_APP_PAYMENT_CANCEL_URL'] || 'http://localhost:4200/booking'
   }
 };

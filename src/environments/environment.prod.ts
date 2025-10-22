@@ -2,7 +2,7 @@ export const environment = {
   production: true,
   
   // Configurações da API Backend
-  apiUrl: (globalThis as any)['NG_APP_API_URL'] || '',
+  apiUrl: (globalThis as any)['NG_APP_API_URL'] || 'https://grace-book-backend.onrender.com',
   
   // Configurações do Firebase
   firebase: {

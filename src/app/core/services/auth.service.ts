@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 export interface User {
   id: string;
@@ -37,7 +38,7 @@ export interface AdminLoginRequest {
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly API_URL = 'http://localhost:3000';
+  private readonly API_URL = environment.apiUrl;
   private readonly TOKEN_KEY = 'grace_book_token';
   private readonly USER_KEY = 'grace_book_user';
 
