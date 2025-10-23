@@ -97,7 +97,7 @@ export class CancelReservationDialogComponent implements OnInit {
     const pagamento = this.reserva.pagamento;
     
     // Verificar se pagamento foi confirmado
-    if (pagamento.status !== 'CONFIRMADO' && pagamento.status !== 'RECEBIDO' && pagamento.status !== 'PAGO') {
+    if (pagamento.status !== 'CONFIRMADO' && pagamento.status !== 'RECEBIDO' && pagamento.status !== 'PAGO' && pagamento.status !== 'PENDENTE') {
       return false;
     }
 
@@ -138,6 +138,18 @@ export class CancelReservationDialogComponent implements OnInit {
       'BOLETO': 'Boleto'
     };
     return methods[method] || method;
+  }
+
+  getPaymentStatusText(status: string): string {
+    const statuses: { [key: string]: string } = {
+      'PENDENTE': 'Pendente',
+      'CONFIRMADO': 'Confirmado',
+      'RECEBIDO': 'Recebido',
+      'PAGO': 'Pago',
+      'CANCELADO': 'Cancelado',
+      'ESTORNADO': 'Estornado'
+    };
+    return statuses[status] || status;
   }
 
   getRefundInfo(): string {

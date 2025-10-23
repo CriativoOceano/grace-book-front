@@ -24,7 +24,7 @@
       <div class="grid grid-cols-2 gap-4">
         <div>
           <label class="font-semibold text-gray-600">Status:</label>
-          <p class="text-lg">{{ reserva.pagamento!.status }}</p>
+          <p class="text-lg">{{ getPaymentStatusText(reserva.pagamento!.status) }}</p>
         </div>
         <div>
           <label class="font-semibold text-gray-600">Método:</label>
