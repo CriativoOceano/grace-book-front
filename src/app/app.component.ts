@@ -68,4 +68,16 @@ export class AppComponent {
       });
     }
   }
+
+  scrollToTop() {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }
+
+  navigateToAdmin() {
+    this.scrollToTop();
+    this.router.navigate(['/admin']);
+  }
 }
