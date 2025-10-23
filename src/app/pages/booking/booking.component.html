@@ -58,8 +58,8 @@
               <ng-template pTemplate="header">
                 <div class="card-header">
                   <p-steps 
-                    [model]="steps" 
-                    [activeIndex]="currentStep"
+                    [model]="filteredSteps" 
+                    [activeIndex]="adjustedActiveIndex"
                     [readonly]="false"
                     styleClass="custom-steps-header">
                   </p-steps>
@@ -128,7 +128,7 @@
                           <div *ngIf="bookingForm.get('quantidadePessoas')?.invalid && bookingForm.get('quantidadePessoas')?.touched" 
                                class="error-message">
                             <i class="pi pi-exclamation-triangle"></i>
-                            Quantidade deve ser entre 1 e 200 pessoas
+                            Quantidade deve ser entre 1 e {{ qtdMaxPessoas }} pessoas
                           </div>
                         </div>
                       </div>
@@ -213,13 +213,13 @@
           </div>
 
           <!-- Step 2: Adicionais -->
-          <div *ngIf="currentStep === 1" class="animate-slide-up">
+          <div *ngIf="currentStep === 1 && bookingForm.get('tipo')?.value !== 'batismo'" class="animate-slide-up">
             <p-card>
               <ng-template pTemplate="header">
                 <div class="card-header">
                   <p-steps 
-                    [model]="steps" 
-                    [activeIndex]="currentStep"
+                    [model]="filteredSteps" 
+                    [activeIndex]="adjustedActiveIndex"
                     [readonly]="false"
                     styleClass="custom-steps-header">
                   </p-steps>
@@ -229,7 +229,7 @@
               <div class="space-y-6">
 
                 <!-- Carrossel de Imagens do Chalé -->
-                <div class="form-group">
+                <div class="form-group" *ngIf="bookingForm.get('tipo')?.value !== 'batismo'">
                   <label class="form-label">Nossos Chalés</label>
                   
                   <!-- Loading state -->
@@ -350,7 +350,6 @@
                     </span>
                   </div>
                 </div>
-
                 <!-- Observações -->
                 <div class="form-group">
                   <label class="form-label">Observações</label>
@@ -392,8 +391,8 @@
               <ng-template pTemplate="header">
                 <div class="card-header">
                   <p-steps 
-                    [model]="steps" 
-                    [activeIndex]="currentStep"
+                    [model]="filteredSteps" 
+                    [activeIndex]="adjustedActiveIndex"
                     [readonly]="false"
                     styleClass="custom-steps-header">
                   </p-steps>
@@ -615,8 +614,8 @@
               <ng-template pTemplate="header">
                 <div class="card-header">
                   <p-steps 
-                    [model]="steps" 
-                    [activeIndex]="currentStep"
+                    [model]="filteredSteps" 
+                    [activeIndex]="adjustedActiveIndex"
                     [readonly]="false"
                     styleClass="custom-steps-header">
                   </p-steps>

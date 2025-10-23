@@ -43,7 +43,7 @@
                 <th>Chalés</th>
                 <th>Valor Total</th>
                 <th>Status</th>
-                <!-- <th>Ações</th> -->
+                <th>Ações</th>
               </tr>
             </ng-template>
             
@@ -62,25 +62,37 @@
                             <td>
                               <p-tag [value]="getStatusText(reserva.statusReserva)" [severity]="getStatusSeverity(reserva.statusReserva)"></p-tag>
                             </td>
-                            <!-- <td>
+                            <td>
                               <div class="flex gap-2">
-                                <p-button icon="pi pi-eye" styleClass="p-button-sm p-button-info" (click)="viewDetails(reserva)"></p-button>
-                                <p-button icon="pi pi-check" styleClass="p-button-sm p-button-success" (click)="confirmBooking(reserva)"></p-button>
-                                <p-button icon="pi pi-times" styleClass="p-button-sm p-button-danger" (click)="cancelBooking(reserva)"></p-button>
+                                <p-button 
+                                  icon="pi pi-eye" 
+                                  styleClass="p-button-sm p-button-info" 
+                                  (click)="viewReservationDetails(reserva)"
+                                  pTooltip="Ver detalhes"
+                                  tooltipPosition="top">
+                                </p-button>
+                                <p-button 
+                                  icon="pi pi-times" 
+                                  styleClass="p-button-sm p-button-danger" 
+                                  (click)="cancelReservation(reserva)"
+                                  pTooltip="Cancelar reserva"
+                                  tooltipPosition="top"
+                                  [disabled]="reserva.statusReserva === 'CANCELADA' || reserva.statusReserva === 'UTILIZADA'">
+                                </p-button>
                               </div>
-                            </td> -->
+                            </td>
                           </tr>
                         </ng-template>
             
             <ng-template #footer>
               <tr>
-                <td colspan="10">Total de {{ reservas ? reservas.length : 0 }} reservas encontradas.</td>
+                <td colspan="11">Total de {{ reservas ? reservas.length : 0 }} reservas encontradas.</td>
               </tr>
             </ng-template>
             
             <ng-template #emptymessage>
               <tr>
-                <td colspan="10" class="text-center">
+                <td colspan="11" class="text-center">
                   <p>As reservas aparecerão aqui quando os clientes fizerem suas solicitações.</p>
                 </td>
               </tr>
@@ -124,3 +136,5 @@
     </p-tabs>
   </div>
 </div>
+
+<p-toast></p-toast>

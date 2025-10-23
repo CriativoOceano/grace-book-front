@@ -33,7 +33,6 @@ export class BaptismComponent implements OnInit {
         this.isLoading = false;
       },
       error: (error) => {
-        console.error('Erro ao carregar imagem da seção Batismo:', error);
         this.baptismImage = this.conteudoService.getBaptismImage();
         this.isLoading = false;
       }

@@ -67,7 +67,6 @@ export class ConfigDisponibilidadeComponent implements OnInit {
         this.isLoading = false;
       },
       error: (error: any) => {
-        console.error('Erro ao carregar bloqueios:', error);
         this.messageService.add({
           severity: 'error',
           summary: 'Erro',
@@ -102,7 +101,6 @@ export class ConfigDisponibilidadeComponent implements OnInit {
         this.isSaving = false;
       },
       error: (error: any) => {
-        console.error('Erro ao bloquear data:', error);
         this.messageService.add({
           severity: 'error',
           summary: 'Erro',
@@ -137,7 +135,6 @@ export class ConfigDisponibilidadeComponent implements OnInit {
         this.carregarBloqueios();
       },
       error: (error: any) => {
-        console.error('Erro ao desbloquear data:', error);
         this.messageService.add({
           severity: 'error',
           summary: 'Erro',

@@ -33,7 +33,6 @@ export class GalleryComponent implements OnInit {
         this.isLoading = false;
       },
       error: (error) => {
-        console.error('Erro ao carregar imagens:', error);
         this.images = this.conteudoService.getGalleryImages();
         this.isLoading = false;
       }

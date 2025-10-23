@@ -65,7 +65,6 @@ export class ConteudoService {
         this.conteudoSubject.next(conteudo);
       },
       error: (error) => {
-        console.error('Erro ao carregar conteúdo:', error);
         // Usar dados padrão em caso de erro
         this.conteudoSubject.next(this.getConteudoPadrao());
       }

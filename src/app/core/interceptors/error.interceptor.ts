@@ -12,7 +12,6 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((error: HttpErrorResponse) => {
       // Tratar erro 401 (Unauthorized) - Token expirado ou inválido
       if (error.status === 401) {
-        console.warn('🔒 Token expirado ou inválido. Redirecionando para login...');
         
         // Limpar dados de autenticação
         authService.logout();
@@ -29,7 +28,6 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       
       // Tratar erro 403 (Forbidden) - Acesso negado
       if (error.status === 403) {
-        console.warn('🚫 Acesso negado. Redirecionando...');
         router.navigate(['/admin-login']);
         return throwError(() => new Error('Acesso negado.'));
       }

@@ -1,0 +1,204 @@
+<div class="reservation-details-dialog">
+  <div class="dialog-header">
+    <div class="flex justify-end" *ngIf="reserva && canCancelReservation()">
+      <p-button 
+        label="Cancelar Reserva" 
+        icon="pi pi-times" 
+        styleClass="p-button-danger p-button-sm"
+        [ngStyle]="{'background-color': '#dc3545', 'border-color': '#dc3545'}"
+        (click)="openCancelDialog()">
+      </p-button>
+    </div>
+  </div>
+
+  <div class="dialog-content" *ngIf="reserva">
+    <!-- Informações Básicas -->
+    <p-card header="Informações Básicas" class="mb-4">
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="font-semibold text-gray-600">Código:</label>
+          <p class="text-lg font-bold text-blue-600">{{ reserva.codigo }}</p>
+        </div>
+        <div>
+          <label class="font-semibold text-gray-600">Tipo:</label>
+          <p-tag 
+            [value]="getTipoText(reserva.tipo)" 
+            [severity]="getTipoSeverity(reserva.tipo)">
+          </p-tag>
+        </div>
+        <div>
+          <label class="font-semibold text-gray-600">Status:</label>
+          <p-tag 
+            [value]="getStatusText(reserva.statusReserva)" 
+            [severity]="getStatusSeverity(reserva.statusReserva)">
+          </p-tag>
+        </div>
+      </div>
+    </p-card>
+
+    <!-- Datas e Capacidade -->
+    <p-card header="Datas e Capacidade" class="mb-4">
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="font-semibold text-gray-600">Data de Início:</label>
+          <p class="text-lg">{{ formatDate(reserva.dataInicio) }}</p>
+        </div>
+        <div>
+          <label class="font-semibold text-gray-600">Data de Fim:</label>
+          <p class="text-lg">{{ formatDate(reserva.dataFim) }}</p>
+        </div>
+        <div>
+          <label class="font-semibold text-gray-600">Quantidade de Diárias:</label>
+          <p class="text-lg">{{ reserva.quantidadeDiarias }}</p>
+        </div>
+        <div>
+          <label class="font-semibold text-gray-600">Quantidade de Pessoas:</label>
+          <p class="text-lg">{{ reserva.quantidadePessoas }}</p>
+        </div>
+        <div>
+          <label class="font-semibold text-gray-600">Quantidade de Chalés:</label>
+          <p class="text-lg">{{ reserva.quantidadeChales }}</p>
+        </div>
+      </div>
+    </p-card>
+
+    <!-- Valores -->
+    <p-card header="Valores" class="mb-4">
+      <div class="grid grid-cols-3 gap-4">
+        <div *ngIf="reserva.tipo !== 'batismo' && reserva.valorDiaria && !isNaN(reserva.valorDiaria)">
+          <label class="font-semibold text-gray-600">Valor da Diária:</label>
+          <p class="text-lg font-bold text-green-600">{{ formatCurrency(reserva.valorDiaria) }}</p>
+        </div>
+        <div *ngIf="reserva.tipo !== 'batismo' && reserva.valorDiariaComChale && !isNaN(reserva.valorDiariaComChale)">
+          <label class="font-semibold text-gray-600">Valor Diária + Chalé:</label>
+          <p class="text-lg font-bold text-blue-600">{{ formatCurrency(reserva.valorDiariaComChale) }}</p>
+        </div>
+        <div>
+          <label class="font-semibold text-gray-600">Valor Total:</label>
+          <p class="text-xl font-bold text-primary">{{ formatCurrency(reserva.valorTotal) }}</p>
+        </div>
+      </div>
+    </p-card>
+
+    <!-- Dados do Cliente -->
+    <p-card header="Dados do Cliente" class="mb-4">
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="font-semibold text-gray-600">Nome:</label>
+          <p class="text-lg">{{ reserva.usuario.nome }} {{ reserva.usuario.sobrenome }}</p>
+        </div>
+        <div>
+          <label class="font-semibold text-gray-600">Email:</label>
+          <p class="text-lg">{{ reserva.usuario.email }}</p>
+        </div>
+        <div>
+          <label class="font-semibold text-gray-600">Telefone:</label>
+          <p class="text-lg">{{ reserva.usuario.telefone }}</p>
+        </div>
+        <div>
+          <label class="font-semibold text-gray-600">CPF:</label>
+          <p class="text-lg">{{ reserva.usuario.cpf }}</p>
+        </div>
+      </div>
+    </p-card>
+
+    <!-- Informações de Pagamento -->
+    <p-card header="Informações de Pagamento" class="mb-4" *ngIf="reserva.pagamento">
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="font-semibold text-gray-600">Status do Pagamento:</label>
+          <p-tag 
+            [value]="getPaymentStatusText(reserva.pagamento!.status)" 
+            [severity]="getPaymentStatusSeverity(reserva.pagamento!.status)">
+          </p-tag>
+        </div>
+        <div>
+          <label class="font-semibold text-gray-600">Método de Pagamento:</label>
+          <p class="text-lg">{{ getPaymentMethodText(reserva.pagamento!.modoPagamento) }}</p>
+        </div>
+        <div *ngIf="reserva.pagamento!.valorTotal && !isNaN(reserva.pagamento!.valorTotal)">
+          <label class="font-semibold text-gray-600">Valor:</label>
+          <p class="text-lg font-bold">{{ formatCurrency(reserva.pagamento!.valorTotal) }}</p>
+        </div>
+        <div *ngIf="reserva.pagamento!.qtdParcelas && reserva.pagamento!.qtdParcelas > 0">
+          <label class="font-semibold text-gray-600">Parcelas:</label>
+          <p class="text-lg">{{ reserva.pagamento!.qtdParcelas }}</p>
+        </div>
+        <div *ngIf="reserva.pagamento!.dataPagamento">
+          <label class="font-semibold text-gray-600">Data do Pagamento:</label>
+          <p class="text-lg">{{ formatDateTime(reserva.pagamento!.dataPagamento) }}</p>
+        </div>
+        <div *ngIf="reserva.pagamento!.asaasPagamentoId">
+          <label class="font-semibold text-gray-600">ID ASAAS:</label>
+          <p class="text-sm font-mono">{{ reserva.pagamento!.asaasPagamentoId }}</p>
+        </div>
+      </div>
+
+      <!-- Informações de Estorno -->
+      <div *ngIf="reserva.pagamento!.estorno" class="mt-4 p-4 bg-blue-50 rounded-lg">
+        <h4 class="font-semibold text-blue-800 mb-2">Informações do Estorno</h4>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="font-semibold text-gray-600">Valor Estornado:</label>
+            <p class="text-lg font-bold text-red-600">{{ formatCurrency(reserva.pagamento!.estorno.valor) }}</p>
+          </div>
+          <div>
+            <label class="font-semibold text-gray-600">Status do Estorno:</label>
+            <p-tag 
+              [value]="reserva.pagamento!.estorno.status" 
+              severity="info">
+            </p-tag>
+          </div>
+          <div>
+            <label class="font-semibold text-gray-600">Data do Estorno:</label>
+            <p class="text-lg">{{ formatDateTime(reserva.pagamento!.estorno.dataEstorno) }}</p>
+          </div>
+        </div>
+      </div>
+    </p-card>
+
+    <!-- Histórico -->
+    <p-card header="Histórico de Alterações" class="mb-4" *ngIf="reserva.historico && reserva.historico.length > 0">
+      <p-scrollPanel [style]="{ height: '250px' }">
+        <div class="space-y-3">
+          <div 
+            *ngFor="let item of getHistoricoOrdenado()" 
+            class="p-3 border-l-4 border-blue-500 bg-gray-50 rounded-r-lg">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="font-semibold">{{ item.acao }}</p>
+                <p class="text-sm text-gray-600">{{ item.detalhes }}</p>
+                <p class="text-xs text-gray-500">{{ formatDateTime(item.data) }}</p>
+              </div>
+              <div *ngIf="item.estorno" class="text-right">
+                <p-tag value="Estornado" severity="info" class="text-xs"></p-tag>
+                <p class="text-xs text-red-600">{{ formatCurrency(item.estorno.valor) }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </p-scrollPanel>
+    </p-card>
+
+    <!-- Observações -->
+    <p-card header="Observações" class="mb-4" *ngIf="reserva.observacoes">
+      <p class="text-gray-700">{{ reserva.observacoes }}</p>
+    </p-card>
+
+    <!-- Datas de Controle -->
+    <p-card header="Datas de Controle" class="mb-4">
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="font-semibold text-gray-600">Data de Criação:</label>
+          <p class="text-lg">{{ formatDateTime(reserva.dataCriacao) }}</p>
+        </div>
+        <div>
+          <label class="font-semibold text-gray-600">Última Atualização:</label>
+          <p class="text-lg">{{ formatDateTime(reserva.dataAtualizacao) }}</p>
+        </div>
+      </div>
+    </p-card>
+  </div>
+</div>
+
+<p-toast></p-toast>

@@ -371,7 +371,79 @@
   }
 }
 
-// Melhorias visuais
+// Estilos para tabs com cor dourada
+:host ::ng-deep {
+  // Estilos para p-tabs (componente atual)
+  .p-tabs {
+    .p-tabs-nav {
+      .p-tabs-nav-link {
+        color: #6b7280 !important;
+        border-bottom: 2px solid transparent !important;
+        transition: all 0.3s ease !important;
+        
+        &:hover {
+          color: #CBA135 !important;
+          border-bottom-color: #CBA135 !important;
+        }
+        
+        &.p-tabs-nav-link-active {
+          color: #CBA135 !important;
+          border-bottom-color: #CBA135 !important;
+          font-weight: 600 !important;
+          background: linear-gradient(135deg, rgba(203, 161, 53, 0.1) 0%, rgba(212, 168, 67, 0.1) 100%) !important;
+        }
+      }
+    }
+  }
+  
+  // Estilos alternativos para p-tablist (estrutura atual)
+  .p-tablist {
+    .p-tab {
+      .p-tab-nav-link {
+        color: #6b7280 !important;
+        border-bottom: 2px solid transparent !important;
+        transition: all 0.3s ease !important;
+        
+        &:hover {
+          color: #CBA135 !important;
+          border-bottom-color: #CBA135 !important;
+        }
+        
+        &.p-tab-nav-link-active {
+          color: #CBA135 !important;
+          border-bottom-color: #CBA135 !important;
+          font-weight: 600 !important;
+          background: linear-gradient(135deg, rgba(203, 161, 53, 0.1) 0%, rgba(212, 168, 67, 0.1) 100%) !important;
+        }
+      }
+    }
+  }
+  
+  // Estilos para p-tabview (caso seja usado)
+  .p-tabview {
+    .p-tabview-nav {
+      .p-tabview-nav-link {
+        color: #6b7280 !important;
+        border-bottom: 2px solid transparent !important;
+        transition: all 0.3s ease !important;
+        
+        &:hover {
+          color: #CBA135 !important;
+          border-bottom-color: #CBA135 !important;
+        }
+        
+        &.p-tabview-nav-link-active {
+          color: #CBA135 !important;
+          border-bottom-color: #CBA135 !important;
+          font-weight: 600 !important;
+          background: linear-gradient(135deg, rgba(203, 161, 53, 0.1) 0%, rgba(212, 168, 67, 0.1) 100%) !important;
+        }
+      }
+    }
+  }
+}
+
+// Melhorias visuais para paginador com cor dourada
 .p-paginator {
   margin-top: 24px;
   text-align: center;
@@ -380,8 +452,8 @@
     border-radius: 6px;
     
     &.p-highlight {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      border-color: #667eea;
+      background: linear-gradient(135deg, #CBA135 0%, #D4A843 100%);
+      border-color: #CBA135;
       color: white;
     }
   }

@@ -126,7 +126,6 @@ export class ConsultarReservaComponent implements OnInit {
 
   cancelarReserva(): void {
     // TODO: Implementar cancelamento de reserva
-    console.log('Cancelar reserva:', this.reservaEncontrada?.codigo);
   }
 
   getStatusColor(status: string): string {

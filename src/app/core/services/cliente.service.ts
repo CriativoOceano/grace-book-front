@@ -144,7 +144,6 @@ export class ClienteService {
       }
     }
 
-    console.error('Erro no ClienteService:', errorMessage);
     return throwError(() => new Error(errorMessage));
   }
 }

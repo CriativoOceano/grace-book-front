@@ -48,7 +48,6 @@ export class HeroComponent implements OnInit, OnDestroy {
         }
       },
       error: (error) => {
-        console.error('Erro ao carregar slides:', error);
         this.slides = this.conteudoService.getHeroSlides();
         this.isLoading = false;
       }

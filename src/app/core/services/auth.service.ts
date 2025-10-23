@@ -65,7 +65,6 @@ export class AuthService {
         try {
           // Verificar se o token não está expirado
           if (this.isTokenExpired(token)) {
-            console.warn('🔒 Token expirado encontrado no localStorage. Limpando dados...');
             this.clearAuth();
             return;
           }
@@ -74,7 +73,6 @@ export class AuthService {
           this.currentUserSubject.next(userObj);
           this.isAuthenticatedSubject.next(true);
         } catch (error) {
-          console.error('❌ Erro ao carregar dados de autenticação:', error);
           this.clearAuth();
         }
       }
@@ -154,7 +152,6 @@ export class AuthService {
     
     // Verificar se o token não está expirado
     if (this.isTokenExpired(token)) {
-      console.warn('🔒 Token expirado detectado. Limpando autenticação...');
       this.clearAuth();
       return false;
     }
@@ -177,7 +174,6 @@ export class AuthService {
       
       // Verificar se o token tem exp (expiration time)
       if (!payload.exp) {
-        console.warn('⚠️ Token sem informação de expiração');
         return true; // Considerar expirado se não tiver exp
       }
       

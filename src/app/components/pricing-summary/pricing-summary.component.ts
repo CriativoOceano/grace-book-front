@@ -12,6 +12,7 @@ export interface PricingBreakdown {
   quantidadeDias: number;
   valorDiaria: number;
   valorChales: number;
+  valorBatismo: number;
   valorTotal: number;
   isLoading: boolean;
 }
@@ -31,6 +32,7 @@ export class PricingSummaryComponent implements OnInit, OnChanges {
     quantidadeDias: 0,
     valorDiaria: 0,
     valorChales: 0,
+    valorBatismo: 0,
     valorTotal: 0,
     isLoading: true
   };

@@ -1,0 +1,166 @@
+<div class="cancel-reservation-dialog">
+
+  <div class="dialog-content" *ngIf="reserva">
+    <!-- Informações da Reserva -->
+    <p-card header="Informações da Reserva" class="mb-4">
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="font-semibold text-gray-600">Código:</label>
+          <p class="text-lg font-bold text-blue-600">{{ reserva.codigo }}</p>
+        </div>
+        <div>
+          <label class="font-semibold text-gray-600">Status:</label>
+          <p class="text-lg">{{ reserva.statusReserva }}</p>
+        </div>
+        <div>
+          <label class="font-semibold text-gray-600">Valor Total:</label>
+          <p class="text-lg font-bold text-green-600">{{ formatCurrency(reserva.valorTotal) }}</p>
+        </div>
+      </div>
+    </p-card>
+
+    <!-- Informações de Pagamento -->
+    <p-card header="Informações de Pagamento" class="mb-4" *ngIf="reserva.pagamento">
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="font-semibold text-gray-600">Status:</label>
+          <p class="text-lg">{{ reserva.pagamento!.status }}</p>
+        </div>
+        <div>
+          <label class="font-semibold text-gray-600">Método:</label>
+          <p class="text-lg">{{ getPaymentMethodText(reserva.pagamento!.modoPagamento) }}</p>
+        </div>
+        <div>
+          <label class="font-semibold text-gray-600">Valor Pago:</label>
+          <p class="text-lg font-bold">{{ formatCurrency(reserva.pagamento!.valor) }}</p>
+        </div>
+        <div>
+          <label class="font-semibold text-gray-600">Parcelas:</label>
+          <p class="text-lg">{{ reserva.pagamento!.parcelas }}</p>
+        </div>
+      </div>
+
+      <!-- Informações de Estorno -->
+      <div class="mt-4 p-4 bg-blue-50 rounded-lg" *ngIf="canRefundPayment()">
+        <h4 class="font-semibold text-blue-800 mb-2">Informações sobre Estorno</h4>
+        <p class="text-sm text-blue-700 mb-2">{{ getRefundInfo() }}</p>
+        <p class="text-xs text-blue-600">
+          <i class="pi pi-info-circle mr-1"></i>
+          O estorno será processado automaticamente via ASAAS
+        </p>
+      </div>
+
+      <div class="mt-4 p-4 bg-red-50 rounded-lg" *ngIf="!canRefundPayment()">
+        <h4 class="font-semibold text-red-800 mb-2">Estorno Não Disponível</h4>
+        <p class="text-sm text-red-700">
+          Este pagamento não pode ser estornado automaticamente.
+          {{ getRefundInfo() }}
+        </p>
+      </div>
+    </p-card>
+
+    <!-- Formulário de Cancelamento -->
+    <form [formGroup]="formulario" (ngSubmit)="cancelarReserva()">
+      <p-card header="Motivo do Cancelamento" class="mb-4">
+        <div class="form-group">
+          <label for="motivo" class="font-semibold text-gray-600">
+            Motivo do Cancelamento <span class="text-red-500">*</span>
+          </label>
+          <textarea
+            id="motivo"
+            formControlName="motivo"
+            pInputText
+            rows="4"
+            placeholder="Descreva o motivo do cancelamento da reserva..."
+            class="w-full"
+            [class.ng-invalid]="formulario.get('motivo')?.invalid && formulario.get('motivo')?.touched">
+          </textarea>
+          <small 
+            class="text-red-500" 
+            *ngIf="getFieldError('motivo')">
+            {{ getFieldError('motivo') }}
+          </small>
+        </div>
+      </p-card>
+
+      <!-- Opções de Estorno -->
+      <p-card header="Opções de Estorno" class="mb-4" *ngIf="reserva.pagamento && canRefundPayment()">
+        <div class="form-group">
+          <div class="flex items-center mb-3">
+            <p-checkbox 
+              formControlName="estornarPagamento" 
+              [binary]="true" 
+              inputId="estornarPagamento">
+            </p-checkbox>
+            <label for="estornarPagamento" class="ml-2 font-semibold text-gray-600">
+              Estornar pagamento automaticamente
+            </label>
+          </div>
+          
+          <div class="mt-3" *ngIf="formulario.get('estornarPagamento')?.value">
+            <label for="valorEstorno" class="font-semibold text-gray-600">
+              Valor do Estorno <span class="text-red-500">*</span>
+            </label>
+            <p-inputNumber
+              id="valorEstorno"
+              formControlName="valorEstorno"
+              mode="currency"
+              currency="BRL"
+              locale="pt-BR"
+              [min]="0.01"
+              [max]="reserva.pagamento!.valor"
+              placeholder="Valor do estorno"
+              class="w-full"
+              [class.ng-invalid]="formulario.get('valorEstorno')?.invalid && formulario.get('valorEstorno')?.touched">
+            </p-inputNumber>
+            <small class="text-gray-500">
+              Valor máximo: {{ formatCurrency(reserva.pagamento!.valor) }}
+            </small>
+            <small 
+              class="text-red-500 block" 
+              *ngIf="getFieldError('valorEstorno')">
+              {{ getFieldError('valorEstorno') }}
+            </small>
+          </div>
+        </div>
+      </p-card>
+
+      <!-- Aviso Importante -->
+      <p-card header="Aviso Importante" class="mb-4">
+        <div class="p-4 bg-yellow-50 rounded-lg">
+          <div class="flex items-start">
+            <i class="pi pi-exclamation-triangle text-yellow-600 text-xl mr-3 mt-1"></i>
+            <div>
+              <h4 class="font-semibold text-yellow-800 mb-2">Atenção!</h4>
+              <ul class="text-sm text-yellow-700 space-y-1">
+                <li>• Esta ação não pode ser desfeita</li>
+                <li>• A reserva será marcada como cancelada</li>
+                <li>• As datas ficarão disponíveis para novas reservas</li>
+                <li>• Um email será enviado ao cliente</li>
+                <li *ngIf="formulario.get('estornarPagamento')?.value">
+                  • O estorno será processado automaticamente
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </p-card>
+    </form>
+  </div>
+
+  <!-- Botões de Ação -->
+  <div class="dialog-footer">
+    <div class="flex justify-end gap-2">
+      <p-button 
+        label="Confirmar Cancelamento" 
+        icon="pi pi-check" 
+        styleClass="p-button-danger"
+        [loading]="isLoading"
+        [disabled]="formulario.invalid"
+        (click)="cancelarReserva()">
+      </p-button>
+    </div>
+  </div>
+</div>
+
+<p-toast></p-toast>

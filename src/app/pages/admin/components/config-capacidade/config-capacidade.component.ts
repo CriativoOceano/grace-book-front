@@ -57,7 +57,6 @@ export class ConfigCapacidadeComponent implements OnInit {
         this.isLoading = false;
       },
       error: (error: any) => {
-        console.error('Erro ao carregar configurações:', error);
         this.messageService.add({
           severity: 'error',
           summary: 'Erro',
@@ -90,7 +89,6 @@ export class ConfigCapacidadeComponent implements OnInit {
         this.isSaving = false;
       },
       error: (error: any) => {
-        console.error('Erro ao salvar capacidade:', error);
         
         let errorMessage = 'Erro desconhecido ao salvar configurações';
         

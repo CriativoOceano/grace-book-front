@@ -150,13 +150,14 @@ export class BookingComponent implements OnInit {
     quantidadeDias: 0,
     valorDiaria: 0,
     valorChales: 0,
+    valorBatismo: 0,
     valorTotal: 0,
     isLoading: true
   };
   
   // Opções para os selects
   tiposReserva = [
-    { value: 'diaria', label: 'Diária Completa', description: 'Até 200 pessoas - Inclui cozinha, churrasqueira, banheiros e piscina' },
+    { value: 'diaria', label: 'Diária Completa', description: `Até ${this.qtdMaxPessoas} pessoas - Inclui cozinha, churrasqueira, banheiros e piscina` },
     { value: 'batismo', label: 'Cerimônia de Batismo', description: 'Incluso apenas o uso da piscina e banheiros' }
   ];
 
@@ -210,6 +211,39 @@ export class BookingComponent implements OnInit {
     { label: 'Hóspede', icon: 'pi pi-user' },
     { label: 'Pagamento', icon: 'pi pi-credit-card' }
   ];
+
+  // Getter para retornar os steps apropriados baseado no tipo de reserva
+  get filteredSteps() {
+    const tipo = this.bookingForm.get('tipo')?.value;
+    
+    if (tipo === 'batismo') {
+      // Para batismo, mostrar apenas: Tipo, Hóspede, Pagamento
+      return [
+        { label: 'Tipo de Reserva', icon: 'pi pi-info-circle' },
+        { label: 'Hóspede', icon: 'pi pi-user' },
+        { label: 'Pagamento', icon: 'pi pi-credit-card' }
+      ];
+    }
+    
+    // Para outros tipos, mostrar todos os steps
+    return this.steps;
+  }
+
+  // Getter para retornar o índice ativo ajustado baseado no tipo de reserva
+  get adjustedActiveIndex() {
+    const tipo = this.bookingForm.get('tipo')?.value;
+    
+    if (tipo === 'batismo') {
+      // Para batismo, ajustar o índice:
+      // currentStep 0 -> índice 0 (Tipo)
+      // currentStep 2 -> índice 1 (Hóspede) 
+      // currentStep 3 -> índice 2 (Pagamento)
+      return this.currentStep === 0 ? 0 : this.currentStep - 1;
+    }
+    
+    // Para outros tipos, usar o índice normal
+    return this.currentStep;
+  }
 
   // Dados dos chalés carregados do painel administrativo
   chaletImages: ChaletImage[] = [];
@@ -271,7 +305,6 @@ export class BookingComponent implements OnInit {
         this.chaletImagesLoading = false;
       },
       error: (error) => {
-        console.error('Erro ao carregar imagens dos chalés:', error);
         // Usar imagens padrão em caso de erro
         this.chaletImages = this.conteudoService.getChaletImages();
         this.chaletImagesLoading = false;
@@ -349,6 +382,12 @@ export class BookingComponent implements OnInit {
         // 🔍 DEBUG: Log das configurações carregadas
         // Configurações carregadas com sucesso
         
+        // Atualizar validadores do formulário com os novos valores
+        this.atualizarValidadoresFormulario();
+        
+        // Atualizar descrições dos tipos de reserva
+        this.atualizarDescricoesTiposReserva();
+        
         // Atualizar data mínima baseada na configuração
         this.atualizarDataMinima();
         
@@ -356,7 +395,6 @@ export class BookingComponent implements OnInit {
         this.calcularValor();
       },
       error: (error) => {
-        console.error('Erro ao carregar configurações:', error);
         // Usar valores padrão em caso de erro
         this.faixasPreco = [
           { maxPessoas: 30, valor: 1000 },
@@ -465,7 +503,7 @@ export class BookingComponent implements OnInit {
       // Passo 1: Informações básicas
       tipo: ['', [Validators.required]],
       periodoReserva: ['', [Validators.required, this.dataBloqueadaValidator.bind(this), this.periodoValidoValidator.bind(this)]],
-      quantidadePessoas: [1, [Validators.required, Validators.min(1), Validators.max(200)]],
+      quantidadePessoas: [1, [Validators.required, Validators.min(1), Validators.max(this.qtdMaxPessoas)]],
       quantidadeChales: [0, [Validators.min(0), Validators.max(4)]],
       observacoes: [''],
       
@@ -508,6 +546,8 @@ export class BookingComponent implements OnInit {
       if (tipo === 'batismo') {
         // Limpar seleção de período ao mudar para batismo
         this.bookingForm.get('periodoReserva')?.setValue(null);
+        // Resetar quantidade de chalés para batismo
+        this.bookingForm.get('quantidadeChales')?.setValue(0);
       }
       // Revalidar período quando o tipo muda
       this.bookingForm.get('periodoReserva')?.updateValueAndValidity();
@@ -560,6 +600,7 @@ export class BookingComponent implements OnInit {
       quantidadeDias: quantidadeDias,
       valorDiaria: this.calculateDiariaValue(formValue.tipo, formValue.quantidadePessoas),
       valorChales: valorChales,
+      valorBatismo: formValue.tipo === 'batismo' ? this.precoBatismo : 0,
       valorTotal: valorTotalCalculado,
       isLoading: false
     };
@@ -688,7 +729,6 @@ export class BookingComponent implements OnInit {
           this.isLoading = false;
         },
         error: (error) => {
-          console.error('Erro ao verificar disponibilidade:', error);
           
           this.disponibilidadeResultado = {
             disponivel: true,
@@ -739,7 +779,6 @@ export class BookingComponent implements OnInit {
         }
       },
       error: (error) => {
-        console.error('Erro ao calcular valor no backend:', error);
         this.calcularValorLocal();
         this.messageService.add({ severity: 'warn', summary: 'Aviso', detail: 'Backend não disponível. Usando cálculo local...' });
       }
@@ -797,12 +836,20 @@ export class BookingComponent implements OnInit {
   // Navegação entre passos
   nextStep(): void {
     if (this.currentStep < 3) {
-      // Se está saindo do step de chalés (step 1) para hóspede (step 2), mostrar informações
-      if (this.currentStep === 1) {
-        this.infoItensVisible = true;
+      const tipo = this.bookingForm.get('tipo')?.value;
+      
+      // Se está saindo do step de tipo (step 0) e o tipo é batismo, pular o step de chalés
+      if (this.currentStep === 0 && tipo === 'batismo') {
+        this.currentStep = 2; // Pular direto para o step de hóspede
+      } else {
+        // Se está saindo do step de chalés (step 1) para hóspede (step 2), mostrar informações
+        if (this.currentStep === 1) {
+          this.infoItensVisible = true;
+        }
+        
+        this.currentStep++;
       }
       
-      this.currentStep++;
       this.scrollToTop();
     }
   }
@@ -819,7 +866,15 @@ export class BookingComponent implements OnInit {
 
   prevStep(): void {
     if (this.currentStep > 0) {
-      this.currentStep--;
+      const tipo = this.bookingForm.get('tipo')?.value;
+      
+      // Se está no step de hóspede (step 2) e o tipo é batismo, voltar direto para o step de tipo
+      if (this.currentStep === 2 && tipo === 'batismo') {
+        this.currentStep = 0; // Voltar direto para o step de tipo
+      } else {
+        this.currentStep--;
+      }
+      
       this.scrollToTop();
     }
   }
@@ -1015,7 +1070,6 @@ export class BookingComponent implements OnInit {
         
         // Só mostrar erro se não for erro de validação
         if (error.message && !error.message.includes('8 dígitos')) {
-          console.warn('Erro ao buscar CEP:', error.message);
         }
       }
     });
@@ -1481,8 +1535,8 @@ export class BookingComponent implements OnInit {
     if (pessoas <= 30) return 'até 30 pessoas';
     if (pessoas <= 60) return '31-60 pessoas';
     if (pessoas <= 100) return '61-100 pessoas';
-    if (pessoas <= 200) return '101-200 pessoas';
-    return 'mais de 200 pessoas';
+    if (pessoas <= this.qtdMaxPessoas) return `101-${this.qtdMaxPessoas} pessoas`;
+    return `mais de ${this.qtdMaxPessoas} pessoas`;
   }
 
   getParcelasOptions(): any[] {
@@ -1512,13 +1566,15 @@ export class BookingComponent implements OnInit {
   }
 
   validateStep(step: number): boolean {
+    const tipo = this.bookingForm.get('tipo')?.value;
+    
     switch (step) {
       case 0: // Informações
         return !!(this.bookingForm.get('tipo')?.valid && 
                this.bookingForm.get('periodoReserva')?.valid &&
                this.bookingForm.get('quantidadePessoas')?.valid);
-      case 1: // Adicionais (sempre válido, pois é opcional)
-        return true;
+      case 1: // Adicionais (sempre válido, pois é opcional) - mas não aplicável para batismo
+        return tipo !== 'batismo';
       case 2: // Hóspede
         return !!(this.bookingForm.get('nomeHospede')?.valid &&
                this.bookingForm.get('sobrenomeHospede')?.valid &&
@@ -1589,5 +1645,39 @@ export class BookingComponent implements OnInit {
     );
     
     return hasTipo && hasAdditionalInfo;
+  }
+
+  // Método para atualizar validadores do formulário com valores das configurações
+  private atualizarValidadoresFormulario(): void {
+    if (this.bookingForm) {
+      // Atualizar validador de quantidade máxima de pessoas
+      const quantidadePessoasControl = this.bookingForm.get('quantidadePessoas');
+      if (quantidadePessoasControl) {
+        quantidadePessoasControl.setValidators([
+          Validators.required, 
+          Validators.min(1), 
+          Validators.max(this.qtdMaxPessoas)
+        ]);
+        quantidadePessoasControl.updateValueAndValidity();
+      }
+
+      // Atualizar validador de quantidade máxima de chalés
+      const quantidadeChalesControl = this.bookingForm.get('quantidadeChales');
+      if (quantidadeChalesControl) {
+        quantidadeChalesControl.setValidators([
+          Validators.min(0), 
+          Validators.max(this.quantidadeMaximaChales)
+        ]);
+        quantidadeChalesControl.updateValueAndValidity();
+      }
+    }
+  }
+
+  // Método para atualizar descrições dos tipos de reserva com valores dinâmicos
+  private atualizarDescricoesTiposReserva(): void {
+    this.tiposReserva = [
+      { value: 'diaria', label: 'Diária Completa', description: `Até ${this.qtdMaxPessoas} pessoas - Inclui cozinha, churrasqueira, banheiros e piscina` },
+      { value: 'batismo', label: 'Cerimônia de Batismo', description: 'Incluso apenas o uso da piscina e banheiros' }
+    ];
   }
 }

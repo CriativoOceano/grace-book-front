@@ -93,7 +93,6 @@ export class ImageOptimizerService {
 
       return { file: optimizedFile, result };
     } catch (error) {
-      console.error('Erro na otimização da imagem:', error);
       throw new Error(`Falha na otimização: ${error instanceof Error ? error.message : 'Erro desconhecido'}`);
     }
   }

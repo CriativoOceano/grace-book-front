@@ -56,7 +56,6 @@ export class ConfigPrecosComponent implements OnInit {
         this.isLoading = false;
       },
       error: (error: any) => {
-        console.error('Erro ao carregar configurações:', error);
         this.messageService.add({
           severity: 'error',
           summary: 'Erro',
@@ -89,7 +88,6 @@ export class ConfigPrecosComponent implements OnInit {
         this.isSaving = false;
       },
       error: (error: any) => {
-        console.error('Erro ao salvar preços:', error);
         
         let errorMessage = 'Erro desconhecido ao salvar configurações';
         

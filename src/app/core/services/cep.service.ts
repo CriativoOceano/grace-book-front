@@ -60,7 +60,6 @@ export class CepService {
         return this.mapearResposta(response);
       }),
       catchError(error => {
-        console.error('Erro ao buscar CEP:', error);
         return throwError(() => new Error('Erro ao buscar CEP. Verifique se o CEP está correto.'));
       })
     );

@@ -33,7 +33,6 @@ export class AboutComponent implements OnInit {
         this.isLoading = false;
       },
       error: (error) => {
-        console.error('Erro ao carregar imagem da seção About:', error);
         this.aboutImage = this.conteudoService.getAboutImage();
         this.isLoading = false;
       }

@@ -73,7 +73,6 @@ export class ContentManagerComponent implements OnInit {
         this.isLoading = false;
       },
       error: (error) => {
-        console.error('Erro ao carregar conteúdo:', error);
         this.messageService.add({
           severity: 'error',
           summary: 'Erro',
@@ -137,7 +136,6 @@ export class ContentManagerComponent implements OnInit {
         detail: 'Imagem enviada com sucesso!'
       });
     } catch (error) {
-      console.error('Erro no upload:', error);
       this.messageService.add({
         severity: 'error',
         summary: 'Erro',
@@ -185,7 +183,6 @@ export class ContentManagerComponent implements OnInit {
         take(1)
       ).toPromise();
     } catch (error) {
-      console.error('Erro ao salvar conteúdo:', error);
       throw error;
     }
   }

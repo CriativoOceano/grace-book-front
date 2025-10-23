@@ -138,4 +138,23 @@ export class ReservaService {
       { headers: this.getHeaders() }
     );
   }
+
+  // Novos métodos para detalhes e cancelamento com estorno
+  getReservationDetails(id: string): Observable<any> {
+    return this.http.get<any>(
+      `${this.API_URL}/reservas/${id}/detalhes`,
+      { headers: this.getHeaders() }
+    );
+  }
+
+  cancelarReservaComEstorno(
+    id: string, 
+    dadosCancelamento: { motivo: string; estornarPagamento?: boolean; valorEstorno?: number }
+  ): Observable<{ reserva: any; estorno?: any }> {
+    return this.http.post<{ reserva: any; estorno?: any }>(
+      `${this.API_URL}/reservas/${id}/cancelar`,
+      dadosCancelamento,
+      { headers: this.getHeaders() }
+    );
+  }
 }

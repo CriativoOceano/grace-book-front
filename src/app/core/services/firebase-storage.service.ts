@@ -45,7 +45,6 @@ export class FirebaseStorageService {
       
       return downloadURL;
     } catch (error) {
-      console.error('Erro no upload:', error);
       throw error;
     }
   }
@@ -67,7 +66,6 @@ export class FirebaseStorageService {
       
       return { url, optimization: result };
     } catch (error) {
-      console.error('Erro no upload otimizado:', error);
       throw error;
     }
   }
@@ -87,7 +85,6 @@ export class FirebaseStorageService {
       const storageRef = ref(this.storage, path);
       await deleteObject(storageRef);
     } catch (error) {
-      console.error('Erro ao deletar imagem:', error);
       throw error;
     }
   }
@@ -102,7 +99,6 @@ export class FirebaseStorageService {
       const storageRef = ref(this.storage, path);
       return await getDownloadURL(storageRef);
     } catch (error) {
-      console.error('Erro ao obter URL:', error);
       throw error;
     }
   }
@@ -180,10 +176,8 @@ export class FirebaseStorageService {
       // Deletar o arquivo de teste
       await deleteObject(testRef);
       
-      console.log('✅ Conexão com Firebase Storage estabelecida com sucesso');
       return true;
     } catch (error) {
-      console.error('❌ Erro de conexão com Firebase Storage:', error);
       return false;
     }
   }

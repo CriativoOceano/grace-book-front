@@ -6,11 +6,17 @@ import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
 import { AccordionModule } from 'primeng/accordion';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { TooltipModule } from 'primeng/tooltip';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 import { ContentManagerComponent } from './components/content-manager/content-manager.component';
 import { ConfigPrecosComponent } from './components/config-precos/config-precos.component';
 import { ConfigDisponibilidadeComponent } from './components/config-disponibilidade/config-disponibilidade.component';
 import { ConfigCapacidadeComponent } from './components/config-capacidade/config-capacidade.component';
 import { ReservaService, Reserva } from '../../core/services/reserva.service';
+import { ReservationDetailsDialogComponent } from '../../shared/components/reservation-details-dialog/reservation-details-dialog.component';
+import { CancelReservationDialogComponent } from '../../shared/components/cancel-reservation-dialog/cancel-reservation-dialog.component';
 
 @Component({
   selector: 'app-admin',
@@ -27,11 +33,14 @@ import { ReservaService, Reserva } from '../../core/services/reserva.service';
     TagModule,
     ButtonModule,
     AccordionModule,
+    TooltipModule,
+    ToastModule,
     ContentManagerComponent,
     ConfigPrecosComponent,
     ConfigDisponibilidadeComponent,
     ConfigCapacidadeComponent
   ],
+  providers: [DialogService],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.scss'
 })
@@ -42,7 +51,9 @@ export class AdminComponent implements OnInit {
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
-    private reservaService: ReservaService
+    private reservaService: ReservaService,
+    private dialogService: DialogService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
@@ -66,7 +77,6 @@ export class AdminComponent implements OnInit {
         this.isLoading = false;
       },
       error: (error) => {
-        console.error('Erro ao carregar reservas:', error);
         this.isLoading = false;
         // Em caso de erro, manter array vazio
         this.reservas = [];
@@ -165,5 +175,67 @@ export class AdminComponent implements OnInit {
 
   cancelBooking(reserva: Reserva): void {
     // TODO: Implementar cancelamento de reserva
+  }
+
+  /**
+   * Visualizar detalhes completos da reserva
+   */
+  viewReservationDetails(reserva: Reserva): void {
+    this.reservaService.getReservationDetails(reserva.id).subscribe({
+      next: (detalhes) => {
+        this.dialogService.open(ReservationDetailsDialogComponent, {
+          data: { reserva: detalhes },
+          width: '80vw',
+          height: '90vh',
+          header: `Detalhes da Reserva #${reserva.codigo}`,
+          modal: true,
+          closable: true,
+          maximizable: true
+        });
+      },
+      error: (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Erro ao carregar detalhes da reserva'
+        });
+      }
+    });
+  }
+
+  /**
+   * Cancelar reserva
+   */
+  cancelReservation(reserva: Reserva): void {
+    // Carregar detalhes completos da reserva antes de abrir o dialog
+    this.reservaService.getReservationDetails(reserva.id).subscribe({
+      next: (detalhes) => {
+        (this.dialogService as any).open(CancelReservationDialogComponent, {
+          data: { reserva: detalhes },
+          width: '500px',
+          header: `Cancelar Reserva ${reserva.codigo}`,
+          modal: true,
+          closable: true
+        }).onClose.subscribe((result: any) => {
+          if (result) {
+            // Atualizar lista de reservas após cancelamento
+            this.carregarDados();
+            
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Sucesso',
+              detail: 'Reserva cancelada com sucesso!'
+            });
+          }
+        });
+      },
+      error: (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Erro ao carregar detalhes da reserva'
+        });
+      }
+    });
   }
 }

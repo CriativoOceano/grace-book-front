@@ -198,7 +198,7 @@ export class PaymentSuccessComponent implements OnInit {
   }
 
   goToBookings(): void {
-    this.router.navigate(['/my-bookings']);
+    this.router.navigate(['/consultar-reserva']);
   }
 
   goToHome(): void {

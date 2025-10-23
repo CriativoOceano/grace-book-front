@@ -175,7 +175,6 @@ export class BookingService {
         return response;
       }),
       catchError(error => {
-        console.error('❌ Erro ao criar reserva:', error);
         return this.handleError(error);
       })
     );
@@ -230,7 +229,6 @@ export class BookingService {
         return response;
       }),
       catchError(error => {
-        console.error('❌ Erro ao verificar disponibilidade:', error);
         return this.handleError(error);
       })
     );
@@ -252,7 +250,6 @@ export class BookingService {
         return response;
       }),
       catchError(error => {
-        console.error('❌ Erro ao cotar reserva:', error);
         return this.handleError(error);
       })
     );
@@ -269,7 +266,6 @@ export class BookingService {
         // Resposta recebida do backend
       }),
       catchError(error => {
-        console.error('❌ Erro na requisição:', error);
         return this.handleError(error);
       })
     );
@@ -292,14 +288,12 @@ export class BookingService {
         return response;
       }),
       catchError(error => {
-        console.error('❌ Erro ao consultar reserva:', error);
         return this.handleError(error);
       })
     );
   }
 
   private handleError(error: any): Observable<never> {
-    console.error('Erro no BookingService:', error);
     let errorMessage = 'Ocorreu um erro desconhecido.';
     
     if (error.error && typeof error.error === 'string' && error.error.includes('<!DOCTYPE')) {

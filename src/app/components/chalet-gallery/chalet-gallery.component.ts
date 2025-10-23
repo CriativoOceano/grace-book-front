@@ -299,7 +299,6 @@ export class ChaletGalleryComponent implements OnInit {
         this.isLoading = false;
       },
       error: (error) => {
-        console.error('Erro ao carregar imagens dos chalés:', error);
         this.chaletImages = this.conteudoService.getChaletImages();
         this.isLoading = false;
       }
