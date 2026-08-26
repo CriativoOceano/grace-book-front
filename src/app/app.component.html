@@ -45,7 +45,13 @@
         }
 
         <!-- Mobile Menu Button -->
-        <button class="mobile-menu-btn" (click)="toggleMenu()" [class.active]="isMenuOpen">
+        <button
+          class="mobile-menu-btn"
+          (click)="toggleMenu()"
+          [class.active]="isMenuOpen"
+          [attr.aria-label]="isMenuOpen ? 'Fechar menu' : 'Abrir menu'"
+          [attr.aria-expanded]="isMenuOpen"
+          aria-controls="mobile-menu-nav">
           <span class="hamburger-line"></span>
           <span class="hamburger-line"></span>
           <span class="hamburger-line"></span>
@@ -54,7 +60,7 @@
     </div>
 
     <!-- Mobile Navigation Menu -->
-    <nav class="mobile-menu" [class.open]="isMenuOpen">
+    <nav id="mobile-menu-nav" class="mobile-menu" [class.open]="isMenuOpen">
       <div class="mobile-menu-content">
         <ul class="mobile-menu-list">
           <li><a routerLink="/home" routerLinkActive="active" (click)="closeMenu()">Início</a></li>

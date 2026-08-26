@@ -51,6 +51,8 @@ export interface ReservationDetails {
     data: string;
     acao: string;
     detalhes: string;
+    realizadoPor?: string | null;
+    canceladoPor?: string | null; // compat: entradas antigas usavam esse nome
     estorno?: any;
   }>;
   observacoes: string;
@@ -153,6 +155,36 @@ export class ReservationDetailsDialogComponent implements OnInit {
     return severities[status] || 'info';
   }
 
+  // Status do estorno em si (campo refunds[].status do Asaas), diferente
+  // do status do pagamento (getPaymentStatusText acima). 'REFUNDED' e
+  // 'ESTORNADO' ficam de compatibilidade com registros antigos, salvos
+  // antes da correção que passou a ler o status certo da resposta do Asaas.
+  getRefundStatusText(status: string): string {
+    const statuses: { [key: string]: string } = {
+      'PENDING': 'Pendente',
+      'AWAITING_CRITICAL_ACTION_AUTHORIZATION': 'Aguardando autorização',
+      'AWAITING_CUSTOMER_EXTERNAL_AUTHORIZATION': 'Aguardando autorização do cliente',
+      'CANCELLED': 'Cancelado',
+      'DONE': 'Concluído',
+      'REFUNDED': 'Estornado',
+      'ESTORNADO': 'Estornado'
+    };
+    return statuses[status] || status;
+  }
+
+  getRefundStatusSeverity(status: string): "success" | "info" | "warn" | "danger" | "secondary" | "contrast" | null | undefined {
+    const severities: { [key: string]: "success" | "info" | "warn" | "danger" | "secondary" | "contrast" | null | undefined } = {
+      'PENDING': 'warn',
+      'AWAITING_CRITICAL_ACTION_AUTHORIZATION': 'warn',
+      'AWAITING_CUSTOMER_EXTERNAL_AUTHORIZATION': 'warn',
+      'CANCELLED': 'danger',
+      'DONE': 'success',
+      'REFUNDED': 'success',
+      'ESTORNADO': 'success'
+    };
+    return severities[status] || 'info';
+  }
+
   getPaymentMethodText(method: string): string {
     const methods: { [key: string]: string } = {
       'PIX': 'PIX',
@@ -171,6 +203,12 @@ export class ReservationDetailsDialogComponent implements OnInit {
     return [...this.reserva.historico].sort((a, b) => {
       return new Date(b.data).getTime() - new Date(a.data).getTime();
     });
+  }
+
+  // canceladoPor é o nome antigo do campo, mantido pra entradas de
+  // histórico salvas antes dessa mudança.
+  getRealizadoPor(item: { realizadoPor?: string | null; canceladoPor?: string | null }): string | null {
+    return item.realizadoPor || item.canceladoPor || null;
   }
 
   canCancelReservation(): boolean {

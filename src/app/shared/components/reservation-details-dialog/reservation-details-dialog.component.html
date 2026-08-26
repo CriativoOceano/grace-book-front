@@ -144,9 +144,9 @@
           </div>
           <div>
             <label class="font-semibold text-gray-600">Status do Estorno:</label>
-            <p-tag 
-              [value]="reserva.pagamento!.estorno.status" 
-              severity="info">
+            <p-tag
+              [value]="getRefundStatusText(reserva.pagamento!.estorno.status)"
+              [severity]="getRefundStatusSeverity(reserva.pagamento!.estorno.status)">
             </p-tag>
           </div>
           <div>
@@ -168,7 +168,10 @@
               <div>
                 <p class="font-semibold">{{ item.acao }}</p>
                 <p class="text-sm text-gray-600">{{ item.detalhes }}</p>
-                <p class="text-xs text-gray-500">{{ formatDateTime(item.data) }}</p>
+                <p class="text-xs text-gray-500">
+                  {{ formatDateTime(item.data) }}
+                  <ng-container *ngIf="getRealizadoPor(item) as realizadoPor"> · Por: {{ realizadoPor }}</ng-container>
+                </p>
               </div>
               <div *ngIf="item.estorno" class="text-right">
                 <p-tag value="Estornado" severity="info" class="text-xs"></p-tag>

@@ -446,7 +446,9 @@
 
   .powered-by {
     font-size: 0.85rem;
-    color: rgba(250, 250, 250, 0.4);
+    // rgba(250,250,250,0.4) sobre #0A2647 dava ~3.6:1, abaixo do mínimo
+    // de 4.5:1 do WCAG AA pra texto normal. 0.65 sobe pra ~7:1.
+    color: rgba(250, 250, 250, 0.65);
   }
   
   .footer-admin {

@@ -20,17 +20,17 @@
   </div>
   
   <div class="carousel-controls">
-    <button class="control-btn prev" (click)="prevSlide()">
+    <button class="control-btn prev" (click)="prevSlide()" aria-label="Slide anterior">
       <i class="pi pi-chevron-left"></i>
     </button>
-    
+
     <div class="dots">
-      <span *ngFor="let slide of slides; let i = index" 
+      <span *ngFor="let slide of slides; let i = index"
             [class.active]="currentSlide === i"
             (click)="goToSlide(i)"></span>
     </div>
-    
-    <button class="control-btn next" (click)="nextSlide()">
+
+    <button class="control-btn next" (click)="nextSlide()" aria-label="Próximo slide">
       <i class="pi pi-chevron-right"></i>
     </button>
   </div>

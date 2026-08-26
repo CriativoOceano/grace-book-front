@@ -247,6 +247,21 @@ export class CancelReservationDialogComponent implements OnInit {
     }
   }
 
+  // Status do estorno em si (refunds[].status do Asaas: PENDING/DONE/etc),
+  // não confundir com status do pagamento (PENDENTE/CONFIRMADO/...).
+  private formatarStatusEstorno(status: string): string {
+    const statuses: { [key: string]: string } = {
+      'PENDING': 'Pendente',
+      'AWAITING_CRITICAL_ACTION_AUTHORIZATION': 'Aguardando autorização',
+      'AWAITING_CUSTOMER_EXTERNAL_AUTHORIZATION': 'Aguardando autorização do cliente',
+      'CANCELLED': 'Cancelado',
+      'DONE': 'Concluído',
+      'REFUNDED': 'Estornado',
+      'ESTORNADO': 'Estornado'
+    };
+    return statuses[status] || status || 'Processado';
+  }
+
   private formatarErroAsaas(asaasError: any): string {
     if (!asaasError) return '';
     const partes = [
@@ -269,7 +284,7 @@ export class CancelReservationDialogComponent implements OnInit {
     }
 
     const valor = estorno.value || estorno.valor || 0;
-    const status = estorno.status || 'Processado';
+    const status = this.formatarStatusEstorno(estorno.status);
     const data = estorno.dateCreated || estorno.dataEstorno || new Date();
     
     const mensagem = `

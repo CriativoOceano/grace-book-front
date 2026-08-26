@@ -295,7 +295,10 @@
     top: -15px;
     left: -15px;
     background: var(--dourado-presenca);
-    color: var(--branco-perola);
+    // branco-perola sobre dourado-presenca dava ~2.3:1, bem abaixo do
+    // mínimo de 4.5:1 do WCAG AA. azul-abissal sobre o mesmo dourado dá
+    // ~6.4:1.
+    color: var(--azul-abissal);
     padding: 0.75rem 1.5rem;
     border-radius: 25px;
     display: flex;
