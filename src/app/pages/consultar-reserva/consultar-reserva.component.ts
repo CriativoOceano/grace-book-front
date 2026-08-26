@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BookingService } from '../../services/booking.service';
 import { TagModule } from 'primeng/tag';
 
@@ -26,6 +26,7 @@ interface ReservaDetalhes {
   pagamento?: {
     status: string;
     linkPagamento?: string;
+    createdAt?: string;
   };
 }
 
@@ -51,7 +52,8 @@ export class ConsultarReservaComponent implements OnInit {
     @Inject(PLATFORM_ID) private platformId: Object,
     private fb: FormBuilder,
     private bookingService: BookingService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.consultaForm = this.fb.group({
       codigo: ['', [Validators.required, Validators.minLength(3)]],
@@ -61,7 +63,7 @@ export class ConsultarReservaComponent implements OnInit {
 
   ngOnInit(): void {
     this.scrollToTop();
-    
+
     // Converter código para maiúsculas automaticamente
     this.consultaForm.get('codigo')?.valueChanges.subscribe(value => {
       if (value) {
@@ -71,6 +73,14 @@ export class ConsultarReservaComponent implements OnInit {
         }
       }
     });
+
+    // Link do e-mail/tela de sucesso vem com ?codigo=X&email=Y — já
+    // preenche e consulta na hora, sem o cliente ter que digitar de novo.
+    const { codigo, email } = this.route.snapshot.queryParams;
+    if (codigo && email) {
+      this.consultaForm.patchValue({ codigo, email });
+      this.consultarReserva();
+    }
   }
 
   private scrollToTop(): void {
@@ -255,8 +265,18 @@ export class ConsultarReservaComponent implements OnInit {
     return false;
   }
 
+  // O link de pagamento da Asaas expira 30 minutos depois de criado — sem
+  // essa checagem o cliente clicava e caía numa página de checkout morta.
+  checkoutVencido(): boolean {
+    const criadoEm = this.reservaEncontrada?.pagamento?.createdAt;
+    if (!criadoEm) return false;
+    const minutosDesdeaCriacao = (Date.now() - new Date(criadoEm).getTime()) / 60000;
+    return minutosDesdeaCriacao > 30;
+  }
+
   podePagar(): boolean {
-    return this.reservaEncontrada?.statusReserva === 'PENDENTE_PAGAMENTO' && 
-           !!this.reservaEncontrada?.pagamento?.linkPagamento;
+    return this.reservaEncontrada?.statusReserva === 'PENDENTE_PAGAMENTO' &&
+           !!this.reservaEncontrada?.pagamento?.linkPagamento &&
+           !this.checkoutVencido();
   }
 }

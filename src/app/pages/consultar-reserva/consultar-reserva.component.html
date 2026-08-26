@@ -187,7 +187,7 @@
 
         <!-- Ações -->
         <div class="reserva-actions">
-          <button 
+          <button
             class="btn btn-primary"
             *ngIf="podePagar()"
             (click)="pagarReserva()">
@@ -195,7 +195,14 @@
             Realizar Pagamento
           </button>
 
-          <button 
+          <p
+            class="checkout-vencido-aviso"
+            *ngIf="reservaEncontrada.statusReserva === 'PENDENTE_PAGAMENTO' && checkoutVencido()">
+            <i class="pi pi-exclamation-triangle"></i>
+            O prazo para pagamento dessa reserva já venceu. Ela será cancelada automaticamente e as datas liberadas — se ainda quiser reservar, faça uma nova reserva.
+          </p>
+
+          <button
             class="btn btn-danger"
             *ngIf="podeCancelar()"
             (click)="cancelarReserva()">

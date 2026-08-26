@@ -543,6 +543,27 @@
   }
 }
 
+// Aviso de checkout vencido
+.checkout-vencido-aviso {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  margin: 0;
+  padding: 1rem;
+  background: #fff2f0;
+  border: 1px solid #ffccc7;
+  border-radius: 8px;
+  color: #ff4d4f;
+  font-size: 0.95rem;
+  text-align: left;
+
+  i {
+    flex-shrink: 0;
+    font-size: 1rem;
+  }
+}
+
 // Ações da reserva
 .reserva-actions {
   display: flex;

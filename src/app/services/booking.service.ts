@@ -114,7 +114,7 @@ export interface BookingResponse {
     reservaId: string;
     status: string;
     modoPagamento: string;
-    asaasPagamentoId: string;
+    asaasCheckoutSessionId: string;
     valorTotal: number;
     qtdParcelas: number;
     detalhes: {

@@ -41,7 +41,7 @@ export interface ReservationDetails {
     parcelas: number;
     valorTotal: number;
     qtdParcelas: number;
-    asaasPagamentoId: string;
+    asaasCheckoutSessionId: string;
     asaasInstallmentId?: string;
     linkPagamento: string;
     dataPagamento: string;

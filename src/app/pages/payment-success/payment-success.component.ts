@@ -243,12 +243,15 @@ export class PaymentSuccessComponent implements OnInit {
   }
 
   formatDate(dateString: string): string {
+    // Datas de reserva são guardadas como meia-noite UTC — formatar em
+    // UTC evita que o dia mude dependendo do fuso do navegador, e como é
+    // sempre meia-noite, mostrar o horário só adicionava "00:00" sem
+    // informação nenhuma.
     return new Date(dateString).toLocaleDateString('pt-BR', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+      timeZone: 'UTC'
     });
   }
 }

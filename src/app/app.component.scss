@@ -434,12 +434,19 @@
   padding-top: 24px;
   text-align: center;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  
+  gap: 6px;
+
   p {
     color: rgba(250, 250, 250, 0.6);
     margin: 0;
+  }
+
+  .powered-by {
+    font-size: 0.85rem;
+    color: rgba(250, 250, 250, 0.4);
   }
   
   .footer-admin {

@@ -128,9 +128,9 @@
           <label class="font-semibold text-gray-600">Data do Pagamento:</label>
           <p class="text-lg">{{ formatDateTime(reserva.pagamento!.dataPagamento) }}</p>
         </div>
-        <div *ngIf="reserva.pagamento!.asaasPagamentoId">
+        <div *ngIf="reserva.pagamento!.asaasCheckoutSessionId">
           <label class="font-semibold text-gray-600">ID ASAAS:</label>
-          <p class="text-sm font-mono">{{ reserva.pagamento!.asaasPagamentoId }}</p>
+          <p class="text-sm font-mono">{{ reserva.pagamento!.asaasCheckoutSessionId }}</p>
         </div>
       </div>
 

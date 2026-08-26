@@ -23,7 +23,7 @@ export interface ReservationDetails {
     parcelas: number;
     valorTotal: number;
     qtdParcelas: number;
-    asaasPagamentoId: string;
+    asaasCheckoutSessionId: string;
     asaasInstallmentId?: string;
     linkPagamento: string;
     dataPagamento: string;
@@ -209,20 +209,52 @@ export class CancelReservationDialogComponent implements OnInit {
         this.mostrarMensagemEstorno(resultado.estorno);
       }
 
+      // avisos: falhas não-bloqueantes (ex.: não conseguiu cancelar a
+      // cobrança pendente no Asaas) — a reserva já foi cancelada mesmo
+      // assim, mas o admin precisa saber que sobrou algo pra checar
+      // manualmente no painel do Asaas.
+      if (resultado?.avisos?.length) {
+        for (const aviso of resultado.avisos) {
+          this.messageService.add({
+            severity: 'warn',
+            summary: 'Aviso: cobrança não cancelada no Asaas',
+            detail: this.formatarErroAsaas(aviso),
+            life: 20000
+          });
+        }
+      }
+
       // O toast de sucesso do cancelamento em si é responsabilidade de quem
       // abriu este dialog (AdminComponent), que também recarrega a lista.
       this.ref.close(resultado);
 
     } catch (error: any) {
-      
+      const asaasError = error.error?.asaasError;
+      const mensagemBase = error.error?.message || 'Erro ao cancelar reserva. Tente novamente.';
+
+      // Esta tela é exclusiva de admin autenticado (JwtAuthGuard+AdminGuard
+      // no backend) — por isso mostramos o detalhe técnico completo aqui
+      // (endpoint, método, ID usado, status e resposta do Asaas). Nenhuma
+      // credencial (API key) trafega nesse payload.
       this.messageService.add({
         severity: 'error',
         summary: 'Erro',
-        detail: error.error?.message || 'Erro ao cancelar reserva. Tente novamente.'
+        detail: asaasError ? `${mensagemBase}\n\n${this.formatarErroAsaas(asaasError)}` : mensagemBase,
+        life: 20000
       });
     } finally {
       this.isLoading = false;
     }
+  }
+
+  private formatarErroAsaas(asaasError: any): string {
+    if (!asaasError) return '';
+    const partes = [
+      `Endpoint: ${asaasError.method || ''} ${asaasError.endpoint || ''}`,
+      `Status HTTP: ${asaasError.httpStatus ?? 'N/A'}`,
+      `Resposta do Asaas: ${JSON.stringify(asaasError.asaasResponse ?? asaasError.originalMessage ?? 'sem detalhes')}`
+    ];
+    return partes.join('\n');
   }
 
   private mostrarMensagemEstorno(estorno: any): void {

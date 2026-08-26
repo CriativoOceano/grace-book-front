@@ -154,9 +154,9 @@ export class ReservaService {
   }
 
   cancelarReservaComEstorno(
-    id: string, 
+    id: string,
     dadosCancelamento: { motivo: string; estornarPagamento?: boolean; valorEstorno?: number }
-  ): Observable<{ reserva: any; estorno?: any }> {
+  ): Observable<{ reserva: any; estorno?: any; avisos?: any[] }> {
     return this.http.post<{ reserva: any; estorno?: any }>(
       `${this.API_URL}/reservas/${id}/cancelar`,
       dadosCancelamento,

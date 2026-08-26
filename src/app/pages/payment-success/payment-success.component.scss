@@ -155,7 +155,7 @@
   
   // Messages
   .p-message {
-    @apply rounded-xl border-0 shadow-sm p-6 text-lg;
+    @apply rounded-xl border-0 shadow-sm p-3 text-sm mt-2;
     
     &.p-message-success {
       @apply bg-gradient-to-r from-green-50 to-green-100 text-green-800 border-l-4 border-green-500;
