@@ -1,9 +1,12 @@
 {
-  "name": "grace-book-front",
-  "short_name": "grace-book-front",
+  "name": "Sede Campestre",
+  "short_name": "Sede Campestre",
+  "description": "Reserve diárias, chalés, batismos e retiros na Sede Campestre.",
   "display": "standalone",
   "scope": "./",
   "start_url": "./",
+  "background_color": "#FAFAFA",
+  "theme_color": "#0A2647",
   "icons": [
     {
       "src": "icons/icon-72x72.png",

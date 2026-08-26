@@ -14,10 +14,10 @@
       <nav class="main-menu desktop-menu">
         <ul>
           <li><a routerLink="/home" routerLinkActive="active">Início</a></li>
-          <li><a (click)="scrollToSection('about')">Sobre</a></li>
-          <li><a (click)="scrollToSection('structure')">Estrutura</a></li>
-          <li><a (click)="scrollToSection('gallery')">Galeria</a></li>
-          <li><a (click)="scrollToSection('location')">Localização</a></li>
+          <li><a href="#about" (click)="scrollToSection('about', $event)">Sobre</a></li>
+          <li><a href="#structure" (click)="scrollToSection('structure', $event)">Estrutura</a></li>
+          <li><a href="#gallery" (click)="scrollToSection('gallery', $event)">Galeria</a></li>
+          <li><a href="#location" (click)="scrollToSection('location', $event)">Localização</a></li>
           <li><a routerLink="/consultar-reserva">Consultar Reserva</a></li>
         </ul>
       </nav>
@@ -59,10 +59,10 @@
       <div class="mobile-menu-content">
         <ul class="mobile-menu-list">
           <li><a routerLink="/home" routerLinkActive="active" (click)="closeMenu()">Início</a></li>
-          <li><a (click)="scrollToSection('about')">Sobre</a></li>
-          <li><a (click)="scrollToSection('structure')">Estrutura</a></li>
-          <li><a (click)="scrollToSection('gallery')">Galeria</a></li>
-          <li><a (click)="scrollToSection('location')">Localização</a></li>
+          <li><a href="#about" (click)="scrollToSection('about', $event)">Sobre</a></li>
+          <li><a href="#structure" (click)="scrollToSection('structure', $event)">Estrutura</a></li>
+          <li><a href="#gallery" (click)="scrollToSection('gallery', $event)">Galeria</a></li>
+          <li><a href="#location" (click)="scrollToSection('location', $event)">Localização</a></li>
         </ul>
         
         <!-- Mobile User Actions -->
@@ -113,7 +113,7 @@
           <li><a routerLink="/galeria">Galeria</a></li>
           <li><a routerLink="/contato">Contato</a></li>
           <li><a routerLink="/sobre">Sobre Nós</a></li>
-          <li><a (click)="navigateToAdmin()">Administrar</a></li>
+          <li><a routerLink="/admin" (click)="scrollToTop()">Administrar</a></li>
         </ul>
       </div>
     </div>

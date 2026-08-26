@@ -55,10 +55,15 @@ export class AppComponent implements OnInit, OnDestroy {
     this.isMenuOpen = false;
   }
 
-  scrollToSection(sectionId: string) {
+  scrollToSection(sectionId: string, event?: Event) {
+    // Os links têm href="#id" de verdade (pra ficarem rastreáveis por
+    // buscadores e utilizáveis sem JS) — aqui assumimos o controle do
+    // scroll pra não brigar com o salto padrão do navegador.
+    event?.preventDefault();
+
     // Fechar o menu mobile
     this.closeMenu();
-    
+
     // Se estiver na página home, fazer scroll para a seção
     if (this.router.url === '/home' || this.router.url === '/') {
       const element = document.getElementById(sectionId);
@@ -91,8 +96,4 @@ export class AppComponent implements OnInit, OnDestroy {
     });
   }
 
-  navigateToAdmin() {
-    this.scrollToTop();
-    this.router.navigate(['/admin']);
-  }
 }
