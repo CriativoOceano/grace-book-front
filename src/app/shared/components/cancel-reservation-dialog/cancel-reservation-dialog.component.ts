@@ -286,10 +286,12 @@ export class CancelReservationDialogComponent implements OnInit {
     const valor = estorno.value || estorno.valor || 0;
     const status = this.formatarStatusEstorno(estorno.status);
     const data = estorno.dateCreated || estorno.dataEstorno || new Date();
-    
+    const qtdParcelas = this.reserva?.pagamento?.qtdParcelas || 0;
+    const parcelasEstornadas = estorno.qtdParcelasEstornadas || qtdParcelas;
+
     const mensagem = `
       Estorno processado com sucesso!
-      Valor: ${this.formatCurrency(valor)}
+      ${qtdParcelas > 1 ? `Todas as ${parcelasEstornadas} parcelas foram estornadas.\n      ` : ''}Valor${qtdParcelas > 1 ? ' (total)' : ''}: ${this.formatCurrency(valor)}
       Status: ${status}
       Data: ${new Date(data).toLocaleDateString('pt-BR')}
     `;

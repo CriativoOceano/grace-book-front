@@ -137,9 +137,14 @@
       <!-- Informações de Estorno -->
       <div *ngIf="reserva.pagamento!.estorno" class="mt-4 p-4 bg-blue-50 rounded-lg">
         <h4 class="font-semibold text-blue-800 mb-2">Informações do Estorno</h4>
+        <p *ngIf="reserva.pagamento!.qtdParcelas > 1" class="text-sm text-blue-800 font-medium mb-3">
+          Pagamento parcelado em {{ reserva.pagamento!.qtdParcelas }}x — as
+          {{ reserva.pagamento!.estorno.qtdParcelasEstornadas || reserva.pagamento!.qtdParcelas }}
+          parcelas foram estornadas. O valor abaixo é o total (soma de todas as parcelas), não de uma única parcela.
+        </p>
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="font-semibold text-gray-600">Valor Estornado:</label>
+            <label class="font-semibold text-gray-600">Valor Estornado{{ reserva.pagamento!.qtdParcelas > 1 ? ' (total)' : '' }}:</label>
             <p class="text-lg font-bold text-red-600">{{ formatCurrency(reserva.pagamento!.estorno.valor) }}</p>
           </div>
           <div>
