@@ -1,35 +1,50 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterOutlet, RouterLink, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
+import { AuthService, User } from './core/services/auth.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
-    RouterOutlet, 
+    RouterOutlet,
     RouterLink,
     CommonModule
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
+export class AppComponent implements OnInit, OnDestroy {
   isCollapsed = false;
   isLoggedIn = false;
-  user: any = null;
-  logoPath = 'https://via.placeholder.com/40x40/4E944F/FFFFFF?text=SC';
+  user: User | null = null;
   currentYear = new Date().getFullYear();
   isMenuOpen = false;
 
-  constructor(private router: Router) {
-    // Mock temporário - será substituído quando o AuthService estiver pronto
-    this.isLoggedIn = false;
-    this.user = null;
+  private subscriptions = new Subscription();
+
+  constructor(private router: Router, private authService: AuthService) {}
+
+  ngOnInit(): void {
+    this.subscriptions.add(
+      this.authService.isAuthenticated$.subscribe(isAuthenticated => {
+        this.isLoggedIn = isAuthenticated;
+      })
+    );
+    this.subscriptions.add(
+      this.authService.currentUser$.subscribe(user => {
+        this.user = user;
+      })
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   logout() {
-    this.isLoggedIn = false;
-    this.user = null;
+    this.authService.logout();
   }
 
   toggleMenu() {

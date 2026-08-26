@@ -16,101 +16,157 @@
     </div>
 
     <!-- Success State -->
-    <div *ngIf="!isLoading && !errorMessage && paymentData && paymentStatus === 'sucesso'" class="animate-fade-in">
-      <div class="text-center mb-8">
-        <div class="success-icon-container">
-          <i class="pi pi-check-circle text-8xl text-green-500"></i>
-        </div>
-        <h1 class="text-4xl font-bold text-gray-800 mt-6 mb-4 font-serif">
-          {{ getStatusMessage() }}
-        </h1>
-        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-          {{ getStatusDescription() }}
-        </p>
+    <div *ngIf="!isLoading && !errorMessage && paymentStatus === 'sucesso'" class="animate-fade-in">
+
+      <!-- Loading da reserva -->
+      <div *ngIf="isLoadingReserva" class="flex justify-center items-center min-h-64">
+        <p-progressSpinner styleClass="w-12 h-12" strokeWidth="4" fill="transparent" animationDuration="1s"></p-progressSpinner>
       </div>
 
-      <p-card class="success-card">
-        <ng-template pTemplate="header">
-          <div class="card-header bg-gradient-to-r from-green-600 to-green-700 text-center">
-            <h2 class="text-2xl font-bold text-white font-serif">
-              <i class="pi pi-credit-card mr-2"></i>
-              Detalhes do Pagamento
-            </h2>
-          </div>
-        </ng-template>
+      <ng-container *ngIf="!isLoadingReserva">
 
-        <div class="space-y-6 p-8">
-          <div class="detail-row">
-            <div class="detail-label">
-              <i class="pi pi-hashtag"></i>
-              ID do Pagamento
+        <!-- Caso raro: o Asaas confirmou o checkout, mas a reserva não pôde ser
+             mantida (ex.: expirou e a data foi ocupada por outra pessoa antes
+             do webhook chegar) e o valor já foi estornado automaticamente. -->
+        <div *ngIf="reservaFoiEstornada">
+          <div class="text-center mb-8">
+            <div class="warning-icon-container">
+              <i class="pi pi-exclamation-triangle text-8xl text-yellow-500"></i>
             </div>
-            <div class="detail-value">{{ paymentData.id }}</div>
-          </div>
-
-          <div class="detail-row">
-            <div class="detail-label">
-              <i class="pi pi-money-bill"></i>
-              Valor Pago
-            </div>
-            <div class="detail-value text-green-600 font-bold text-xl">
-              {{ formatCurrency(paymentData.value) }}
-            </div>
+            <h1 class="text-4xl font-bold text-gray-800 mt-6 mb-4 font-serif">
+              Reserva não pôde ser confirmada
+            </h1>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+              A data deixou de estar disponível antes de confirmarmos sua reserva. O valor pago foi estornado automaticamente.
+            </p>
           </div>
 
-          <div class="detail-row">
-            <div class="detail-label">
-              <i class="pi pi-info-circle"></i>
-              Status
-            </div>
-            <div class="detail-value">
-              <p-badge 
-                [value]="paymentData.status" 
-                severity="success">
-              </p-badge>
-            </div>
-          </div>
+          <p-card class="warning-card">
+            <ng-template pTemplate="header">
+              <div class="card-header bg-gradient-to-r from-yellow-600 to-yellow-700 text-center">
+                <h2 class="text-2xl font-bold text-white font-serif">
+                  <i class="pi pi-replay mr-2"></i>
+                  Pagamento Estornado
+                </h2>
+              </div>
+            </ng-template>
 
-          <div class="detail-row" *ngIf="paymentData.paymentDate">
-            <div class="detail-label">
-              <i class="pi pi-calendar"></i>
-              Data do Pagamento
+            <div class="space-y-6 p-8">
+              <p-message
+                severity="warn"
+                text="O valor cobrado foi estornado automaticamente e deve aparecer no seu extrato/fatura em alguns dias, conforme o prazo do seu banco ou operadora de cartão.">
+              </p-message>
+              <p class="text-gray-600">Pedimos desculpas pelo transtorno. Você pode tentar reservar outra data quando quiser.</p>
             </div>
-            <div class="detail-value">{{ formatDate(paymentData.paymentDate) }}</div>
-          </div>
 
-          <div class="detail-row" *ngIf="paymentData.method">
-            <div class="detail-label">
-              <i class="pi pi-qrcode"></i>
-              Método de Pagamento
-            </div>
-            <div class="detail-value">{{ paymentData.method }}</div>
-          </div>
+            <ng-template pTemplate="footer">
+              <div class="flex flex-col sm:flex-row gap-4 justify-center p-8 pt-0">
+                <p-button
+                  label="Fazer Nova Reserva"
+                  icon="pi pi-plus"
+                  iconPos="left"
+                  size="large"
+                  (onClick)="retryPayment()"
+                  styleClass="action-btn retry-btn">
+                </p-button>
+                <p-button
+                  label="Voltar ao Início"
+                  icon="pi pi-home"
+                  iconPos="left"
+                  severity="secondary"
+                  size="large"
+                  (onClick)="goToHome()"
+                  styleClass="action-btn">
+                </p-button>
+              </div>
+            </ng-template>
+          </p-card>
         </div>
 
-        <ng-template pTemplate="footer">
-          <div class="flex flex-col sm:flex-row gap-4 justify-center p-8 pt-0">
-            <p-button 
-              label="Ver Minhas Reservas" 
-              icon="pi pi-calendar"
-              iconPos="left"
-              size="large"
-              (onClick)="goToBookings()"
-              styleClass="action-btn success-btn">
-            </p-button>
-            
-            <p-button 
-              label="Voltar ao Início" 
-              icon="pi pi-home"
-              iconPos="left"
-              severity="secondary"
-              size="large"
-              (onClick)="goToHome()"
-              styleClass="action-btn">
-            </p-button>
+        <!-- Confirmação de verdade, com os dados reais da reserva -->
+        <div *ngIf="!reservaFoiEstornada">
+          <div class="text-center mb-8">
+            <div class="success-icon-container">
+              <i class="pi pi-check-circle text-8xl text-green-500"></i>
+            </div>
+            <h1 class="text-4xl font-bold text-gray-800 mt-6 mb-4 font-serif">
+              {{ getStatusMessage() }}
+            </h1>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+              {{ getStatusDescription() }}
+            </p>
           </div>
-        </ng-template>
-      </p-card>
+
+          <p-card class="success-card">
+            <ng-template pTemplate="header">
+              <div class="card-header bg-gradient-to-r from-green-600 to-green-700 text-center">
+                <h2 class="text-2xl font-bold text-white font-serif">
+                  <i class="pi pi-credit-card mr-2"></i>
+                  Detalhes da Reserva
+                </h2>
+              </div>
+            </ng-template>
+
+            <div class="space-y-6 p-8" *ngIf="paymentData; else semDadosReais">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
+                <div>
+                  <p class="text-sm text-gray-500">Código da reserva</p>
+                  <p class="text-lg font-semibold text-gray-800">{{ paymentData.codigo }}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Valor total</p>
+                  <p class="text-lg font-semibold text-gray-800">{{ formatCurrency(paymentData.valorTotal) }}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Data de início</p>
+                  <p class="text-lg font-semibold text-gray-800">{{ formatDate(paymentData.dataInicio) }}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Data de término</p>
+                  <p class="text-lg font-semibold text-gray-800">{{ formatDate(paymentData.dataFim) }}</p>
+                </div>
+              </div>
+              <p-message
+                severity="success"
+                text="Você também receberá esses detalhes por e-mail, junto com o código de acesso para consultar sua reserva quando quiser.">
+              </p-message>
+            </div>
+
+            <ng-template #semDadosReais>
+              <div class="space-y-6 p-8">
+                <p-message
+                  severity="info"
+                  text="Para ver o valor, a data e a forma de pagamento exatos, consulte sua reserva pelo código enviado por e-mail.">
+                </p-message>
+              </div>
+            </ng-template>
+
+            <ng-template pTemplate="footer">
+              <div class="flex flex-col sm:flex-row gap-4 justify-center p-8 pt-0">
+                <p-button
+                  label="Consultar Reserva"
+                  icon="pi pi-calendar"
+                  iconPos="left"
+                  size="large"
+                  (onClick)="goToBookings()"
+                  styleClass="action-btn success-btn">
+                </p-button>
+
+                <p-button
+                  label="Voltar ao Início"
+                  icon="pi pi-home"
+                  iconPos="left"
+                  severity="secondary"
+                  size="large"
+                  (onClick)="goToHome()"
+                  styleClass="action-btn">
+                </p-button>
+              </div>
+            </ng-template>
+          </p-card>
+        </div>
+
+      </ng-container>
     </div>
 
     <!-- Cancelled State -->
@@ -249,7 +305,7 @@
     <div *ngIf="!isLoading && paymentStatus === 'pendente'" class="animate-fade-in">
       <div class="text-center mb-8">
         <div class="pending-icon-container">
-          <i class="pi pi-clock text-8xl text-blue-500"></i>
+          <i class="pi pi-clock text-8xl text-primary-700"></i>
         </div>
         <h1 class="text-4xl font-bold text-gray-800 mt-6 mb-4 font-serif">
           {{ getStatusMessage() }}
@@ -261,7 +317,7 @@
 
       <p-card class="pending-card">
         <ng-template pTemplate="header">
-          <div class="card-header bg-gradient-to-r from-blue-600 to-blue-700 text-center">
+          <div class="card-header bg-gradient-to-r from-primary-700 to-primary-800 text-center">
             <h2 class="text-2xl font-bold text-white font-serif">
               <i class="pi pi-hourglass mr-2"></i>
               Pagamento em Processamento
@@ -270,51 +326,15 @@
         </ng-template>
 
         <div class="space-y-6 p-8">
-          <p-message 
-            severity="info" 
+          <p-message
+            severity="info"
             text="Seu pagamento está sendo processado. Aguarde a confirmação.">
           </p-message>
 
-          <div class="space-y-4" *ngIf="paymentData">
-            <div class="detail-row">
-              <div class="detail-label">
-                <i class="pi pi-hashtag"></i>
-                ID do Pagamento
-              </div>
-              <div class="detail-value">{{ paymentData.id }}</div>
-            </div>
-
-            <div class="detail-row">
-              <div class="detail-label">
-                <i class="pi pi-money-bill"></i>
-                Valor
-              </div>
-              <div class="detail-value text-blue-600 font-bold text-xl">
-                {{ formatCurrency(paymentData.value) }}
-              </div>
-            </div>
-
-            <div class="detail-row">
-              <div class="detail-label">
-                <i class="pi pi-info-circle"></i>
-                Status
-              </div>
-              <div class="detail-value">
-                <p-badge 
-                  [value]="paymentData.status" 
-                  severity="info">
-                </p-badge>
-              </div>
-            </div>
-
-            <div class="detail-row" *ngIf="paymentData.dueDate">
-              <div class="detail-label">
-                <i class="pi pi-calendar"></i>
-                Vencimento
-              </div>
-              <div class="detail-value">{{ formatDate(paymentData.dueDate) }}</div>
-            </div>
-          </div>
+          <p-message
+            severity="info"
+            text="Para acompanhar o valor e o vencimento, consulte sua reserva pelo código enviado por e-mail.">
+          </p-message>
 
           <div class="info-box">
             <h3 class="text-lg font-semibold text-gray-800 mb-2">Próximos passos:</h3>

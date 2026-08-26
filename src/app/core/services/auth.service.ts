@@ -18,7 +18,16 @@ export interface LoginRequest {
 
 export interface LoginResponse {
   access_token: string;
+  expiresAt: number;
   user: User;
+}
+
+// O que fica salvo localmente: só o perfil (pra render otimista do
+// cabeçalho/guard) e o instante de expiração devolvido pelo backend. Nunca
+// o JWT em si — esse vive só no cookie httpOnly, fora do alcance de JS.
+interface StoredSession {
+  user: User;
+  expiresAt: number;
 }
 
 export interface CodigoAcessoRequest {
@@ -39,8 +48,11 @@ export interface AdminLoginRequest {
 })
 export class AuthService {
   private readonly API_URL = environment.apiUrl;
-  private readonly TOKEN_KEY = 'grace_book_token';
-  private readonly USER_KEY = 'grace_book_user';
+  // Guarda só perfil + expiração (nada sensível) — o JWT em si vive num
+  // cookie httpOnly que o próprio navegador administra e este código nunca
+  // enxerga, para não ficar exposto a um XSS.
+  private readonly SESSION_KEY = 'grace_book_session';
+  private readonly EXPIRY_MARGIN_MS = 5 * 60 * 1000;
 
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
@@ -56,26 +68,21 @@ export class AuthService {
   }
 
   private loadStoredAuth(): void {
-    // Verificar se estamos no browser antes de acessar localStorage
-    if (typeof window !== 'undefined' && window.localStorage) {
-      const token = localStorage.getItem(this.TOKEN_KEY);
-      const user = localStorage.getItem(this.USER_KEY);
-      
-      if (token && user) {
-        try {
-          // Verificar se o token não está expirado
-          if (this.isTokenExpired(token)) {
-            this.clearAuth();
-            return;
-          }
-          
-          const userObj = JSON.parse(user);
-          this.currentUserSubject.next(userObj);
-          this.isAuthenticatedSubject.next(true);
-        } catch (error) {
-          this.clearAuth();
-        }
+    if (typeof window === 'undefined' || !window.localStorage) return;
+
+    const raw = localStorage.getItem(this.SESSION_KEY);
+    if (!raw) return;
+
+    try {
+      const session: StoredSession = JSON.parse(raw);
+      if (!session.expiresAt || this.isExpired(session.expiresAt)) {
+        this.clearAuth();
+        return;
       }
+      this.currentUserSubject.next(session.user);
+      this.isAuthenticatedSubject.next(true);
+    } catch (error) {
+      this.clearAuth();
     }
   }
 
@@ -83,7 +90,7 @@ export class AuthService {
     return this.http.post<LoginResponse>(`${this.API_URL}/auth/login`, credentials)
       .pipe(
         tap(response => {
-          this.setAuth(response.access_token, response.user);
+          this.setAuth(response.user, response.expiresAt);
         })
       );
   }
@@ -96,7 +103,7 @@ export class AuthService {
     return this.http.post<LoginResponse>(`${this.API_URL}/auth/login-codigo`, credentials)
       .pipe(
         tap(response => {
-          this.setAuth(response.access_token, response.user);
+          this.setAuth(response.user, response.expiresAt);
         })
       );
   }
@@ -105,39 +112,37 @@ export class AuthService {
     return this.http.post<LoginResponse>(`${this.API_URL}/auth/admin-login`, { codigo })
       .pipe(
         tap(response => {
-          this.setAuth(response.access_token, response.user);
+          this.setAuth(response.user, response.expiresAt);
         })
       );
   }
 
-  private setAuth(token: string, user: User): void {
+  private setAuth(user: User, expiresAt: number): void {
     if (typeof window !== 'undefined' && window.localStorage) {
-      localStorage.setItem(this.TOKEN_KEY, token);
-      localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+      const session: StoredSession = { user, expiresAt };
+      localStorage.setItem(this.SESSION_KEY, JSON.stringify(session));
     }
     this.currentUserSubject.next(user);
     this.isAuthenticatedSubject.next(true);
   }
 
   logout(): void {
+    // Best-effort: limpa o cookie httpOnly no backend. Mesmo se essa
+    // chamada falhar (rede fora, já expirado etc.), o estado local abaixo
+    // já desloga a UI de qualquer forma.
+    this.http.post(`${this.API_URL}/auth/logout`, {}).subscribe({
+      error: () => {},
+    });
     this.clearAuth();
     this.router.navigate(['/home']);
   }
 
   private clearAuth(): void {
     if (typeof window !== 'undefined' && window.localStorage) {
-      localStorage.removeItem(this.TOKEN_KEY);
-      localStorage.removeItem(this.USER_KEY);
+      localStorage.removeItem(this.SESSION_KEY);
     }
     this.currentUserSubject.next(null);
     this.isAuthenticatedSubject.next(false);
-  }
-
-  getToken(): string | null {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      return localStorage.getItem(this.TOKEN_KEY);
-    }
-    return null;
   }
 
   getCurrentUser(): User | null {
@@ -145,18 +150,29 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
-    const token = this.getToken();
-    if (!token) {
-      return false;
+    // Isto é só o estado otimista da UI (mostrar/esconder o menu de admin,
+    // liberar a rota) — quem decide de verdade se uma ação é permitida é o
+    // backend, validando o cookie httpOnly a cada chamada. Se a sessão
+    // guardada expirou localmente, ou o cookie já não é mais válido no
+    // servidor, o próximo request autenticado volta 401 e o
+    // errorInterceptor desloga e redireciona.
+    if (typeof window === 'undefined' || !window.localStorage) {
+      return this.isAuthenticatedSubject.value;
     }
-    
-    // Verificar se o token não está expirado
-    if (this.isTokenExpired(token)) {
+    const raw = localStorage.getItem(this.SESSION_KEY);
+    if (!raw) return false;
+
+    try {
+      const session: StoredSession = JSON.parse(raw);
+      if (!session.expiresAt || this.isExpired(session.expiresAt)) {
+        this.clearAuth();
+        return false;
+      }
+      return this.isAuthenticatedSubject.value;
+    } catch {
       this.clearAuth();
       return false;
     }
-    
-    return this.isAuthenticatedSubject.value;
   }
 
   isAdmin(): boolean {
@@ -164,36 +180,7 @@ export class AuthService {
     return user?.isAdmin || false;
   }
 
-  /**
-   * Verifica se o token JWT está expirado
-   */
-  private isTokenExpired(token: string): boolean {
-    try {
-      // Decodificar o payload do JWT (sem verificar assinatura)
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      
-      // Verificar se o token tem exp (expiration time)
-      if (!payload.exp) {
-        return true; // Considerar expirado se não tiver exp
-      }
-      
-      // Converter exp (timestamp em segundos) para milissegundos
-      const expirationTime = payload.exp * 1000;
-      const currentTime = Date.now();
-      
-      // Adicionar margem de segurança de 5 minutos
-      const margin = 5 * 60 * 1000; // 5 minutos em milissegundos
-      
-      const isExpired = currentTime >= (expirationTime - margin);
-      
-      if (isExpired) {
-        // Token expirado - não logar dados sensíveis
-      }
-      
-      return isExpired;
-    } catch (error) {
-      // Erro ao verificar expiração do token - não logar detalhes
-      return true; // Considerar expirado em caso de erro
-    }
+  private isExpired(expiresAt: number): boolean {
+    return Date.now() >= expiresAt - this.EXPIRY_MARGIN_MS;
   }
 }

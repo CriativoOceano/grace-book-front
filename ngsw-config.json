@@ -30,14 +30,14 @@
   ],
   "dataGroups": [
     {
-      "name": "api-cache",
+      "name": "api-cache-config",
       "urls": [
-        "https://grace-book-back.onrender.com/**"
+        "https://grace-book-back.onrender.com/configuracoes/**"
       ],
       "cacheConfig": {
         "strategy": "freshness",
         "maxSize": 100,
-        "maxAge": "1h",
+        "maxAge": "5m",
         "timeout": "10s"
       }
     },

@@ -6,33 +6,46 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // Antes eram um azul/cinza genéricos do template do Tailwind, sem
+        // nenhuma relação com a marca real (--azul-abissal/--dourado-presenca
+        // em styles.scss) — e por isso praticamente nunca eram usados;
+        // quem precisava de cor ia direto num blue-600/etc. do Tailwind
+        // padrão, fora da paleta da marca (ver payment-success). Agora
+        // "primary"/"secondary" são a escala da marca de verdade.
         primary: {
-          50: '#f0f9ff',
-          100: '#e0f2fe',
-          200: '#bae6fd',
-          300: '#7dd3fc',
-          400: '#38bdf8',
-          500: '#0ea5e9',
-          600: '#0284c7',
-          700: '#0369a1',
-          800: '#075985',
-          900: '#0c4a6e',
+          50: '#eef3f8',
+          100: '#d3e1ec',
+          200: '#a7c3d9',
+          300: '#7ba5c6',
+          400: '#4f87b3',
+          500: '#2e6b98',
+          600: '#16537c',
+          700: '#0a2647', // = --azul-abissal
+          800: '#081d38',
+          900: '#051428',
         },
         secondary: {
-          50: '#f8fafc',
-          100: '#f1f5f9',
-          200: '#e2e8f0',
-          300: '#cbd5e1',
-          400: '#94a3b8',
-          500: '#64748b',
-          600: '#475569',
-          700: '#334155',
-          800: '#1e293b',
-          900: '#0f172a',
+          50: '#fbf5e9',
+          100: '#f6ebd9', // = --areia-sereno
+          200: '#edd7a8',
+          300: '#e4c481',
+          400: '#d9b05c',
+          500: '#cba135', // = --dourado-presenca
+          600: '#b38e2e', // = --dourado-hover
+          700: '#8c701f',
+          800: '#6b5518',
+          900: '#4a3b10',
         }
       },
       fontFamily: {
         'sans': ['Inter', 'system-ui', 'sans-serif'],
+        // O site inteiro usa Playfair Display nos títulos via
+        // font-family direto no SCSS de cada componente — menos em duas
+        // páginas (booking, payment-success) que usam a utility
+        // `font-serif` do Tailwind e por isso caem no serif genérico
+        // padrão dele. Isso resolve a inconsistência sem precisar tocar
+        // nos templates.
+        'serif': ['Playfair Display', 'Georgia', 'serif'],
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',

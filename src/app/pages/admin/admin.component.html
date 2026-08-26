@@ -10,25 +10,35 @@
         <p-tab value="0">Todas as Reservas</p-tab>
         <p-tab value="1">Conteúdo do Site</p-tab>
         <p-tab value="2">Configurações</p-tab>
+        <p-tab value="3">Códigos de Acesso</p-tab>
       </p-tablist>
       
       <p-tabpanels>
         <p-tabpanel value="0">
           <!-- Tabela de reservas -->
           <p-card>
-          <p-table 
-            [value]="reservas" 
+          <p-table
+            #dt
+            [value]="reservas"
             [loading]="isLoading"
-            [paginator]="true" 
+            [paginator]="true"
             [rows]="10"
             [showCurrentPageReport]="true"
             currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} reservas"
+            [globalFilterFields]="['codigo', 'usuarioNome', 'usuarioEmail', 'dadosHospede.nome', 'dadosHospede.sobrenome', 'dadosHospede.email']"
             [tableStyle]="{ 'min-width': '60rem' }">
-            
+
             <ng-template #caption>
               <div class="flex items-center justify-between">
                 <span class="text-xl font-bold">Reservas</span>
-                <!-- <p-button icon="pi pi-refresh" rounded raised /> -->
+                <span class="p-input-icon-left">
+                  <i class="pi pi-search"></i>
+                  <input
+                    pInputText
+                    type="text"
+                    placeholder="Buscar por código, nome ou e-mail..."
+                    (input)="dt.filterGlobal($any($event.target).value, 'contains')" />
+                </span>
               </div>
             </ng-template>
             
@@ -50,7 +60,7 @@
                         <ng-template #body let-reserva>
                           <tr>
                             <td>{{ reserva.codigo || reserva.id }}</td>
-                            <td>{{ reserva.usuarioNome }}</td>
+                            <td>{{ nomeCompleto(reserva) }}</td>
                             <td>
                               <p-tag [value]="getTipoText(reserva.tipo)" [severity]="getTipoSeverity(reserva.tipo)"></p-tag>
                             </td>
@@ -107,16 +117,24 @@
 
         <p-tabpanel value="2">
         <p-accordion value="0">
-          <!-- Configuração de Preços -->
+          <!-- Precificação -->
           <p-accordion-panel value="0">
-            <p-accordion-header>Preços e Valores</p-accordion-header>
+            <p-accordion-header>Precificação</p-accordion-header>
             <p-accordion-content>
               <app-config-precos></app-config-precos>
             </p-accordion-content>
           </p-accordion-panel>
 
-          <!-- Configuração de Disponibilidade -->
+          <!-- Preços Sazonais -->
           <p-accordion-panel value="1">
+            <p-accordion-header>Preços Sazonais</p-accordion-header>
+            <p-accordion-content>
+              <app-precos-sazonais></app-precos-sazonais>
+            </p-accordion-content>
+          </p-accordion-panel>
+
+          <!-- Configuração de Disponibilidade -->
+          <p-accordion-panel value="2">
             <p-accordion-header>Disponibilidade de Datas</p-accordion-header>
             <p-accordion-content>
               <app-config-disponibilidade></app-config-disponibilidade>
@@ -124,13 +142,17 @@
           </p-accordion-panel>
 
           <!-- Configuração de Capacidade -->
-          <p-accordion-panel value="2">
+          <p-accordion-panel value="3">
             <p-accordion-header>Capacidade e Limites</p-accordion-header>
             <p-accordion-content>
               <app-config-capacidade></app-config-capacidade>
             </p-accordion-content>
           </p-accordion-panel>
         </p-accordion>
+        </p-tabpanel>
+
+        <p-tabpanel value="3">
+          <app-codigos-acesso></app-codigos-acesso>
         </p-tabpanel>
       </p-tabpanels>
     </p-tabs>

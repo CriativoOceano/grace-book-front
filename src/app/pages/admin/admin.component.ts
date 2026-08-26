@@ -6,6 +6,7 @@ import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
 import { AccordionModule } from 'primeng/accordion';
+import { InputTextModule } from 'primeng/inputtext';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { TooltipModule } from 'primeng/tooltip';
 import { MessageService } from 'primeng/api';
@@ -14,6 +15,8 @@ import { ContentManagerComponent } from './components/content-manager/content-ma
 import { ConfigPrecosComponent } from './components/config-precos/config-precos.component';
 import { ConfigDisponibilidadeComponent } from './components/config-disponibilidade/config-disponibilidade.component';
 import { ConfigCapacidadeComponent } from './components/config-capacidade/config-capacidade.component';
+import { CodigosAcessoComponent } from './components/codigos-acesso/codigos-acesso.component';
+import { PrecosSazonaisComponent } from './components/precos-sazonais/precos-sazonais.component';
 import { ReservaService, Reserva } from '../../core/services/reserva.service';
 import { ReservationDetailsDialogComponent } from '../../shared/components/reservation-details-dialog/reservation-details-dialog.component';
 import { CancelReservationDialogComponent } from '../../shared/components/cancel-reservation-dialog/cancel-reservation-dialog.component';
@@ -33,12 +36,15 @@ import { CancelReservationDialogComponent } from '../../shared/components/cancel
     TagModule,
     ButtonModule,
     AccordionModule,
+    InputTextModule,
     TooltipModule,
     ToastModule,
     ContentManagerComponent,
     ConfigPrecosComponent,
     ConfigDisponibilidadeComponent,
-    ConfigCapacidadeComponent
+    ConfigCapacidadeComponent,
+    CodigosAcessoComponent,
+    PrecosSazonaisComponent
   ],
   providers: [DialogService],
   templateUrl: './admin.component.html',
@@ -133,6 +139,13 @@ export class AdminComponent implements OnInit {
       default:
         return 'secondary';
     }
+  }
+
+  nomeCompleto(reserva: Reserva): string {
+    if (reserva.dadosHospede?.nome) {
+      return `${reserva.dadosHospede.nome} ${reserva.dadosHospede.sobrenome || ''}`.trim();
+    }
+    return reserva.usuarioNome;
   }
 
   getTipoText(tipo: string): string {

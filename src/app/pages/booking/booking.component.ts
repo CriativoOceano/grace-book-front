@@ -2,7 +2,7 @@ import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser, CurrencyPipe } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Observable, Subject, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
+import { Observable, Subject, of, debounceTime, distinctUntilChanged, switchMap, catchError, filter } from 'rxjs';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 
 // PrimeNG Components
@@ -30,6 +30,7 @@ import { BookingService } from '../../services/booking.service';
 import { ConteudoService, ChaletImage } from '../../core/services/conteudo.service';
 import { ConfiguracaoService } from '../../core/services/configuracao.service';
 import { CepService, EnderecoCompleto } from '../../core/services/cep.service';
+import { DisponibilidadeService } from '../../core/services/disponibilidade.service';
 
 // Custom Components
 import { PricingSummaryComponent } from '../../components/pricing-summary/pricing-summary.component';
@@ -118,6 +119,10 @@ export class BookingComponent implements OnInit {
   disponibilidadeVerificada = false;
   disponibilidadeResultado: any = null;
   valorCalculado = 0;
+  // true somente quando valorCalculado veio da cotação oficial do backend,
+  // não do cálculo local de fallback — usado para bloquear o envio final
+  // enquanto não tivermos um valor confirmado pelo servidor.
+  precoConfirmadoPeloBackend = false;
   
   // Configurações de preços
   configuracao: Configuracao | null = null;
@@ -265,6 +270,7 @@ export class BookingComponent implements OnInit {
     private conteudoService: ConteudoService,
     private configuracaoService: ConfiguracaoService,
     private cepService: CepService,
+    private disponibilidadeService: DisponibilidadeService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
@@ -318,14 +324,7 @@ export class BookingComponent implements OnInit {
     
     // Limpar array antes de carregar
     this.datasBloqueadas = [];
-    
-    // Adicionar uma data de teste para debug
-    const hoje = new Date();
-    const amanha = new Date(hoje);
-    amanha.setDate(hoje.getDate() + 1);
-    amanha.setHours(0, 0, 0, 0); // Normalizar para meia-noite
-    this.datasBloqueadas.push(amanha);
-    
+
     this.bookingService.getReservasConfirmadas().subscribe({
       next: (reservas: any[]) => {
         // Processar reservas sem logar dados sensíveis
@@ -346,10 +345,34 @@ export class BookingComponent implements OnInit {
           }
         });
         
-        this.isLoadingDatasBloqueadas = false;
-        
-        // Aplicar estilos específicos às datas de reservas confirmadas
-        this.aplicarEstilosReservasConfirmadas();
+        // Além das reservas confirmadas, também bloquear visualmente os
+        // dias que o admin bloqueou manualmente (painel Disponibilidade de
+        // Datas) — sem isso o cliente só descobria que a data estava
+        // bloqueada ao tentar finalizar a reserva.
+        this.disponibilidadeService.getBloqueiosPublico().subscribe({
+          next: (bloqueios) => {
+            bloqueios.forEach(bloqueio => {
+              // O backend guarda a data como meia-noite UTC. Usar
+              // setHours(0,0,0,0) no fuso local (ex: Brasília, UTC-3)
+              // "voltava" um dia — construir a partir dos componentes UTC
+              // garante que o dia bloqueado bate com o que o admin marcou.
+              const dataUtc = new Date(bloqueio.data);
+              const dataLocal = new Date(
+                dataUtc.getUTCFullYear(),
+                dataUtc.getUTCMonth(),
+                dataUtc.getUTCDate(),
+              );
+              this.datasBloqueadas.push(dataLocal);
+            });
+            this.isLoadingDatasBloqueadas = false;
+            this.aplicarEstilosReservasConfirmadas();
+          },
+          error: () => {
+            // Se isso falhar, ainda temos as datas de reservas confirmadas
+            this.isLoadingDatasBloqueadas = false;
+            this.aplicarEstilosReservasConfirmadas();
+          }
+        });
       },
       error: (error) => {
         // Erro ao carregar datas bloqueadas - não logar detalhes
@@ -515,13 +538,16 @@ export class BookingComponent implements OnInit {
       telefoneHospede: ['', [Validators.required, Validators.pattern(/^\(\d{2}\)\s\d{4,5}-\d{4}$|^\d{10,11}$/)]],
       observacoesHospede: [''],
       
-      // Campos de endereço
-      enderecoHospede: [''],
-      numeroHospede: [''],
-      cepHospede: [''],
-      bairroHospede: [''],
-      cidadeHospede: [''],
-      ufHospede: [''],
+      // Campos de endereço — obrigatórios porque o Asaas exige endereço
+      // completo no cadastro do cliente pra gerar qualquer cobrança
+      // (PIX ou cartão). Sem isso aqui, o erro só aparecia depois, na
+      // hora de gerar a cobrança, como um 500 confuso.
+      enderecoHospede: ['', [Validators.required]],
+      numeroHospede: ['', [Validators.required]],
+      cepHospede: ['', [Validators.required]],
+      bairroHospede: ['', [Validators.required]],
+      cidadeHospede: ['', [Validators.required]],
+      ufHospede: ['', [Validators.required]],
       
       // Passo 3: Pagamento
       modoPagamento: ['', [Validators.required]],
@@ -605,10 +631,10 @@ export class BookingComponent implements OnInit {
       isLoading: false
     };
     
-    // 🔍 DEBUG: Log do pricingData atualizado
-    // PricingData atualizado com sucesso
-    
     this.valorCalculado = this.pricingData.valorTotal;
+    // Qualquer mudança no formulário invalida a última cotação confirmada
+    // pelo backend — calcularValor() precisa rodar de novo para recuperá-la.
+    this.precoConfirmadoPeloBackend = false;
   }
 
   // Calcular valor da diária baseado na faixa de pessoas
@@ -656,57 +682,105 @@ export class BookingComponent implements OnInit {
   }
 
   // Verificar disponibilidade
+  // Extrai dataInicio/dataFim do valor atual de periodoReserva, tratando o
+  // caso de batismo (data única) e hospedagem (range). Retorna null e já
+  // mostra o toast de erro quando o formato selecionado não é válido.
+  private extrairPeriodoSelecionado(): { dataInicio: Date; dataFim: Date } | null {
+    const periodoReserva = this.bookingForm.get('periodoReserva')?.value;
+    const tipo = this.bookingForm.get('tipo')?.value;
+
+    if (tipo === 'batismo') {
+      if (periodoReserva instanceof Date) {
+        return { dataInicio: new Date(periodoReserva), dataFim: new Date(periodoReserva) };
+      }
+      if (Array.isArray(periodoReserva) && periodoReserva.length === 1) {
+        return { dataInicio: new Date(periodoReserva[0]), dataFim: new Date(periodoReserva[0]) };
+      }
+      this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Selecione uma data válida para o batismo' });
+      return null;
+    }
+
+    if (!periodoReserva || !Array.isArray(periodoReserva) || periodoReserva.length !== 2) {
+      this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Selecione um período válido' });
+      return null;
+    }
+
+    return { dataInicio: new Date(periodoReserva[0]), dataFim: new Date(periodoReserva[1]) };
+  }
+
+  // Verificação de disponibilidade logo ao sair do step de datas (step 0)
+  // — antes disso, o cliente só descobria que o período estava indisponível
+  // depois de preencher todos os dados pessoais no step de hóspede.
+  verificarDisponibilidadeInicial(): void {
+    this.bookingForm.get('tipo')?.markAsTouched();
+    this.bookingForm.get('periodoReserva')?.markAsTouched();
+
+    if (!this.bookingForm.get('tipo')?.valid || !this.bookingForm.get('periodoReserva')?.valid) {
+      this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Selecione o tipo de reserva e o período antes de continuar.' });
+      return;
+    }
+
+    const periodo = this.extrairPeriodoSelecionado();
+    if (!periodo) return;
+
+    const tipo = this.bookingForm.get('tipo')?.value;
+    const quantidadeChales = this.bookingForm.get('quantidadeChales')?.value || 0;
+
+    this.isLoading = true;
+    this.bookingService.verificarDisponibilidade({
+      dataInicio: periodo.dataInicio.toISOString(),
+      dataFim: periodo.dataFim.toISOString(),
+      tipo: this.mapTipoToBackend(tipo),
+      quantidadeChales: quantidadeChales
+    }).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        if (response.disponivel) {
+          this.nextStep();
+        } else {
+          this.messageService.add({ severity: 'error', summary: 'Período indisponível', detail: 'Essas datas não estão disponíveis. Tente outro período.', life: 5000 });
+        }
+      },
+      error: () => {
+        this.isLoading = false;
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: 'Não foi possível verificar a disponibilidade. Tente novamente em instantes.',
+          life: 5000
+        });
+      }
+    });
+  }
+
   verificarDisponibilidade(): void {
     this.markFormGroupTouched();
-    
-    if (this.bookingForm.get('tipo')?.valid && 
+
+    if (this.bookingForm.get('tipo')?.valid &&
         this.bookingForm.get('periodoReserva')?.valid &&
         this.bookingForm.get('nomeHospede')?.valid &&
         this.bookingForm.get('sobrenomeHospede')?.valid &&
         this.bookingForm.get('emailHospede')?.valid &&
         this.bookingForm.get('cpfHospede')?.valid &&
-        this.bookingForm.get('telefoneHospede')?.valid) {
-      
+        this.bookingForm.get('telefoneHospede')?.valid &&
+        this.bookingForm.get('cepHospede')?.valid &&
+        this.bookingForm.get('enderecoHospede')?.valid &&
+        this.bookingForm.get('numeroHospede')?.valid &&
+        this.bookingForm.get('bairroHospede')?.valid &&
+        this.bookingForm.get('cidadeHospede')?.valid &&
+        this.bookingForm.get('ufHospede')?.valid) {
+
       this.isLoading = true;
-      
-      const periodoReserva = this.bookingForm.get('periodoReserva')?.value;
+
+      const periodo = this.extrairPeriodoSelecionado();
+      if (!periodo) {
+        this.isLoading = false;
+        return;
+      }
+      const { dataInicio, dataFim } = periodo;
       const tipo = this.bookingForm.get('tipo')?.value;
       const quantidadeChales = this.bookingForm.get('quantidadeChales')?.value || 0;
-      
-      let dataInicio: Date;
-      let dataFim: Date;
-      
-      if (tipo === 'batismo') {
-        // Para batismo: data única
-        if (!periodoReserva) {
-          this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Selecione uma data válida para o batismo' });
-          this.isLoading = false;
-          return;
-        }
-        
-        if (periodoReserva instanceof Date) {
-          dataInicio = new Date(periodoReserva);
-          dataFim = new Date(periodoReserva);
-        } else if (Array.isArray(periodoReserva) && periodoReserva.length === 1) {
-          dataInicio = new Date(periodoReserva[0]);
-          dataFim = new Date(periodoReserva[0]);
-        } else {
-          this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Selecione uma data válida para o batismo' });
-          this.isLoading = false;
-          return;
-        }
-      } else {
-        // Para hospedagem: período (range)
-        if (!periodoReserva || !Array.isArray(periodoReserva) || periodoReserva.length !== 2) {
-          this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Selecione um período válido' });
-          this.isLoading = false;
-          return;
-        }
-        
-        dataInicio = new Date(periodoReserva[0]);
-        dataFim = new Date(periodoReserva[1]);
-      }
-      
+
       this.bookingService.verificarDisponibilidade({
         dataInicio: dataInicio.toISOString(),
         dataFim: dataFim.toISOString(),
@@ -719,7 +793,7 @@ export class BookingComponent implements OnInit {
             mensagem: response.disponivel ? 'Período disponível!' : 'Período indisponível'
           };
           this.disponibilidadeVerificada = true;
-          
+
           if (response.disponivel) {
             this.calcularValor();
             this.nextStep();
@@ -729,16 +803,15 @@ export class BookingComponent implements OnInit {
           this.isLoading = false;
         },
         error: (error) => {
-          
-          this.disponibilidadeResultado = {
-            disponivel: true,
-            mensagem: 'Backend não disponível - assumindo período disponível para teste'
-          };
-          this.disponibilidadeVerificada = true;
-          
-          this.calcularValor();
-          this.messageService.add({ severity: 'warn', summary: 'Aviso', detail: 'Backend não disponível. Continuando em modo de teste...' });
-          this.nextStep();
+          this.disponibilidadeResultado = null;
+          this.disponibilidadeVerificada = false;
+
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: 'Não foi possível verificar a disponibilidade. Tente novamente em instantes.',
+            life: 5000
+          });
           this.isLoading = false;
         }
       });
@@ -774,18 +847,23 @@ export class BookingComponent implements OnInit {
       next: (response) => {
         if (response && response.valorTotal) {
           this.valorCalculado = response.valorTotal;
+          this.precoConfirmadoPeloBackend = true;
         } else {
+          this.precoConfirmadoPeloBackend = false;
           this.calcularValorLocal();
         }
       },
       error: (error) => {
+        this.precoConfirmadoPeloBackend = false;
         this.calcularValorLocal();
-        this.messageService.add({ severity: 'warn', summary: 'Aviso', detail: 'Backend não disponível. Usando cálculo local...' });
+        this.messageService.add({ severity: 'warn', summary: 'Valor estimado', detail: 'Não foi possível confirmar o valor exato com o servidor agora. O valor mostrado é uma estimativa e será conferido antes do pagamento.' });
       }
     });
   }
-  
-  // Cálculo local como fallback
+
+  // Cálculo local como fallback — apenas para exibição enquanto a cotação
+  // oficial não responde. Nunca é o valor usado para cobrar: finalizarReserva()
+  // exige uma cotação confirmada pelo backend antes de prosseguir.
   private calcularValorLocal(): void {
     const tipo = this.bookingForm.get('tipo')?.value;
     const periodoReserva = this.bookingForm.get('periodoReserva')?.value;
@@ -942,67 +1020,45 @@ export class BookingComponent implements OnInit {
     }
     
     this.markFormGroupTouched();
-    
+
     if (this.bookingForm.valid) {
       this.isProcessingPayment = true;
-      
+
       const customerData = this.getCustomerData();
-      
-      // Enviando dados para o backend
-      // Dados da reserva preparados
-      
-      const reservaData = {
-        tipo: customerData.tipo,
+
+      // Reconferir disponibilidade imediatamente antes de enviar, para reduzir a
+      // janela de corrida com outra pessoa reservando as mesmas datas.
+      this.bookingService.verificarDisponibilidade({
         dataInicio: customerData.dataInicio,
         dataFim: customerData.dataFim,
-        quantidadePessoas: customerData.quantidadePessoas,
-        quantidadeChales: customerData.quantidadeChales,
-        observacoes: customerData.observacoes,
-        dadosPagamento: customerData.dadosPagamento,
-        dadosHospede: customerData.dadosHospede
-      };
-      
-      this.bookingService.createBooking(reservaData).subscribe({
-        next: (response) => {
-          // Resposta do backend recebida
-          
-          const hasReserva = response.reserva;
-          const hasLinkPagamento = response.pagamento?.linkPagamento;
-          
-          if (hasReserva && hasLinkPagamento) {
-            this.paymentData = response;
-            this.paymentLink = response.pagamento.linkPagamento;
-            
-            this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Reserva criada com sucesso! Redirecionando para o pagamento...' });
+        tipo: customerData.tipo,
+        quantidadeChales: customerData.quantidadeChales
+      }).subscribe({
+        next: (dispResponse) => {
+          if (!dispResponse.disponivel) {
             this.isProcessingPayment = false;
-            
-            this.redirectToCheckout(response);
-          } else {
-            // Estrutura de resposta inesperada
-            this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao processar pagamento - dados incompletos' });
-            this.isProcessingPayment = false;
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Datas indisponíveis',
+              detail: 'Essas datas foram reservadas por outra pessoa enquanto você preenchia o formulário. Escolha outro período.',
+              life: 6000
+            });
+            this.disponibilidadeVerificada = false;
+            this.currentStep = 0;
+            this.carregarDatasBloqueadas();
+            return;
           }
+
+          this.confirmarPrecoAntesDeEnviar(customerData);
         },
-        error: (error) => {
-          // Erro ao criar reserva - não logar detalhes sensíveis
-          
-          // Extrair mensagem específica do backend
-          let errorMessage = 'Erro ao processar reserva. Tente novamente.';
-          
-          if (error.error?.message) {
-            errorMessage = error.error.message;
-          } else if (error.error?.error) {
-            errorMessage = error.error.error;
-          } else if (error.message) {
-            errorMessage = error.message;
-          } else if (error.status === 500) {
-            errorMessage = 'Erro interno do servidor. Tente novamente em alguns minutos.';
-          } else if (error.status === 0) {
-            errorMessage = 'Erro de conexão. Verifique se o backend está rodando.';
-          }
-          
-          this.messageService.add({ severity: 'error', summary: 'Erro', detail: errorMessage });
+        error: () => {
           this.isProcessingPayment = false;
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Erro',
+            detail: 'Não foi possível confirmar a disponibilidade das datas. Tente novamente.',
+            life: 5000
+          });
         }
       });
     } else {
@@ -1010,6 +1066,128 @@ export class BookingComponent implements OnInit {
       
       this.messageService.add({ severity: 'error', summary: 'Erro', detail: `Preencha os campos obrigatórios: ${camposInvalidos.join(', ')}` });
     }
+  }
+
+  // Garante que valorCalculado (e o que vai em dadosPagamento.valorTotal)
+  // veio da cotação oficial do backend antes de seguir para o pagamento.
+  // Se a última cotação foi só o cálculo local de fallback, refaz a chamada
+  // ao backend agora; se ainda assim falhar, bloqueia o envio em vez de
+  // deixar o usuário seguir com um valor que pode não bater com o cobrado.
+  private confirmarPrecoAntesDeEnviar(customerData: any): void {
+    if (this.precoConfirmadoPeloBackend) {
+      this.enviarReserva({ ...customerData, dadosPagamento: { ...customerData.dadosPagamento, valorTotal: this.valorCalculado } });
+      return;
+    }
+
+    this.bookingService.cotarReserva({
+      tipo: customerData.tipo,
+      dataInicio: customerData.dataInicio,
+      dataFim: customerData.dataFim,
+      quantidadePessoas: customerData.quantidadePessoas,
+      quantidadeChales: customerData.quantidadeChales,
+      observacoes: customerData.observacoes
+    }).subscribe({
+      next: (response) => {
+        if (response && response.valorTotal) {
+          this.valorCalculado = response.valorTotal;
+          this.precoConfirmadoPeloBackend = true;
+          this.enviarReserva({ ...customerData, dadosPagamento: { ...customerData.dadosPagamento, valorTotal: this.valorCalculado } });
+        } else {
+          this.isProcessingPayment = false;
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Não foi possível confirmar o valor',
+            detail: 'Não conseguimos confirmar o valor exato da reserva com o servidor. Tente novamente em instantes.',
+            life: 6000
+          });
+        }
+      },
+      error: () => {
+        this.isProcessingPayment = false;
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Não foi possível confirmar o valor',
+          detail: 'Não conseguimos confirmar o valor exato da reserva com o servidor. Tente novamente em instantes.',
+          life: 6000
+        });
+      }
+    });
+  }
+
+  // Envia a reserva já confirmada como disponível para o backend
+  private enviarReserva(customerData: any): void {
+    const reservaData = {
+      tipo: customerData.tipo,
+      dataInicio: customerData.dataInicio,
+      dataFim: customerData.dataFim,
+      quantidadePessoas: customerData.quantidadePessoas,
+      quantidadeChales: customerData.quantidadeChales,
+      observacoes: customerData.observacoes,
+      dadosPagamento: customerData.dadosPagamento,
+      dadosHospede: customerData.dadosHospede
+    };
+
+    this.bookingService.createBooking(reservaData).subscribe({
+      next: (response) => {
+        const hasReserva = response.reserva;
+        const hasLinkPagamento = response.pagamento?.linkPagamento;
+
+        if (hasReserva && hasLinkPagamento) {
+          this.paymentData = response;
+          this.paymentLink = response.pagamento.linkPagamento;
+
+          this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Reserva criada com sucesso! Redirecionando para o pagamento...' });
+          this.isProcessingPayment = false;
+
+          this.redirectToCheckout(response);
+        } else {
+          this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao processar pagamento - dados incompletos' });
+          this.isProcessingPayment = false;
+        }
+      },
+      error: (error) => {
+        this.isProcessingPayment = false;
+
+        // Conflito de datas: outra pessoa reservou o mesmo período entre a
+        // reconferência e o envio final.
+        if (error.status === 409) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Datas indisponíveis',
+            detail: 'Essas datas foram reservadas por outra pessoa. Escolha outro período.',
+            life: 6000
+          });
+          this.disponibilidadeVerificada = false;
+          this.currentStep = 0;
+          this.carregarDatasBloqueadas();
+          return;
+        }
+
+        let errorMessage = 'Erro ao processar reserva. Tente novamente.';
+
+        if (error.error?.message) {
+          errorMessage = error.error.message;
+        } else if (error.error?.error) {
+          errorMessage = error.error.error;
+        } else if (error.message) {
+          errorMessage = error.message;
+        } else if (error.status === 500) {
+          errorMessage = 'Erro interno do servidor. Tente novamente em alguns minutos.';
+        } else if (error.status === 0) {
+          errorMessage = 'Erro de conexão. Verifique se o backend está rodando.';
+        }
+
+        // Mensagens de conflito de data podem vir com outro status (400) e
+        // texto específico do backend — cobrir esse caso também.
+        if (/reservad|indispon|conflito|ocupad/i.test(errorMessage)) {
+          this.disponibilidadeVerificada = false;
+          this.currentStep = 0;
+          this.carregarDatasBloqueadas();
+        }
+
+        this.messageService.add({ severity: 'error', summary: 'Erro', detail: errorMessage });
+      }
+    });
   }
 
   // Redirecionar para o checkout do ASAAS
@@ -1034,44 +1212,54 @@ export class BookingComponent implements OnInit {
       distinctUntilChanged(), // Só buscar se o CEP mudou
       switchMap(cep => {
         if (!cep || !this.cepService.validarCep(cep)) {
-          return [];
+          this.buscandoCep = false;
+          this.cepEncontrado = false;
+          return of(null);
         }
-        
+
         this.buscandoCep = true;
         this.cepEncontrado = false;
-        
-        return this.cepService.buscarCep(cep);
-      })
-    ).subscribe({
-      next: (endereco: EnderecoCompleto) => {
-        this.buscandoCep = false;
-        this.cepEncontrado = true;
-        
-        // Preencher automaticamente os campos do endereço
-        this.bookingForm.patchValue({
-          enderecoHospede: endereco.endereco,
-          bairroHospede: endereco.bairro,
-          cidadeHospede: endereco.cidade,
-          ufHospede: endereco.uf
-        });
 
-        // Formatar CEP
-        const cepFormatado = this.cepService.formatarCep(endereco.cep);
-        this.bookingForm.patchValue({
-          cepHospede: cepFormatado
-        });
+        // Precisa tratar o erro AQUI, dentro do switchMap — um erro que
+        // escape até o subscribe() de fora mata a inscrição inteira (é
+        // assim que Observable funciona: erro = fim da assinatura), e
+        // digitar um CEP certo depois de um errado nunca mais dispara
+        // busca nenhuma, porque ninguém está mais ouvindo o Subject.
+        return this.cepService.buscarCep(cep).pipe(
+          catchError((error) => {
+            this.buscandoCep = false;
+            this.cepEncontrado = false;
+            this.messageService.add({
+              severity: 'warn',
+              summary: 'CEP não encontrado',
+              detail: 'Não conseguimos encontrar esse CEP. Confira o número ou preencha o endereço manualmente.',
+              life: 5000
+            });
+            return of(null);
+          })
+        );
+      }),
+      filter((endereco): endereco is EnderecoCompleto => endereco !== null)
+    ).subscribe((endereco: EnderecoCompleto) => {
+      this.buscandoCep = false;
+      this.cepEncontrado = true;
 
-        // Campos readonly são automaticamente definidos pelo template
-        // Não é necessário chamar disable() pois readonly não desabilita o campo
-      },
-      error: (error) => {
-        this.buscandoCep = false;
-        this.cepEncontrado = false;
-        
-        // Só mostrar erro se não for erro de validação
-        if (error.message && !error.message.includes('8 dígitos')) {
-        }
-      }
+      // Preencher automaticamente os campos do endereço
+      this.bookingForm.patchValue({
+        enderecoHospede: endereco.endereco,
+        bairroHospede: endereco.bairro,
+        cidadeHospede: endereco.cidade,
+        ufHospede: endereco.uf
+      });
+
+      // Formatar CEP
+      const cepFormatado = this.cepService.formatarCep(endereco.cep);
+      this.bookingForm.patchValue({
+        cepHospede: cepFormatado
+      });
+
+      // Campos readonly são automaticamente definidos pelo template
+      // Não é necessário chamar disable() pois readonly não desabilita o campo
     });
   }
 
@@ -1456,7 +1644,31 @@ export class BookingComponent implements OnInit {
     if (!this.bookingForm.get('telefoneHospede')?.valid) {
       camposInvalidos.push('Telefone');
     }
-    
+
+    if (!this.bookingForm.get('cepHospede')?.valid) {
+      camposInvalidos.push('CEP');
+    }
+
+    if (!this.bookingForm.get('enderecoHospede')?.valid) {
+      camposInvalidos.push('Endereço');
+    }
+
+    if (!this.bookingForm.get('numeroHospede')?.valid) {
+      camposInvalidos.push('Número');
+    }
+
+    if (!this.bookingForm.get('bairroHospede')?.valid) {
+      camposInvalidos.push('Bairro');
+    }
+
+    if (!this.bookingForm.get('cidadeHospede')?.valid) {
+      camposInvalidos.push('Cidade');
+    }
+
+    if (!this.bookingForm.get('ufHospede')?.valid) {
+      camposInvalidos.push('UF');
+    }
+
     return camposInvalidos;
   }
 
@@ -1495,7 +1707,31 @@ export class BookingComponent implements OnInit {
     if (!this.bookingForm.get('telefoneHospede')?.valid) {
       camposInvalidos.push('Telefone');
     }
-    
+
+    if (!this.bookingForm.get('cepHospede')?.valid) {
+      camposInvalidos.push('CEP');
+    }
+
+    if (!this.bookingForm.get('enderecoHospede')?.valid) {
+      camposInvalidos.push('Endereço');
+    }
+
+    if (!this.bookingForm.get('numeroHospede')?.valid) {
+      camposInvalidos.push('Número');
+    }
+
+    if (!this.bookingForm.get('bairroHospede')?.valid) {
+      camposInvalidos.push('Bairro');
+    }
+
+    if (!this.bookingForm.get('cidadeHospede')?.valid) {
+      camposInvalidos.push('Cidade');
+    }
+
+    if (!this.bookingForm.get('ufHospede')?.valid) {
+      camposInvalidos.push('UF');
+    }
+
     if (!this.bookingForm.get('modoPagamento')?.valid) {
       camposInvalidos.push('Modo de Pagamento');
     }
@@ -1580,7 +1816,13 @@ export class BookingComponent implements OnInit {
                this.bookingForm.get('sobrenomeHospede')?.valid &&
                this.bookingForm.get('emailHospede')?.valid &&
                this.bookingForm.get('cpfHospede')?.valid &&
-               this.bookingForm.get('telefoneHospede')?.valid);
+               this.bookingForm.get('telefoneHospede')?.valid &&
+               this.bookingForm.get('cepHospede')?.valid &&
+               this.bookingForm.get('enderecoHospede')?.valid &&
+               this.bookingForm.get('numeroHospede')?.valid &&
+               this.bookingForm.get('bairroHospede')?.valid &&
+               this.bookingForm.get('cidadeHospede')?.valid &&
+               this.bookingForm.get('ufHospede')?.valid);
       case 3: // Pagamento
         return !!(this.bookingForm.get('modoPagamento')?.valid);
       default:

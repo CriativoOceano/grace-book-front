@@ -62,7 +62,9 @@ body {
 // Variáveis CSS para paleta oficial Oceano da Graça
 :root {
   --azul-abissal: #0A2647;
-  --turquesa-graca: #0A2647;
+  // Estava igual a --azul-abissal, então o hover do botão primário não
+  // mudava de cor nenhuma (nenhum feedback visual ao passar o mouse).
+  --turquesa-graca: #071D33;
   --areia-sereno: #F6EBD9;
   --verde-montanha: #4E944F;
   --dourado-presenca: #CBA135;

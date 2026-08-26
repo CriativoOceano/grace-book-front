@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { AuthService } from './auth.service';
 import { environment } from '../../../environments/environment';
 
 export interface Reserva {
@@ -20,6 +19,13 @@ export interface Reserva {
   usuarioNome: string;
   usuarioEmail: string;
   dataCriacao: Date;
+  dadosHospede?: {
+    nome: string;
+    sobrenome: string;
+    email: string;
+    telefone: string;
+    cpf: string;
+  };
 }
 
 export enum TipoReserva {
@@ -66,15 +72,12 @@ export interface DisponibilidadeResponse {
 export class ReservaService {
   private readonly API_URL = environment.apiUrl;
 
-  constructor(
-    private http: HttpClient,
-    private authService: AuthService
-  ) {}
+  constructor(private http: HttpClient) {}
 
+  // A autenticação vai pelo cookie httpOnly (anexado automaticamente via
+  // withCredentials no tokenInterceptor) — aqui só falta o Content-Type.
   private getHeaders(): HttpHeaders {
-    const token = this.authService.getToken();
     return new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
   }

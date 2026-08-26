@@ -25,13 +25,19 @@ export interface UpdateConfiguracaoDto {
 }
 
 export interface BloquearDataDto {
-  data: string;
-  motivo: string;
+  dataInicio: string;
+  dataFim: string;
+  observacoes?: string;
+  disponibilidadeDiaria?: boolean;
+  disponibilidadeBatismo?: boolean;
+  chalesDisponiveis?: number;
 }
 
 export interface DisponibilidadeBloqueio {
-  id?: string;
+  _id: string;
   data: string;
-  motivo: string;
-  createdAt?: Date;
+  disponibilidadeDiaria: boolean;
+  disponibilidadeBatismo: boolean;
+  chalesDisponiveis: number;
+  observacoes?: string;
 }

@@ -18,7 +18,7 @@
           <li><a (click)="scrollToSection('structure')">Estrutura</a></li>
           <li><a (click)="scrollToSection('gallery')">Galeria</a></li>
           <li><a (click)="scrollToSection('location')">Localização</a></li>
-          <li><a routerLink="/consultar-reserva">Minhas Reservas</a></li>
+          <li><a routerLink="/consultar-reserva">Consultar Reserva</a></li>
         </ul>
       </nav>
 
@@ -33,29 +33,16 @@
             </button>
           </ng-container>
         } @else {
-          <ng-template #loggedInTemplate>
-            <div class="user-dropdown">
-              <div class="user-info">
-                <span class="user-avatar">{{ user?.nome?.charAt(0) }}</span>
-                <span class="user-name">{{ user?.nome }}</span>
-              </div>
-              <div class="dropdown-menu">
-                <a routerLink="/minhas-reservas">Minhas Reservas</a>
-                @if (user?.isAdmin) {
-                  <a routerLink="/admin">Administração</a>
-                }
-                <a (click)="logout()">Sair</a>
-              </div>
-            </div>
-            
-            <!-- Botão Sair direto para admin -->
-            @if (user?.isAdmin) {
-              <button class="btn btn-secondary" (click)="logout()">
-                <i class="pi pi-sign-out"></i>
-                Sair
-              </button>
-            }
-          </ng-template>
+          @if (user?.isAdmin) {
+            <a routerLink="/admin" class="btn btn-secondary desktop-only">
+              <i class="pi pi-cog"></i>
+              Administração
+            </a>
+          }
+          <button class="btn btn-logout" (click)="logout()">
+            <i class="pi pi-sign-out"></i>
+            Sair
+          </button>
         }
 
         <!-- Mobile Menu Button -->
@@ -91,18 +78,11 @@
               Reservar
             </button>
           } @else {
-            <div class="mobile-user-info">
-              <div class="user-info">
-                <span class="user-avatar">{{ user?.nome?.charAt(0) }}</span>
-                <span class="user-name">{{ user?.nome }}</span>
-              </div>
-              <div class="mobile-user-menu">
-                <a routerLink="/minhas-reservas" (click)="closeMenu()">Minhas Reservas</a>
-                @if (user?.isAdmin) {
-                  <a routerLink="/admin" (click)="closeMenu()">Administração</a>
-                }
-                <a (click)="logout(); closeMenu()">Sair</a>
-              </div>
+            <div class="mobile-user-menu">
+              @if (user?.isAdmin) {
+                <a routerLink="/admin" (click)="closeMenu()">Administração</a>
+              }
+              <a class="mobile-logout" (click)="logout(); closeMenu()">Sair</a>
             </div>
           }
         </div>
@@ -124,13 +104,6 @@
           <h3>Sede Campestre</h3>
         </div>
         <p>Um refúgio cercado por natureza e propósito</p>
-      </div>
-      
-      <div class="footer-section">
-        <h4>Contato</h4>
-        <p>📞 (11) 99999-9999</p>
-        <p>📧 contato&#64;sedecampestre.com</p>
-        <p>📍 Águas Lindas de Goiás, GO</p>
       </div>
       
       <div class="footer-section">

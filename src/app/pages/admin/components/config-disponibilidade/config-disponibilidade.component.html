@@ -1,4 +1,7 @@
 <p-card>
+  <p-toast></p-toast>
+  <p-confirmDialog></p-confirmDialog>
+
   <div *ngIf="isLoading" class="loading-container">
     <p-progressSpinner></p-progressSpinner>
     <p>Carregando bloqueios...</p>
@@ -15,9 +18,10 @@
       <div class="bloquear-form">
         <div class="form-group">
           <label>Data:</label>
-          <p-datepicker 
+          <p-datepicker
             [(ngModel)]="novaDataBloqueio"
             [showIcon]="true"
+            [minDate]="minDate"
             dateFormat="dd/mm/yy"
             placeholder="Selecione a data">
           </p-datepicker>
@@ -64,18 +68,18 @@
         [rows]="10"
         styleClass="p-datatable-gridlines">
         
-        <ng-template pTemplate="header">
+        <ng-template #header>
           <tr>
             <th>Data</th>
             <th>Motivo</th>
             <th>Ações</th>
           </tr>
         </ng-template>
-        
-        <ng-template pTemplate="body" let-bloqueio>
+
+        <ng-template #body let-bloqueio>
           <tr>
             <td>{{ formatarData(bloqueio.data) }}</td>
-            <td>{{ bloqueio.motivo }}</td>
+            <td>{{ bloqueio.observacoes }}</td>
             <td>
               <p-button 
                 icon="pi pi-times" 

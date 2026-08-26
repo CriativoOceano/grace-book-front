@@ -1,0 +1,170 @@
+<p-card>
+  <p-toast></p-toast>
+  <p-confirmDialog></p-confirmDialog>
+
+  <div class="header-row">
+    <div>
+      <h3>Preços Sazonais</h3>
+      <p class="section-description">
+        Crie ajustes de preço para períodos específicos, como feriados, fim de ano ou datas
+        comemorativas. O ajuste é aplicado por diária, chalé/noite ou batismo dentro do período.
+      </p>
+    </div>
+    <p-button
+      label="Nova regra de preço"
+      icon="pi pi-plus"
+      (onClick)="abrirDialogNovo()">
+    </p-button>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-container">
+    <p-progressSpinner></p-progressSpinner>
+    <p>Carregando preços sazonais...</p>
+  </div>
+
+  <p-table *ngIf="!isLoading" [value]="regras" [tableStyle]="{ 'min-width': '50rem' }">
+    <ng-template #header>
+      <tr>
+        <th>Nome</th>
+        <th>Período</th>
+        <th>Ajuste</th>
+        <th>Status</th>
+        <th>Ações</th>
+      </tr>
+    </ng-template>
+
+    <ng-template #body let-regra>
+      <tr>
+        <td>{{ regra.nome }}</td>
+        <td>{{ regra.dataInicio | date:'dd/MM/yyyy' }} a {{ regra.dataFim | date:'dd/MM/yyyy' }}</td>
+        <td>{{ descricaoAjuste(regra) }}</td>
+        <td>
+          <p-tag
+            [value]="regra.ativo ? 'Ativa' : 'Inativa'"
+            [severity]="regra.ativo ? 'success' : 'secondary'">
+          </p-tag>
+        </td>
+        <td>
+          <div class="flex gap-2">
+            <p-button
+              [icon]="regra.ativo ? 'pi pi-pause' : 'pi pi-play'"
+              styleClass="p-button-sm p-button-secondary"
+              (onClick)="alternarAtivo(regra)"
+              [pTooltip]="regra.ativo ? 'Desativar' : 'Ativar'"
+              tooltipPosition="top">
+            </p-button>
+            <p-button
+              icon="pi pi-trash"
+              styleClass="p-button-sm p-button-danger"
+              (onClick)="confirmarRemover(regra)"
+              pTooltip="Remover"
+              tooltipPosition="top">
+            </p-button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="5" class="text-center">
+          <p>Nenhum preço sazonal cadastrado ainda.</p>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-card>
+
+<p-dialog
+  [(visible)]="mostrarDialog"
+  [modal]="true"
+  [style]="{ width: '460px' }"
+  header="Nova regra de preço sazonal"
+  (onHide)="fecharDialog()">
+
+  <div class="dialog-form">
+    <div class="form-group">
+      <label for="nomeRegra">Nome</label>
+      <input
+        id="nomeRegra"
+        type="text"
+        pInputText
+        [(ngModel)]="form.nome"
+        placeholder="Ex: Réveillon, Feriado de Corpus Christi"
+        class="w-full" />
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Data de início</label>
+        <p-datepicker
+          [(ngModel)]="form.dataInicio"
+          [showIcon]="true"
+          [minDate]="minDate"
+          dateFormat="dd/mm/yy"
+          appendTo="body"
+          placeholder="Selecione a data">
+        </p-datepicker>
+      </div>
+
+      <div class="form-group">
+        <label>Data de fim</label>
+        <p-datepicker
+          [(ngModel)]="form.dataFim"
+          [showIcon]="true"
+          [minDate]="minDate"
+          dateFormat="dd/mm/yy"
+          appendTo="body"
+          placeholder="Selecione a data">
+        </p-datepicker>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Tipo de ajuste</label>
+        <p-select
+          [(ngModel)]="form.tipoAjuste"
+          [options]="opcoesTipoAjuste"
+          optionLabel="label"
+          optionValue="value"
+          appendTo="body"
+          class="w-full">
+        </p-select>
+      </div>
+
+      <div class="form-group">
+        <label>Valor do ajuste</label>
+        <p-inputNumber
+          [(ngModel)]="form.valorAjuste"
+          [suffix]="form.tipoAjuste === 'percentual' ? '%' : ''"
+          [prefix]="form.tipoAjuste === 'fixo' ? 'R$ ' : ''"
+          [minFractionDigits]="form.tipoAjuste === 'fixo' ? 2 : 0"
+          placeholder="Ex: 20"
+          class="w-full">
+        </p-inputNumber>
+      </div>
+    </div>
+
+    <p class="ajuste-hint">
+      {{ form.tipoAjuste === 'percentual'
+        ? 'Ex: 20 aumenta o preço em 20% em cada dia dentro do período.'
+        : 'Ex: 500 soma R$ 500,00 ao preço de cada dia dentro do período.' }}
+    </p>
+
+    <div class="dialog-actions">
+      <p-button
+        label="Cancelar"
+        severity="secondary"
+        [text]="true"
+        (onClick)="fecharDialog()">
+      </p-button>
+      <p-button
+        label="Salvar regra"
+        icon="pi pi-check"
+        [loading]="isSalvando"
+        (onClick)="salvar()">
+      </p-button>
+    </div>
+  </div>
+</p-dialog>

@@ -124,9 +124,10 @@ export class ConsultarReservaComponent implements OnInit {
     }
   }
 
-  cancelarReserva(): void {
-    // TODO: Implementar cancelamento de reserva
-  }
+  // Não há endpoint público de cancelamento hoje — POST /reservas/:id/cancelar
+  // no back-end exige JwtAuthGuard + AdminGuard. O botão fica oculto
+  // (ver podeCancelar()) até existir uma rota pública para isso.
+  cancelarReserva(): void {}
 
   getStatusColor(status: string): string {
     switch (status) {
@@ -250,7 +251,8 @@ export class ConsultarReservaComponent implements OnInit {
   }
 
   podeCancelar(): boolean {
-    return this.reservaEncontrada?.statusReserva === 'PENDENTE_PAGAMENTO';
+    // Oculto até existir uma rota pública de cancelamento no back-end.
+    return false;
   }
 
   podePagar(): boolean {

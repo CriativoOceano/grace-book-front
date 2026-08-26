@@ -95,9 +95,10 @@ export class CancelReservationDialogComponent implements OnInit {
     if (!this.reserva?.pagamento) return false;
     
     const pagamento = this.reserva.pagamento;
-    
-    // Verificar se pagamento foi confirmado
-    if (pagamento.status !== 'CONFIRMADO' && pagamento.status !== 'RECEBIDO' && pagamento.status !== 'PAGO' && pagamento.status !== 'PENDENTE') {
+
+    // Estorno só faz sentido para dinheiro que já entrou. Pagamento PENDENTE
+    // (ainda não pago) é cancelado direto no Asaas, não estornado.
+    if (pagamento.status !== 'CONFIRMADO' && pagamento.status !== 'RECEBIDO' && pagamento.status !== 'PAGO') {
       return false;
     }
 
@@ -131,6 +132,18 @@ export class CancelReservationDialogComponent implements OnInit {
     return true;
   }
 
+  getStatusReservaText(status: string): string {
+    const statuses: { [key: string]: string } = {
+      'CONFIRMADA': 'Confirmada',
+      'PENDENTE_PAGAMENTO': 'Pendente de Pagamento',
+      'CANCELADA': 'Cancelada',
+      'FINALIZADA': 'Finalizada',
+      'EM_ANDAMENTO': 'Em Andamento',
+      'UTILIZADA': 'Utilizada',
+    };
+    return statuses[status] || status;
+  }
+
   getPaymentMethodText(method: string): string {
     const methods: { [key: string]: string } = {
       'PIX': 'PIX',
@@ -156,7 +169,11 @@ export class CancelReservationDialogComponent implements OnInit {
     if (!this.reserva?.pagamento) return '';
 
     const pagamento = this.reserva.pagamento;
-    
+
+    if (pagamento.status === 'PENDENTE') {
+      return 'Pagamento ainda não foi realizado, então não há valor a estornar. O link de pagamento expira sozinho e deixa de funcionar.';
+    }
+
     if (pagamento.modoPagamento === 'PIX') {
       return 'PIX: Estorno imediato (até 90 dias após o pagamento)';
     } else if (pagamento.modoPagamento === 'CREDIT_CARD') {
@@ -201,12 +218,8 @@ export class CancelReservationDialogComponent implements OnInit {
         this.mostrarMensagemEstorno(resultado.estorno);
       }
 
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Sucesso',
-        detail: 'Reserva cancelada com sucesso!'
-      });
-
+      // O toast de sucesso do cancelamento em si é responsabilidade de quem
+      // abriu este dialog (AdminComponent), que também recarrega a lista.
       this.ref.close(resultado);
 
     } catch (error: any) {

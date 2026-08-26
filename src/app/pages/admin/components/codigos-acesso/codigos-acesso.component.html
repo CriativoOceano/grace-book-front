@@ -1,0 +1,125 @@
+<p-card>
+  <p-toast></p-toast>
+  <p-confirmDialog></p-confirmDialog>
+
+  <div class="header-row">
+    <div>
+      <h3>Códigos de Acesso</h3>
+      <p class="section-description">
+        Cada código pertence a uma pessoa. Ações administrativas feitas com um código ficam
+        registradas com o nome de quem o gerou.
+      </p>
+    </div>
+    <p-button
+      label="Gerar novo código"
+      icon="pi pi-plus"
+      (onClick)="abrirDialogCriar()">
+    </p-button>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-container">
+    <p-progressSpinner></p-progressSpinner>
+    <p>Carregando códigos...</p>
+  </div>
+
+  <p-table *ngIf="!isLoading" [value]="codigos" [tableStyle]="{ 'min-width': '50rem' }">
+    <ng-template #header>
+      <tr>
+        <th>Nome</th>
+        <th>Status</th>
+        <th>Criado por</th>
+        <th>Criado em</th>
+        <th>Último uso</th>
+        <th>Ações</th>
+      </tr>
+    </ng-template>
+
+    <ng-template #body let-codigo>
+      <tr>
+        <td>{{ codigo.nome }}</td>
+        <td>
+          <p-tag
+            [value]="codigo.ativo ? 'Ativo' : 'Revogado'"
+            [severity]="codigo.ativo ? 'success' : 'danger'">
+          </p-tag>
+        </td>
+        <td>{{ codigo.criadoPorNome || '-' }}</td>
+        <td>{{ codigo.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+        <td>{{ codigo.ultimoUso ? (codigo.ultimoUso | date:'dd/MM/yyyy HH:mm') : 'Nunca usado' }}</td>
+        <td>
+          <p-button
+            icon="pi pi-ban"
+            styleClass="p-button-sm p-button-danger"
+            [disabled]="!codigo.ativo"
+            (onClick)="confirmarRevogar(codigo)"
+            pTooltip="Revogar código"
+            tooltipPosition="top">
+          </p-button>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="6" class="text-center">
+          <p>Nenhum código de acesso cadastrado ainda.</p>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-card>
+
+<!-- Dialog: gerar código / mostrar o código gerado uma única vez -->
+<p-dialog
+  [(visible)]="mostrarDialogCriar"
+  [modal]="true"
+  [closable]="!codigoGerado"
+  [style]="{ width: '440px' }"
+  header="Gerar código de acesso"
+  (onHide)="fecharDialog()">
+
+  <div *ngIf="!codigoGerado" class="dialog-form">
+    <label for="nomeNovoCodigo">Nome de quem vai usar este código</label>
+    <input
+      id="nomeNovoCodigo"
+      type="text"
+      pInputText
+      [(ngModel)]="nomeNovoCodigo"
+      placeholder="Ex: Pastor João"
+      class="w-full"
+      (keydown.enter)="gerarCodigo()" />
+
+    <div class="dialog-actions">
+      <p-button
+        label="Cancelar"
+        severity="secondary"
+        [text]="true"
+        (onClick)="fecharDialog()">
+      </p-button>
+      <p-button
+        label="Gerar código"
+        icon="pi pi-key"
+        [loading]="isSalvando"
+        (onClick)="gerarCodigo()">
+      </p-button>
+    </div>
+  </div>
+
+  <div *ngIf="codigoGerado" class="codigo-revelado">
+    <p class="codigo-revelado-aviso">
+      <i class="pi pi-exclamation-triangle"></i>
+      Este código só aparece agora. Anote e entregue para <strong>{{ codigoGerado.nome }}</strong>.
+      Depois de fechar esta janela, não é possível recuperá-lo (só gerar um novo).
+    </p>
+
+    <div class="codigo-box">{{ codigoGerado.codigo }}</div>
+
+    <div class="dialog-actions">
+      <p-button
+        label="Já anotei o código"
+        icon="pi pi-check"
+        (onClick)="fecharDialog()">
+      </p-button>
+    </div>
+  </div>
+</p-dialog>

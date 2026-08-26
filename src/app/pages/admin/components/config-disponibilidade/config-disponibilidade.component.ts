@@ -45,7 +45,10 @@ export class ConfigDisponibilidadeComponent implements OnInit {
   isSaving = false;
   
   // Formulário para bloquear data
-  novaDataBloqueio: string = '';
+  // p-datepicker faz o binding com um objeto Date de verdade, não string
+  // (apesar do nome), então tratamos como tal ao montar o payload.
+  novaDataBloqueio: Date | null = null;
+  minDate: Date = new Date();
   novoMotivo: string = '';
 
   constructor(
@@ -84,9 +87,13 @@ export class ConfigDisponibilidadeComponent implements OnInit {
 
     this.isSaving = true;
 
+    // Um único dia selecionado no formulário vira um período de um dia só
+    // (dataInicio = dataFim) — é isso que o backend espera.
+    const dataIso = new Date(this.novaDataBloqueio!).toISOString();
     const bloqueio: BloquearDataDto = {
-      data: this.novaDataBloqueio,
-      motivo: this.novoMotivo
+      dataInicio: dataIso,
+      dataFim: dataIso,
+      observacoes: this.novoMotivo
     };
 
     this.disponibilidadeService.bloquearData(bloqueio).subscribe({
@@ -119,7 +126,7 @@ export class ConfigDisponibilidadeComponent implements OnInit {
       acceptLabel: 'Sim',
       rejectLabel: 'Não',
       accept: () => {
-        this.desbloquearData(bloqueio.id!);
+        this.desbloquearData(bloqueio._id);
       }
     });
   }
@@ -167,11 +174,14 @@ export class ConfigDisponibilidadeComponent implements OnInit {
   }
 
   private limparFormulario(): void {
-    this.novaDataBloqueio = '';
+    this.novaDataBloqueio = null;
     this.novoMotivo = '';
   }
 
   formatarData(data: string): string {
-    return new Date(data).toLocaleDateString('pt-BR');
+    // O backend guarda a data como meia-noite UTC. Formatando no fuso
+    // local (ex: Brasília, UTC-3) isso "voltava" um dia na tela — sempre
+    // formatar em UTC pra bater com o dia que foi realmente bloqueado.
+    return new Date(data).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
   }
 }

@@ -14,7 +14,6 @@ import { errorInterceptor } from './core/interceptors/error.interceptor';
 import { providePrimeNG } from 'primeng/config';
 import { MessageService } from 'primeng/api';
 import Aura from '@primeuix/themes/aura';
-import { PRIME_NG_CONFIG } from 'primeng/config';
 import { provideServiceWorker } from '@angular/service-worker';
 
 registerLocaleData(pt);
@@ -28,26 +27,30 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([tokenInterceptor, errorInterceptor])),
     providePrimeNG({
       theme: {
-        preset: Aura
+        preset: Aura,
+        // Por padrão o PrimeNG liga o dark mode sozinho via
+        // prefers-color-scheme do sistema operacional do usuário — o site
+        // é sempre light, então isso precisa ficar desligado.
+        options: {
+          darkModeSelector: false
+        }
+      },
+      // Estava num provider PRIME_NG_CONFIG separado, que essa versão do
+      // PrimeNG ignora — precisa vir dentro de providePrimeNG() mesmo,
+      // senão o p-datepicker cai pro locale padrão (inglês).
+      translation: {
+        dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+        dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+        dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'],
+        monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+        monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+        today: 'Hoje',
+        clear: 'Limpar',
+        firstDayOfWeek: 0,
+        dateFormat: 'dd/mm/yy',
+        weekHeader: 'Sem'
       }
     }),
-    {
-      provide: PRIME_NG_CONFIG,
-      useValue: {
-        translation: {
-          dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
-          dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
-          dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'],
-          monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
-          monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
-          today: 'Hoje',
-          clear: 'Limpar',
-          firstDayOfWeek: 0,
-          dateFormat: 'dd/mm/yy',
-          weekHeader: 'Sem'
-        }
-      }
-    },
     MessageService, provideServiceWorker('ngsw-worker.js', {
             enabled: !isDevMode(),
             registrationStrategy: 'registerWhenStable:30000'

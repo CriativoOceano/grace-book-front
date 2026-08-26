@@ -44,6 +44,9 @@ export class PaymentSuccessComponent implements OnInit {
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
+  codigoReserva: string | null = null;
+  isLoadingReserva = false;
+
   ngOnInit(): void {
     this.checkPaymentStatus();
   }
@@ -52,7 +55,8 @@ export class PaymentSuccessComponent implements OnInit {
     // Verificar parâmetros da URL
     this.route.queryParams.subscribe(params => {
       const status = params['status'];
-      
+      this.codigoReserva = params['codigo'] || null;
+
       switch (status) {
         case 'sucesso':
           this.paymentStatus = 'sucesso';
@@ -70,26 +74,54 @@ export class PaymentSuccessComponent implements OnInit {
           this.paymentStatus = 'pendente';
           this.handlePendingStatus();
       }
-      
+
       this.isLoading = false;
     });
   }
 
+  // Busca os dados reais da reserva pelo código que o backend agora inclui
+  // na URL de retorno do checkout do Asaas. Se por algum motivo o código não
+  // vier (link antigo, ou o backend ainda não foi atualizado), paymentData
+  // fica nulo e o template cai no aviso genérico de "consulte pelo código".
+  private carregarDadosDaReserva(): void {
+    if (!this.codigoReserva) {
+      this.paymentData = null;
+      return;
+    }
+
+    this.isLoadingReserva = true;
+    this.bookingService.buscarReservaPorCodigo(this.codigoReserva).subscribe({
+      next: (reserva) => {
+        this.paymentData = reserva;
+        this.isLoadingReserva = false;
+      },
+      error: () => {
+        this.paymentData = null;
+        this.isLoadingReserva = false;
+      }
+    });
+  }
+
   private handleSuccessStatus(): void {
-    // Simular dados de pagamento bem-sucedido
-    this.paymentData = {
-      id: 'PAY_' + Date.now(),
-      value: 1500.00,
-      status: 'PAGO',
-      paymentDate: new Date().toISOString(),
-      method: 'PIX'
-    };
-    
+    this.carregarDadosDaReserva();
+
     this.messageService.add({
       severity: 'success',
       summary: 'Pagamento Confirmado!',
       detail: 'Sua reserva foi confirmada com sucesso.'
     });
+  }
+
+  // O Asaas manda o cliente pra cá com "?status=sucesso" assim que o
+  // checkout é pago — mas a confirmação de verdade da reserva depende do
+  // webhook, que roda separado. Se nesse meio-tempo a reserva expirou (ou
+  // foi cancelada por outro motivo) e não deu pra reaproveitar a data, o
+  // backend estorna automaticamente e marca a reserva como cancelada,
+  // mesmo com o Asaas tendo redirecionado como "sucesso". Aqui a gente
+  // confere o status real da reserva pra não mostrar "confirmado" pra
+  // quem teve o dinheiro devolvido.
+  get reservaFoiEstornada(): boolean {
+    return this.paymentData?.statusReserva === 'CANCELADA';
   }
 
   private handleCancelledStatus(): void {
@@ -113,13 +145,7 @@ export class PaymentSuccessComponent implements OnInit {
   }
 
   private handlePendingStatus(): void {
-    // Simular dados de pagamento pendente
-    this.paymentData = {
-      id: 'PAY_' + Date.now(),
-      value: 1500.00,
-      status: 'PENDENTE',
-      dueDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString() // 3 dias
-    };
+    this.carregarDadosDaReserva();
   }
 
   getStatusIcon(): string {

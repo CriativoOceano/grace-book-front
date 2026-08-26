@@ -1,0 +1,87 @@
+.header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0 0 0.35rem;
+  }
+
+  .section-description {
+    color: #666;
+    font-size: 0.9rem;
+    max-width: 60ch;
+    margin: 0;
+  }
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 3rem 0;
+  color: #666;
+}
+
+.dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  label {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 0.9rem;
+  }
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.codigo-revelado {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.codigo-revelado-aviso {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  background: #fff3cd;
+  border: 1px solid #cba135;
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  color: #856404;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin: 0;
+
+  i {
+    color: #cba135;
+    margin-top: 2px;
+  }
+}
+
+.codigo-box {
+  background: #0a2647;
+  color: #fafafa;
+  font-family: 'SF Mono', 'Cascadia Code', Consolas, monospace;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.3rem;
+  text-align: center;
+  border-radius: 12px;
+  padding: 1.25rem;
+}

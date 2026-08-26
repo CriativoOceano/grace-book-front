@@ -198,12 +198,13 @@
 
                 <!-- Actions -->
                 <div class="flex justify-end">
-                  <p-button 
-                    label="Continuar" 
+                  <p-button
+                    label="Continuar"
                     icon="pi pi-arrow-right"
                     iconPos="right"
                     size="large"
-                    (onClick)="nextStep()"
+                    [loading]="isLoading"
+                    (onClick)="verificarDisponibilidadeInicial()"
                     [disabled]="!validateStep(0)"
                     styleClass="continue-btn">
                   </p-button>
@@ -485,8 +486,8 @@
 
                 <!-- CEP -->
                 <div class="form-group">
-                  <label class="form-label">CEP</label>
-                  <input 
+                  <label class="form-label required">CEP</label>
+                  <input
                     pInputText
                     formControlName="cepHospede"
                     placeholder="00000-000"
@@ -502,65 +503,90 @@
                       <i class="pi pi-check-circle"></i>
                       <span>Endereço encontrado automaticamente</span>
                     </div>
-                    <button 
+                    <button
                       type="button"
                       (click)="limparEndereco()"
                       class="text-xs text-blue-600 hover:text-blue-800 underline">
                       Editar manualmente
                     </button>
                   </div>
+                  <div *ngIf="bookingForm.get('cepHospede')?.invalid && bookingForm.get('cepHospede')?.touched"
+                       class="error-message">
+                    <i class="pi pi-exclamation-triangle"></i>
+                    CEP é obrigatório
+                  </div>
                 </div>
 
                 <!-- Endereço -->
                 <div class="form-group">
-                  <label class="form-label">Endereço</label>
-                  <input 
+                  <label class="form-label required">Endereço</label>
+                  <input
                     pInputText
                     formControlName="enderecoHospede"
                     placeholder="Rua, Avenida, etc."
                     [readonly]="cepEncontrado"
                     [class.bg-gray-100]="cepEncontrado"
                     class="w-full p-4 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-green focus:border-transparent">
+                  <div *ngIf="bookingForm.get('enderecoHospede')?.invalid && bookingForm.get('enderecoHospede')?.touched"
+                       class="error-message">
+                    <i class="pi pi-exclamation-triangle"></i>
+                    Endereço é obrigatório
+                  </div>
                 </div>
 
                 <!-- Número -->
                 <div class="form-group">
-                  <label class="form-label">Número</label>
-                  <input 
+                  <label class="form-label required">Número</label>
+                  <input
                     pInputText
                     formControlName="numeroHospede"
                     placeholder="123"
                     class="w-full p-4 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-green focus:border-transparent">
+                  <div *ngIf="bookingForm.get('numeroHospede')?.invalid && bookingForm.get('numeroHospede')?.touched"
+                       class="error-message">
+                    <i class="pi pi-exclamation-triangle"></i>
+                    Número é obrigatório
+                  </div>
                 </div>
 
                 <!-- Bairro -->
                 <div class="form-group">
-                  <label class="form-label">Bairro</label>
-                  <input 
+                  <label class="form-label required">Bairro</label>
+                  <input
                     pInputText
                     formControlName="bairroHospede"
                     placeholder="Nome do bairro"
                     [readonly]="cepEncontrado"
                     [class.bg-gray-100]="cepEncontrado"
                     class="w-full p-4 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-green focus:border-transparent">
+                  <div *ngIf="bookingForm.get('bairroHospede')?.invalid && bookingForm.get('bairroHospede')?.touched"
+                       class="error-message">
+                    <i class="pi pi-exclamation-triangle"></i>
+                    Bairro é obrigatório
+                  </div>
                 </div>
 
                 <!-- Cidade e UF -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div class="form-group">
-                    <label class="form-label">Cidade</label>
-                    <input 
+                    <label class="form-label required">Cidade</label>
+                    <input
                       pInputText
                       formControlName="cidadeHospede"
                       placeholder="Nome da cidade"
                       [readonly]="cepEncontrado"
                       [class.bg-gray-100]="cepEncontrado"
                       class="w-full p-4 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-green focus:border-transparent">
+                    <div *ngIf="bookingForm.get('cidadeHospede')?.invalid && bookingForm.get('cidadeHospede')?.touched"
+                         class="error-message">
+                      <i class="pi pi-exclamation-triangle"></i>
+                      Cidade é obrigatória
+                    </div>
                   </div>
 
                   <div class="form-group">
-                    <label class="form-label">UF</label>
-                    <input 
+                    <label class="form-label required">UF</label>
+                    <input
                       pInputText
                       formControlName="ufHospede"
                       placeholder="Estado"
@@ -568,6 +594,11 @@
                       [readonly]="cepEncontrado"
                       [class.bg-gray-100]="cepEncontrado"
                       class="w-full p-4 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-green focus:border-transparent">
+                    <div *ngIf="bookingForm.get('ufHospede')?.invalid && bookingForm.get('ufHospede')?.touched"
+                         class="error-message">
+                      <i class="pi pi-exclamation-triangle"></i>
+                      UF é obrigatória
+                    </div>
                   </div>
                 </div>
 
@@ -651,12 +682,13 @@
                 <!-- Parcelamento (apenas para cartão) -->
                 <div class="form-group" *ngIf="bookingForm.get('modoPagamento')?.value === 'CARTAO'">
                   <label class="form-label">Parcelamento</label>
-                  <p-select 
+                  <p-select
                     formControlName="parcelas"
                     [options]="getParcelasOptions()"
                     placeholder="Selecione o número de parcelas"
                     styleClass="w-full"
-                    panelStyleClass="w-full">
+                    panelStyleClass="w-full"
+                    appendTo="body">
                   </p-select>
                 </div>
 

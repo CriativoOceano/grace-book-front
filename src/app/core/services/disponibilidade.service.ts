@@ -13,7 +13,13 @@ export class DisponibilidadeService {
   constructor(private http: HttpClient) {}
 
   getBloqueios(): Observable<DisponibilidadeBloqueio[]> {
-    return this.http.get<DisponibilidadeBloqueio[]>(`${this.apiUrl}/bloqueios`);
+    return this.http.get<DisponibilidadeBloqueio[]>(this.apiUrl);
+  }
+
+  // Pública — usada pelo calendário de reservas (sem login) pra desabilitar
+  // visualmente os dias que o admin bloqueou.
+  getBloqueiosPublico(): Observable<{ data: string }[]> {
+    return this.http.get<{ data: string }[]>(`${this.apiUrl}/publico`);
   }
 
   bloquearData(bloqueio: BloquearDataDto): Observable<DisponibilidadeBloqueio> {
@@ -21,10 +27,6 @@ export class DisponibilidadeService {
   }
 
   desbloquearData(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/bloqueios/${id}`);
-  }
-
-  verificarDisponibilidade(data: string): Observable<boolean> {
-    return this.http.get<boolean>(`${this.apiUrl}/verificar/${data}`);
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

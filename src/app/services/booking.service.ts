@@ -272,6 +272,19 @@ export class BookingService {
   }
 
   /**
+   * Buscar reserva só pelo código (público) — usado na volta do checkout do
+   * Asaas, quando ainda não temos o e-mail do hóspede disponível na tela.
+   */
+  buscarReservaPorCodigo(codigo: string): Observable<any> {
+    const url = `${this.baseUrl}/reservas/codigo/${encodeURIComponent(codigo)}`;
+
+    return this.http.get<any>(url).pipe(
+      map(response => response),
+      catchError(error => this.handleError(error))
+    );
+  }
+
+  /**
    * Consultar reserva por código e email (público)
    */
   consultarReserva(codigo: string, email: string): Observable<any> {

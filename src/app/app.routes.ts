@@ -31,11 +31,6 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/admin/admin.component').then(m => m.AdminComponent),
     canActivate: [AuthGuard]
   },
-  // { 
-  //   path: 'minhas-reservas', 
-  //   loadComponent: () => import('./pages/my-bookings/my-bookings.component').then(m => m.MyBookingsComponent),
-  //   canActivate: [() => import('./core/guards/auth.guard').then(m => m.AuthGuard)]
-  // },
   { path: '**', redirectTo: '' }
 ];
 
