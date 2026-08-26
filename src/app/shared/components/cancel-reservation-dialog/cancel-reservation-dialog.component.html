@@ -83,45 +83,37 @@
         </div>
       </p-card>
 
-      <!-- Opções de Estorno -->
-      <p-card header="Opções de Estorno" class="mb-4" *ngIf="reserva.pagamento && canRefundPayment()">
+      <!-- Estorno -->
+      <p-card header="Estorno" class="mb-4" *ngIf="reserva.pagamento && canRefundPayment()">
         <div class="form-group">
-          <div class="flex items-center mb-3">
-            <p-checkbox 
-              formControlName="estornarPagamento" 
-              [binary]="true" 
-              inputId="estornarPagamento">
-            </p-checkbox>
-            <label for="estornarPagamento" class="ml-2 font-semibold text-gray-600">
-              Estornar pagamento automaticamente
-            </label>
-          </div>
-          
-          <div class="mt-3" *ngIf="formulario.get('estornarPagamento')?.value">
-            <label for="valorEstorno" class="font-semibold text-gray-600">
-              Valor do Estorno <span class="text-red-500">*</span>
-            </label>
-            <p-inputNumber
-              id="valorEstorno"
-              formControlName="valorEstorno"
-              mode="currency"
-              currency="BRL"
-              locale="pt-BR"
-              [min]="0.01"
-              [max]="reserva.pagamento!.valor"
-              placeholder="Valor do estorno"
-              class="w-full"
-              [class.ng-invalid]="formulario.get('valorEstorno')?.invalid && formulario.get('valorEstorno')?.touched">
-            </p-inputNumber>
-            <small class="text-gray-500">
-              Valor máximo: {{ formatCurrency(reserva.pagamento!.valor) }}
-            </small>
-            <small 
-              class="text-red-500 block" 
-              *ngIf="getFieldError('valorEstorno')">
-              {{ getFieldError('valorEstorno') }}
-            </small>
-          </div>
+          <p class="text-sm text-gray-600 mb-3">
+            <i class="pi pi-info-circle mr-1"></i>
+            Este pagamento já foi confirmado, então o estorno é feito automaticamente ao cancelar.
+          </p>
+
+          <label for="valorEstorno" class="font-semibold text-gray-600">
+            Valor do Estorno <span class="text-red-500">*</span>
+          </label>
+          <p-inputNumber
+            id="valorEstorno"
+            formControlName="valorEstorno"
+            mode="currency"
+            currency="BRL"
+            locale="pt-BR"
+            [min]="0.01"
+            [max]="reserva.pagamento!.valor"
+            placeholder="Valor do estorno"
+            class="w-full"
+            [class.ng-invalid]="formulario.get('valorEstorno')?.invalid && formulario.get('valorEstorno')?.touched">
+          </p-inputNumber>
+          <small class="text-gray-500">
+            Valor máximo: {{ formatCurrency(reserva.pagamento!.valor) }}. Reduza esse valor apenas se for um estorno parcial (ex: taxa de cancelamento).
+          </small>
+          <small
+            class="text-red-500 block"
+            *ngIf="getFieldError('valorEstorno')">
+            {{ getFieldError('valorEstorno') }}
+          </small>
         </div>
       </p-card>
 
@@ -137,7 +129,7 @@
                 <li>• A reserva será marcada como cancelada</li>
                 <li>• As datas ficarão disponíveis para novas reservas</li>
                 <li>• Um email será enviado ao cliente</li>
-                <li *ngIf="formulario.get('estornarPagamento')?.value">
+                <li *ngIf="canRefundPayment()">
                   • O estorno será processado automaticamente
                 </li>
               </ul>

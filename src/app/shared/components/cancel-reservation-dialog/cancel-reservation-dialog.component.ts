@@ -5,7 +5,6 @@ import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
-import { CheckboxModule } from 'primeng/checkbox';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
@@ -42,7 +41,6 @@ export interface ReservationDetails {
     ButtonModule,
     CardModule,
     InputTextModule,
-    CheckboxModule,
     InputNumberModule,
     ToastModule
   ],
@@ -64,31 +62,24 @@ export class CancelReservationDialogComponent implements OnInit {
   ) {
     this.formulario = this.fb.group({
       motivo: ['', [Validators.required, Validators.minLength(10)]],
-      estornarPagamento: [false],
       valorEstorno: [null]
     });
   }
 
   ngOnInit(): void {
     this.reserva = this.config.data?.reserva || null;
-    
-    if (this.reserva?.pagamento) {
-      // Definir valor padrão do estorno como valor total
+
+    // Pagamento já confirmado é sempre estornado ao cancelar — não é mais
+    // uma escolha do admin (o backend também garante isso independente do
+    // que for mandado aqui). O campo de valor continua editável só pra
+    // permitir um estorno parcial, se for o caso.
+    if (this.reserva?.pagamento && this.canRefundPayment()) {
       this.formulario.patchValue({
         valorEstorno: this.reserva.pagamento.valor
       });
+      this.formulario.get('valorEstorno')?.setValidators([Validators.required, Validators.min(0.01)]);
+      this.formulario.get('valorEstorno')?.updateValueAndValidity();
     }
-
-    // Observar mudanças no checkbox de estorno
-    this.formulario.get('estornarPagamento')?.valueChanges.subscribe(value => {
-      const valorEstornoControl = this.formulario.get('valorEstorno');
-      if (value) {
-        valorEstornoControl?.setValidators([Validators.required, Validators.min(0.01)]);
-      } else {
-        valorEstornoControl?.clearValidators();
-      }
-      valorEstornoControl?.updateValueAndValidity();
-    });
   }
 
   canRefundPayment(): boolean {
@@ -205,7 +196,7 @@ export class CancelReservationDialogComponent implements OnInit {
     try {
       const dadosCancelamento = {
         motivo: this.formulario.value.motivo,
-        estornarPagamento: this.formulario.value.estornarPagamento,
+        estornarPagamento: this.canRefundPayment(),
         valorEstorno: this.formulario.value.valorEstorno
       };
 

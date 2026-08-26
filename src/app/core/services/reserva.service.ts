@@ -26,6 +26,9 @@ export interface Reserva {
     telefone: string;
     cpf: string;
   };
+  pagamento?: {
+    status: string;
+  };
 }
 
 export enum TipoReserva {

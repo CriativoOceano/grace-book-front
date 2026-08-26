@@ -29,6 +29,7 @@ export class AdminLoginComponent implements OnInit {
   loginForm: FormGroup;
   isLoading = false;
   errorMessage = '';
+  mostrarCodigo = false;
 
   constructor(
     private fb: FormBuilder,
@@ -92,6 +93,10 @@ export class AdminLoginComponent implements OnInit {
         }
       });
     }
+  }
+
+  alternarMostrarCodigo(): void {
+    this.mostrarCodigo = !this.mostrarCodigo;
   }
 
   goHome(): void {

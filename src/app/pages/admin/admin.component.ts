@@ -141,6 +141,43 @@ export class AdminComponent implements OnInit {
     }
   }
 
+  getStatusPagamentoText(status?: string): string {
+    switch (status) {
+      case 'PENDENTE':
+        return 'Pendente';
+      case 'PAGO':
+      case 'CONFIRMADO':
+      case 'RECEBIDO':
+        return 'Pago';
+      case 'CANCELADO':
+        return 'Cancelado';
+      case 'ESTORNADO':
+        return 'Estornado';
+      case 'REEMBOLSADO':
+        return 'Reembolsado';
+      default:
+        return '-';
+    }
+  }
+
+  getStatusPagamentoSeverity(status?: string): 'secondary' | 'success' | 'info' | 'warn' | 'danger' | 'contrast' | null | undefined {
+    switch (status) {
+      case 'PENDENTE':
+        return 'warn';
+      case 'PAGO':
+      case 'CONFIRMADO':
+      case 'RECEBIDO':
+        return 'success';
+      case 'CANCELADO':
+        return 'danger';
+      case 'ESTORNADO':
+      case 'REEMBOLSADO':
+        return 'info';
+      default:
+        return 'secondary';
+    }
+  }
+
   nomeCompleto(reserva: Reserva): string {
     if (reserva.dadosHospede?.nome) {
       return `${reserva.dadosHospede.nome} ${reserva.dadosHospede.sobrenome || ''}`.trim();

@@ -26,19 +26,17 @@
             [showCurrentPageReport]="true"
             currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} reservas"
             [globalFilterFields]="['codigo', 'usuarioNome', 'usuarioEmail', 'dadosHospede.nome', 'dadosHospede.sobrenome', 'dadosHospede.email']"
-            [tableStyle]="{ 'min-width': '60rem' }">
+            [tableStyle]="{ 'min-width': '75rem' }">
 
             <ng-template #caption>
               <div class="flex items-center justify-between">
                 <span class="text-xl font-bold">Reservas</span>
-                <span class="p-input-icon-left">
-                  <i class="pi pi-search"></i>
-                  <input
-                    pInputText
-                    type="text"
-                    placeholder="Buscar por código, nome ou e-mail..."
-                    (input)="dt.filterGlobal($any($event.target).value, 'contains')" />
-                </span>
+                <input
+                  pInputText
+                  type="text"
+                  placeholder="Buscar por código, nome ou e-mail..."
+                  style="width: 320px; flex-shrink: 0;"
+                  (input)="dt.filterGlobal($any($event.target).value, 'contains')" />
               </div>
             </ng-template>
             
@@ -53,6 +51,7 @@
                 <th>Chalés</th>
                 <th>Valor Total</th>
                 <th>Status</th>
+                <th>Pagamento</th>
                 <th>Ações</th>
               </tr>
             </ng-template>
@@ -71,6 +70,9 @@
                             <td>{{ reserva.valorTotal | currency:'BRL':'symbol':'1.2-2':'pt' }}</td>
                             <td>
                               <p-tag [value]="getStatusText(reserva.statusReserva)" [severity]="getStatusSeverity(reserva.statusReserva)"></p-tag>
+                            </td>
+                            <td>
+                              <p-tag [value]="getStatusPagamentoText(reserva.pagamento?.status)" [severity]="getStatusPagamentoSeverity(reserva.pagamento?.status)"></p-tag>
                             </td>
                             <td>
                               <div class="flex gap-2">
@@ -96,13 +98,13 @@
             
             <ng-template #footer>
               <tr>
-                <td colspan="11">Total de {{ reservas ? reservas.length : 0 }} reservas encontradas.</td>
+                <td colspan="12">Total de {{ reservas ? reservas.length : 0 }} reservas encontradas.</td>
               </tr>
             </ng-template>
             
             <ng-template #emptymessage>
               <tr>
-                <td colspan="11" class="text-center">
+                <td colspan="12" class="text-center">
                   <p>As reservas aparecerão aqui quando os clientes fizerem suas solicitações.</p>
                 </td>
               </tr>

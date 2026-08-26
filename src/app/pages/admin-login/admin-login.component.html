@@ -13,15 +13,25 @@
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
         <div class="form-group">
           <label for="codigo">Código de Acesso</label>
-          <input 
-            id="codigo"
-            type="password" 
-            pInputText 
-            formControlName="codigo"
-            placeholder="Digite o código"
-            [disabled]="isLoading"
-            class="w-full"
-          />
+          <div class="codigo-input-wrapper">
+            <input
+              id="codigo"
+              [type]="mostrarCodigo ? 'text' : 'password'"
+              pInputText
+              formControlName="codigo"
+              placeholder="Digite o código"
+              [disabled]="isLoading"
+              class="w-full"
+            />
+            <button
+              type="button"
+              class="toggle-visibilidade"
+              (click)="alternarMostrarCodigo()"
+              [attr.aria-label]="mostrarCodigo ? 'Ocultar código' : 'Mostrar código'"
+              tabindex="-1">
+              <i class="pi" [ngClass]="mostrarCodigo ? 'pi-eye-slash' : 'pi-eye'"></i>
+            </button>
+          </div>
           @if (loginForm.get('codigo')?.invalid && loginForm.get('codigo')?.touched) {
             <div class="error-message">
               <small>O código deve ter pelo menos 3 caracteres</small>
